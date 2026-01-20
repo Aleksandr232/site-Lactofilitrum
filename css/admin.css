@@ -62,11 +62,6 @@ body {
     background-color: #34495e;
 }
 
-.sidebar-nav li i {
-    margin-right: 0.75rem;
-    width: 20px;
-    text-align: center;
-}
 
 .sidebar-footer {
     margin-top: auto;
@@ -89,9 +84,6 @@ body {
     color: white;
 }
 
-.logout-btn i {
-    margin-right: 0.5rem;
-}
 
 /* Основная область */
 .main-content {
@@ -462,42 +454,51 @@ body {
     opacity: 0.9;
 }
 
-/* Иконки */
-.sidebar-nav li i,
-.logout-btn i {
-    font-size: 1.3em;
+/* Boxicons стили */
+.sidebar-nav li i.bx,
+.logout-btn i.bx {
+    font-size: 1.4em;
     margin-right: 0.75rem;
     width: 24px;
     text-align: center;
     display: inline-block;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #bdc3c7;
+    vertical-align: middle;
 }
 
 /* Анимация иконок */
-.sidebar-nav li {
-    transition: all 0.3s ease;
+.sidebar-nav li:hover i.bx {
+    transform: scale(1.2) translateX(2px);
+    color: #ecf0f1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.sidebar-nav li:hover i {
-    transform: scale(1.15) rotate(5deg);
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-.logout-btn {
-    transition: all 0.3s ease;
-}
-
-.logout-btn:hover i {
-    transform: scale(1.15) translateX(2px);
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-/* Дополнительные эффекты для иконок */
-.sidebar-nav li.active i {
+.sidebar-nav li.active i.bx {
     color: #3498db;
-    text-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.4);
+}
+
+.logout-btn:hover i.bx {
+    transform: scale(1.2) translateX(3px);
+    color: #ffffff;
+    animation: shake 0.5s ease-in-out;
 }
 
 .logout-btn:hover {
     background: linear-gradient(135deg, #e74c3c, #c0392b);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+/* Анимация тряски для иконки выхода */
+@keyframes shake {
+    0%, 100% { transform: translateX(0) scale(1.2); }
+    25% { transform: translateX(-1px) scale(1.2); }
+    75% { transform: translateX(1px) scale(1.2); }
+}
+
+/* Общие стили для бокового меню */
+.sidebar-nav li,
+.logout-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

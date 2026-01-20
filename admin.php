@@ -8,7 +8,8 @@ require_once 'php/auth_check.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админка - Lactofilitrum</title>
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/admin.css?v=20241203">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
     <div class="admin-container">
@@ -22,14 +23,14 @@ require_once 'php/auth_check.php';
             <nav class="sidebar-nav">
                 <ul>
                     <li class="active" data-section="dashboard">
-                        <i class="icon-dashboard">📈</i> Дашборд
+                        <i class='bx bx-bar-chart'></i> Дашборд
                     </li>
                 </ul>
             </nav>
 
             <div class="sidebar-footer">
                 <a href="#" id="logout-btn" class="logout-btn">
-                    <i class="icon-logout">🔓</i> Выход
+                    <i class='bx bx-log-out'></i> Выход
                 </a>
             </div>
         </aside>
@@ -65,6 +66,6 @@ require_once 'php/auth_check.php';
         </main>
     </div>
 
-    <script src="js/admin.js?v=20241202"></script>
+    <script src="js/admin.js?v=20241203"></script>
 </body>
 </html>
