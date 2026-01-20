@@ -22,10 +22,11 @@ require_once 'php/auth_check.php';
 
             <nav class="sidebar-nav">
                 <ul>
-                    <li>
-                        <a href="/admin" style="display: flex; align-items: center; color: #bdc3c7; text-decoration: none; width: 100%; padding: 0.75rem 1.5rem;">
-                            <i class='bx bx-arrow-back' style="margin-right: 0.75rem;"></i> Назад в админку
-                        </a>
+                    <li data-href="/admin">
+                        <i class='bx bx-bar-chart'></i> Дашборд
+                    </li>
+                    <li class="active" data-section="podcasts">
+                        <i class='bx bx-podcast'></i> Подкасты
                     </li>
                 </ul>
             </nav>
@@ -121,31 +122,19 @@ require_once 'php/auth_check.php';
             // Инициализация только для подкастов
             setupPodcastModal();
             loadPodcasts();
-        });
 
-        // Переопределение функции выхода для корректной работы
-        function logout() {
-            fetch('php/logout.php')
-                .then(() => {
-                    window.location.href = '/login';
+            // Установка имени пользователя
+            fetch('php/auth_check.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('username').textContent = data.username;
+                    }
                 })
                 .catch(error => {
-                    console.error('Ошибка выхода:', error);
-                    window.location.href = '/login';
+                    console.error('Ошибка получения данных пользователя:', error);
                 });
-        }
-
-        // Установка имени пользователя
-        fetch('php/auth_check.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.username) {
-                    document.getElementById('username').textContent = data.username;
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка получения данных пользователя:', error);
-            });
+        });
     </script>
 </body>
 </html>

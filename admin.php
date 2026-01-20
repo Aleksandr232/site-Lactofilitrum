@@ -25,9 +25,7 @@ require_once 'php/auth_check.php';
                     <li class="active" data-section="dashboard">
                         <i class='bx bx-bar-chart'></i> Дашборд
                     </li>
-                </ul>
-                <ul>
-                    <li data-section="dashboard">
+                    <li data-href="/podcasts">
                         <i class='bx bx-podcast'></i> Подкасты
                     </li>
                 </ul>

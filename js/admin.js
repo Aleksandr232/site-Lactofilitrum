@@ -9,11 +9,19 @@ document.addEventListener('DOMContentLoaded', function() {
     navItems.forEach(item => {
         item.addEventListener('click', function() {
             const section = this.dataset.section;
-            showSection(section);
+            const href = this.dataset.href;
 
-            // Обновление активного пункта меню
-            navItems.forEach(nav => nav.classList.remove('active'));
-            this.classList.add('active');
+            if (href) {
+                // Если есть data-href, делаем перенаправление
+                window.location.href = href;
+            } else if (section) {
+                // Иначе показываем секцию
+                showSection(section);
+
+                // Обновление активного пункта меню
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            }
         });
     });
 
