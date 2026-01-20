@@ -22,14 +22,14 @@ require_once 'php/auth_check.php';
             <nav class="sidebar-nav">
                 <ul>
                     <li class="active" data-section="dashboard">
-                        <i class="icon-dashboard"></i> Дашборд
+                        <i class="icon-dashboard">📈</i> Дашборд
                     </li>
                 </ul>
             </nav>
 
             <div class="sidebar-footer">
                 <a href="#" id="logout-btn" class="logout-btn">
-                    <i class="icon-logout"></i> Выход
+                    <i class="icon-logout">🔓</i> Выход
                 </a>
             </div>
         </aside>

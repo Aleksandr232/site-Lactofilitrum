@@ -462,9 +462,42 @@ body {
     opacity: 0.9;
 }
 
-/* Иконки (простые CSS иконки) */
-.icon-dashboard:before { content: "📊"; }
-.icon-users:before { content: "👥"; }
-.icon-content:before { content: "📝"; }
-.icon-settings:before { content: "⚙️"; }
-.icon-logout:before { content: "🚪"; }
+/* Иконки */
+.sidebar-nav li i,
+.logout-btn i {
+    font-size: 1.3em;
+    margin-right: 0.75rem;
+    width: 24px;
+    text-align: center;
+    display: inline-block;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+/* Анимация иконок */
+.sidebar-nav li {
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav li:hover i {
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.logout-btn {
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover i {
+    transform: scale(1.15) translateX(2px);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Дополнительные эффекты для иконок */
+.sidebar-nav li.active i {
+    color: #3498db;
+    text-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
