@@ -15,7 +15,12 @@ function setupPodcastModal() {
         addBtn.addEventListener('click', () => {
             modal.style.display = 'block';
             const form = document.getElementById('podcast-form');
-            if (form) form.reset();
+            if (form) {
+                form.reset();
+                // Очищаем значения файловых input
+                document.getElementById('podcast-image').value = '';
+                document.getElementById('podcast-author-photo').value = '';
+            }
         });
     }
 
@@ -51,11 +56,20 @@ function loadPodcasts() {
 
             if (data.success && data.podcasts && data.podcasts.length > 0) {
                 data.podcasts.forEach(podcast => {
+                    const imageHtml = podcast.image ?
+                        `<img src="${podcast.image}" alt="${podcast.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
+                        '<span style="color: #7f8c8d;">Нет картинки</span>';
+
+                    const authorHtml = podcast.author ?
+                        `${podcast.author}${podcast.author_photo ? ` <img src="${podcast.author_photo}" alt="${podcast.author}" style="width: 24px; height: 24px; object-fit: cover; border-radius: 50%; vertical-align: middle;">` : ''}` :
+                        '-';
+
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${podcast.id}</td>
+                        <td>${imageHtml}</td>
                         <td>${podcast.title}</td>
-                        <td>${podcast.author || '-'}</td>
+                        <td>${authorHtml}</td>
                         <td>${new Date(podcast.created_at).toLocaleDateString('ru-RU')}</td>
                         <td>
                             <button class="btn-danger" onclick="deletePodcast(${podcast.id})">Удалить</button>
@@ -64,12 +78,12 @@ function loadPodcasts() {
                     tableBody.appendChild(row);
                 });
             } else {
-                tableBody.innerHTML = '<tr><td colspan="5">Нет подкастов</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6">Нет подкастов</td></tr>';
             }
         })
         .catch(error => {
             console.error('Ошибка загрузки подкастов:', error);
-            tableBody.innerHTML = '<tr><td colspan="5" style="color: red;">Ошибка загрузки</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" style="color: red;">Ошибка загрузки</td></tr>';
         });
 }
 
@@ -77,9 +91,20 @@ function savePodcast() {
     const formData = new FormData();
     formData.append('title', document.getElementById('podcast-title').value);
     formData.append('description', document.getElementById('podcast-description').value);
-    formData.append('image', document.getElementById('podcast-image').value);
+
+    // Добавляем файлы изображений
+    const imageInput = document.getElementById('podcast-image');
+    if (imageInput.files[0]) {
+        formData.append('image', imageInput.files[0]);
+    }
+
     formData.append('author', document.getElementById('podcast-author').value);
-    formData.append('author_photo', document.getElementById('podcast-author-photo').value);
+
+    const authorPhotoInput = document.getElementById('podcast-author-photo');
+    if (authorPhotoInput.files[0]) {
+        formData.append('author_photo', authorPhotoInput.files[0]);
+    }
+
     formData.append('button_link', document.getElementById('podcast-button-link').value);
     formData.append('additional_link', document.getElementById('podcast-additional-link').value);
 

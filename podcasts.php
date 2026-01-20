@@ -52,6 +52,7 @@ require_once 'php/auth_check.php';
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Картинка</th>
                                 <th>Название</th>
                                 <th>Автор</th>
                                 <th>Дата создания</th>
@@ -60,7 +61,7 @@ require_once 'php/auth_check.php';
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="5">Загрузка подкастов...</td>
+                                <td colspan="6">Загрузка подкастов...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -77,7 +78,7 @@ require_once 'php/auth_check.php';
                 <span class="modal-close">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="podcast-form">
+                <form id="podcast-form" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="podcast-title">Название подкаста:</label>
                         <input type="text" id="podcast-title" name="title" required>
@@ -87,16 +88,16 @@ require_once 'php/auth_check.php';
                         <textarea id="podcast-description" name="description" rows="4"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="podcast-image">Картинка подкаста (URL):</label>
-                        <input type="url" id="podcast-image" name="image">
+                        <label for="podcast-image">Картинка подкаста:</label>
+                        <input type="file" id="podcast-image" name="image" accept="image/*">
                     </div>
                     <div class="form-group">
                         <label for="podcast-author">Автор подкаста:</label>
                         <input type="text" id="podcast-author" name="author">
                     </div>
                     <div class="form-group">
-                        <label for="podcast-author-photo">Фото автора подкаста (URL):</label>
-                        <input type="url" id="podcast-author-photo" name="author_photo">
+                        <label for="podcast-author-photo">Фото автора подкаста:</label>
+                        <input type="file" id="podcast-author-photo" name="author_photo" accept="image/*">
                     </div>
                     <div class="form-group">
                         <label for="podcast-button-link">Кнопка подкаста (ссылка):</label>
@@ -115,7 +116,7 @@ require_once 'php/auth_check.php';
         </div>
     </div>
 
-    <script src="js/admin.js?v=20241204"></script>
+    <script src="js/admin.js?v=20241207"></script>
     <script>
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {
