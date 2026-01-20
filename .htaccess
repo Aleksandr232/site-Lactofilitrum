@@ -5,27 +5,23 @@ RewriteEngine On
 
 # Защита от прямого доступа к PHP файлам
 <Files *.php>
-    Order Deny,Allow
-    Allow from all
+    Require all granted
 </Files>
 
 # Запрет доступа к конфиденциальным файлам
 <Files "config.php">
-    Order Deny,Allow
-    Deny from all
+    Require all denied
 </Files>
 
 <Files "database.sql">
-    Order Deny,Allow
-    Deny from all
+    Require all denied
 </Files>
 
 # Защита папки data
 <Directory "data">
-    Order Deny,Allow
-    Deny from all
+    Require all denied
     <Files "content.json">
-        Allow from all
+        Require all granted
     </Files>
 </Directory>
 

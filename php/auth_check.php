@@ -1,29 +1,57 @@
 <?php
 // Скрипт проверки авторизации
 
-require_once 'config.php';
-
 // Запуск сессии
-session_start();
-
-// Проверка истечения сессии
-if (isset($_SESSION['expire']) && time() > $_SESSION['expire']) {
-    // Сессия истекла, выход
-    session_destroy();
-    redirect('../login.html');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
 // Проверка авторизации
-if (!isLoggedIn()) {
-    redirect('../login.html');
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+    // Если это AJAX запрос
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Не авторизован']);
+        exit();
+    }
+    // Если обычный запрос - перенаправляем на страницу входа
+    else {
+        header('Location: ../login.html');
+        exit();
+    }
 }
 
-// Проверка роли администратора (если требуется)
-if (basename($_SERVER['PHP_SELF']) === 'admin.php' && !isAdmin()) {
-    http_response_code(403);
-    die('Доступ запрещен. Требуются права администратора.');
+// Проверка истечения сессии
+if (isset($_SESSION['expire']) && time() > $_SESSION['expire']) {
+    session_destroy();
+    header('Location: ../login.html');
+    exit();
 }
 
-// Продление сессии при активности
-$_SESSION['expire'] = time() + (24 * 60 * 60);
+// Проверка существования пользователя в базе данных
+try {
+    require_once 'config.php';
+    $conn = connectDB();
+
+    $stmt = $conn->prepare("SELECT id, username, role, is_active FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+
+    if (!$user || !$user['is_active']) {
+        session_destroy();
+        header('Location: ../login.html');
+        exit();
+    }
+
+    // Обновляем данные сессии
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['user_role'] = $user['role'];
+
+} catch (PDOException $e) {
+    error_log("Ошибка проверки авторизации: " . $e->getMessage());
+    session_destroy();
+    header('Location: ../login.html');
+    exit();
+}
 ?>

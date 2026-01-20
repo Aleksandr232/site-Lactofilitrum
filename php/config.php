@@ -9,12 +9,16 @@ define('DB_PASS', 'AhLiNBc6');
 
 // Настройки сайта
 define('SITE_NAME', 'Lactofilitrum');
-define('SITE_URL', 'http://localhost/lactofilitrum');
+// Автоматическое определение URL сайта
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$domain = $_SERVER['HTTP_HOST'];
+define('SITE_URL', $protocol . $domain);
 
 // Настройки сессии
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 0); // Установите 1 для HTTPS
+// Автоматическая настройка cookie_secure для HTTPS
+ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 1 : 0);
 
 // Функция для инициализации базы данных
 function initializeDatabase() {
