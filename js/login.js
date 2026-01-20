@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 showMessage('Вход выполнен успешно! Перенаправление...', 'success');
+                console.log('Redirecting to /admin...');
                 setTimeout(() => {
+                    console.log('Executing redirect to /admin');
                     window.location.href = '/admin';
                 }, 1500);
             } else {
