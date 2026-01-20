@@ -115,13 +115,17 @@ require_once 'php/auth_check.php';
         </div>
     </div>
 
-    <script src="js/admin.js?v=20241203"></script>
+    <script src="js/admin.js?v=20241204"></script>
     <script>
         // Специфичный код для страницы подкастов
-        document.addEventListener('DOMContentLoaded', function() {
+        function initPodcastsPage() {
             // Инициализация только для подкастов
-            setupPodcastModal();
-            loadPodcasts();
+            if (typeof setupPodcastModal === 'function') {
+                setupPodcastModal();
+            }
+            if (typeof loadPodcasts === 'function') {
+                loadPodcasts();
+            }
 
             // Установка имени пользователя
             fetch('php/auth_check.php')
@@ -134,7 +138,14 @@ require_once 'php/auth_check.php';
                 .catch(error => {
                     console.error('Ошибка получения данных пользователя:', error);
                 });
-        });
+        }
+
+        // Запуск инициализации после загрузки страницы
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPodcastsPage);
+        } else {
+            initPodcastsPage();
+        }
     </script>
 </body>
 </html>
