@@ -110,9 +110,8 @@ header('Content-Type: text/html; charset=utf-8');
                 $missingTables = [];
 
                 foreach ($tables as $table) {
-                    $stmt = $conn->prepare("SHOW TABLES LIKE ?");
-                    $stmt->execute([$table]);
-                    if (!$stmt->fetch()) {
+                    $result = $conn->query("SHOW TABLES LIKE '" . $conn->quote($table) . "'");
+                    if (!$result->fetch()) {
                         $missingTables[] = $table;
                     }
                 }

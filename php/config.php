@@ -36,9 +36,8 @@ function initializeDatabase() {
         );
 
         // Проверяем существование базы данных
-        $stmt = $pdo->prepare("SHOW DATABASES LIKE ?");
-        $stmt->execute([DB_NAME]);
-        $databaseExists = $stmt->fetch();
+        $result = $pdo->query("SHOW DATABASES LIKE '" . $pdo->quote(DB_NAME) . "'");
+        $databaseExists = $result->fetch();
 
         if (!$databaseExists) {
             // Создаем базу данных
@@ -122,9 +121,8 @@ function ensureTablesExist($pdo) {
     $requiredTables = ['users', 'login_logs'];
 
     foreach ($requiredTables as $table) {
-        $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
-        $stmt->execute([$table]);
-        $tableExists = $stmt->fetch();
+        $result = $pdo->query("SHOW TABLES LIKE '" . $pdo->quote($table) . "'");
+        $tableExists = $result->fetch();
 
         if (!$tableExists) {
             // Создаем недостающие таблицы
