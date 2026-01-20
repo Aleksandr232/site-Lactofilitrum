@@ -1,48 +1,27 @@
-# Базовые настройки для Apache
-
-# Включаем перезапись URL
-RewriteEngine On
-
-# Защита от прямого доступа к PHP файлам
-<Files *.php>
-    Require all granted
-</Files>
+# Минимальные настройки для Timeweb
 
 # Запрет доступа к конфиденциальным файлам
 <Files "config.php">
-    Require all denied
+    Order deny,allow
+    Deny from all
 </Files>
 
 <Files "database.sql">
-    Require all denied
+    Order deny,allow
+    Deny from all
 </Files>
 
-# Защита папки data
-<Directory "data">
-    Require all denied
-    <Files "content.json">
-        Require all granted
-    </Files>
-</Directory>
+# Разрешить доступ к тестовым файлам
+<Files "test.php">
+    Order deny,allow
+    Allow from all
+</Files>
 
-# Настройки кэширования для статических файлов
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/png "access plus 1 month"
-    ExpiresByType image/jpg "access plus 1 month"
-    ExpiresByType image/jpeg "access plus 1 month"
-    ExpiresByType image/gif "access plus 1 month"
-</IfModule>
-
-# Безопасные заголовки
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
-</IfModule>
+<Files "db_test.php">
+    Order deny,allow
+    Allow from all
+</Files>
 
 # Обработка ошибок
 ErrorDocument 404 /index.html
-ErrorDocument 403 /index.html
+ErrorDocument 500 /index.html
