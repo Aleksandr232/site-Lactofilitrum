@@ -10,15 +10,15 @@ define('DB_PASS', 'AhLiNBc6');
 // Настройки сайта
 define('SITE_NAME', 'Lactofilitrum');
 // Автоматическое определение URL сайта
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$domain = $_SERVER['HTTP_HOST'];
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$domain = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 define('SITE_URL', $protocol . $domain);
 
 // Настройки сессии
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 // Автоматическая настройка cookie_secure для HTTPS
-ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 1 : 0);
+ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? 1 : 0);
 
 // Функция для инициализации базы данных
 function initializeDatabase() {
@@ -36,23 +36,24 @@ function initializeDatabase() {
         );
 
         // Проверяем существование базы данных
-        $result = $pdo->query("SHOW DATABASES LIKE '" . DB_NAME . "'");
-        $databaseExists = $result->fetch();
+        $stmt = $pdo->prepare("SHOW DATABASES LIKE ?");
+        $stmt->execute([DB_NAME]);
+        $databaseExists = $stmt->fetch();
 
         if (!$databaseExists) {
             // Создаем базу данных
-            $pdo->exec("CREATE DATABASE `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("CREATE DATABASE `" . $pdo->quote(DB_NAME) . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             error_log("База данных '" . DB_NAME . "' создана автоматически");
 
             // Подключаемся к созданной базе данных
-            $pdo->exec("USE `" . DB_NAME . "`");
+            $pdo->exec("USE `" . $pdo->quote(DB_NAME) . "`");
 
             // Создаем таблицы
             createTables($pdo);
             createDefaultAdmin($pdo);
         } else {
             // База данных существует, проверяем таблицы
-            $pdo->exec("USE `" . DB_NAME . "`");
+            $pdo->exec("USE `" . $pdo->quote(DB_NAME) . "`");
             ensureTablesExist($pdo);
         }
 
@@ -65,7 +66,6 @@ function initializeDatabase() {
 // Функция для создания таблиц
 function createTables($pdo) {
     $sql = "
-        -- Создание таблицы пользователей
         CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(50) NOT NULL UNIQUE,
@@ -77,11 +77,9 @@ function createTables($pdo) {
             is_active BOOLEAN DEFAULT TRUE
         );
 
-        -- Создание индексов для оптимизации
         CREATE INDEX IF NOT EXISTS idx_username ON users(username);
         CREATE INDEX IF NOT EXISTS idx_email ON users(email);
 
-        -- Создание таблицы для логов авторизации
         CREATE TABLE IF NOT EXISTS login_logs (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT,
@@ -93,7 +91,6 @@ function createTables($pdo) {
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
         );
 
-        -- Создание индекса для логов
         CREATE INDEX IF NOT EXISTS idx_login_time ON login_logs(login_time);
         CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id);
     ";
@@ -125,8 +122,9 @@ function ensureTablesExist($pdo) {
     $requiredTables = ['users', 'login_logs'];
 
     foreach ($requiredTables as $table) {
-        $result = $pdo->query("SHOW TABLES LIKE '$table'");
-        $tableExists = $result->fetch();
+        $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
+        $stmt->execute([$table]);
+        $tableExists = $stmt->fetch();
 
         if (!$tableExists) {
             // Создаем недостающие таблицы

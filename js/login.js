@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 showMessage('Вход выполнен успешно! Перенаправление...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'admin.html';
+                    window.location.href = '/admin';
                 }, 1500);
             } else {
                 showMessage(data.message || 'Ошибка авторизации', 'error');

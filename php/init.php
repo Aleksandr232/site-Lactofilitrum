@@ -167,7 +167,7 @@ header('Content-Type: text/html; charset=utf-8');
                 echo "<li><strong>Логин:</strong> admin</li>";
                 echo "<li><strong>Пароль:</strong> admin123</li>";
                 echo "</ul>";
-                echo "<p><a href='../login.html' class='btn'>Перейти к авторизации</a></p>";
+                echo "<p><a href='/login' class='btn'>Перейти к авторизации</a></p>";
             } else {
                 showStatus("❌ Инициализация не удалась", "error");
             }
@@ -181,8 +181,8 @@ header('Content-Type: text/html; charset=utf-8');
 
             if ($connectionOk && $tablesOk && $adminOk) {
                 showStatus("✅ База данных полностью настроена и готова к работе!", "success");
-                echo "<p><a href='../login.html' class='btn'>Перейти к авторизации</a></p>";
-                echo "<p><a href='../index.html' class='btn btn-secondary'>Перейти на сайт</a></p>";
+                echo "<p><a href='/login' class='btn'>Перейти к авторизации</a></p>";
+                echo "<p><a href='/' class='btn btn-secondary'>Перейти на сайт</a></p>";
             } else {
                 showStatus("⚠ База данных требует инициализации", "error");
                 echo "<form method='post'>";
@@ -211,7 +211,7 @@ header('Content-Type: text/html; charset=utf-8');
 
         <p><strong>Примечание:</strong> Этот скрипт можно запускать многократно - он не удалит существующие данные.</p>
 
-        <p><a href="../index.html" class="btn btn-secondary">← Вернуться на главную</a></p>
+        <p><a href="/" class="btn btn-secondary">← Вернуться на главную</a></p>
     </div>
 </body>
 </html>

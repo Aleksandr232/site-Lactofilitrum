@@ -18,5 +18,5 @@ if (isset($_COOKIE[session_name()])) {
 }
 
 // Перенаправление на страницу авторизации
-redirect('../login.html');
+redirect('/login');
 ?>

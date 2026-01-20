@@ -73,11 +73,11 @@ function showSection(sectionName) {
 function logout() {
     fetch('php/logout.php')
         .then(() => {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         })
         .catch(error => {
             console.error('Ошибка выхода:', error);
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
 }
 
