@@ -36,23 +36,23 @@ function initializeDatabase() {
         );
 
         // Проверяем существование базы данных
-        $result = $pdo->query("SHOW DATABASES LIKE '" . $pdo->quote(DB_NAME) . "'");
+        $result = $pdo->query("SHOW DATABASES LIKE '" . DB_NAME . "'");
         $databaseExists = $result->fetch();
 
         if (!$databaseExists) {
             // Создаем базу данных
-            $pdo->exec("CREATE DATABASE `" . $pdo->quote(DB_NAME) . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("CREATE DATABASE `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             error_log("База данных '" . DB_NAME . "' создана автоматически");
 
             // Подключаемся к созданной базе данных
-            $pdo->exec("USE `" . $pdo->quote(DB_NAME) . "`");
+            $pdo->exec("USE `" . DB_NAME . "`");
 
             // Создаем таблицы
             createTables($pdo);
             createDefaultAdmin($pdo);
         } else {
             // База данных существует, проверяем таблицы
-            $pdo->exec("USE `" . $pdo->quote(DB_NAME) . "`");
+            $pdo->exec("USE `" . DB_NAME . "`");
             ensureTablesExist($pdo);
         }
 
@@ -121,7 +121,7 @@ function ensureTablesExist($pdo) {
     $requiredTables = ['users', 'login_logs'];
 
     foreach ($requiredTables as $table) {
-        $result = $pdo->query("SHOW TABLES LIKE '" . $pdo->quote($table) . "'");
+        $result = $pdo->query("SHOW TABLES LIKE '$table'");
         $tableExists = $result->fetch();
 
         if (!$tableExists) {
