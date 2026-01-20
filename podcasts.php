@@ -116,7 +116,7 @@ require_once 'php/auth_check.php';
         </div>
     </div>
 
-    <script src="js/admin.js?v=20241209"></script>
+    <script src="js/admin.js?v=20241210"></script>
     <script>
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {

@@ -103,35 +103,28 @@ function loadPodcasts() {
 function savePodcast() {
     console.log('savePodcast called');
 
-    const formData = new FormData();
-    formData.append('title', document.getElementById('podcast-title').value);
-    formData.append('description', document.getElementById('podcast-description').value);
+    // Альтернативный способ: используем FormData из самой формы
+    const form = document.getElementById('podcast-form');
+    const formData = new FormData(form);
 
-    // Добавляем файлы изображений
+    console.log('Form element found:', !!form);
+    console.log('Form has enctype:', form.getAttribute('enctype'));
+
+    // Проверяем, что файлы добавлены
     const imageInput = document.getElementById('podcast-image');
-    if (imageInput.files[0]) {
-        console.log('Adding image file:', imageInput.files[0]);
-        formData.append('image', imageInput.files[0]);
-    } else {
-        console.log('No image file selected');
-    }
-
-    formData.append('author', document.getElementById('podcast-author').value);
-
     const authorPhotoInput = document.getElementById('podcast-author-photo');
-    if (authorPhotoInput.files[0]) {
-        console.log('Adding author photo file:', authorPhotoInput.files[0]);
-        formData.append('author_photo', authorPhotoInput.files[0]);
-    } else {
-        console.log('No author photo file selected');
-    }
 
-    formData.append('button_link', document.getElementById('podcast-button-link').value);
-    formData.append('additional_link', document.getElementById('podcast-additional-link').value);
+    console.log('Image input files:', imageInput.files.length);
+    console.log('Author photo input files:', authorPhotoInput.files.length);
 
     // Логируем содержимое FormData
+    console.log('FormData contents:');
     for (let [key, value] of formData.entries()) {
-        console.log(key, value);
+        if (value instanceof File) {
+            console.log(key, '(File):', value.name, 'size:', value.size);
+        } else {
+            console.log(key, '(Text):', value);
+        }
     }
 
     fetch('php/api/podcasts.php', {

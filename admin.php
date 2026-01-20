@@ -78,6 +78,6 @@ require_once 'php/auth_check.php';
     </div>
 
 
-    <script src="js/admin.js?v=20241209"></script>
+    <script src="js/admin.js?v=20241210"></script>
 </body>
 </html>

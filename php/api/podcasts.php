@@ -5,7 +5,11 @@ require_once '../auth_check.php';
 header('Content-Type: application/json');
 
 // Функция для обработки загруженного изображения
-function uploadImage($file, $folder = 'uploads/podcasts/') {
+function uploadImage($file, $folder = null) {
+    // Используем путь относительно DOCUMENT_ROOT
+    if ($folder === null) {
+        $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/';
+    }
     error_log('uploadImage called with file: ' . print_r($file, true));
 
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -15,7 +19,19 @@ function uploadImage($file, $folder = 'uploads/podcasts/') {
 
     // Создаем папку, если не существует
     if (!file_exists($folder)) {
-        mkdir($folder, 0755, true);
+        error_log('Creating folder: ' . $folder);
+        // Пробуем создать папку с правами 0777
+        if (!mkdir($folder, 0777, true)) {
+            error_log('Failed to create folder with 0777 permissions: ' . $folder);
+            // Пробуем с 0755
+            if (!mkdir($folder, 0755, true)) {
+                error_log('Failed to create folder with 0755 permissions: ' . $folder);
+                return '';
+            }
+        }
+        error_log('Folder created successfully');
+    } else {
+        error_log('Folder already exists: ' . $folder);
     }
 
     // Получаем информацию о файле
@@ -47,11 +63,45 @@ function uploadImage($file, $folder = 'uploads/podcasts/') {
     $filename = uniqid('podcast_', true) . '.' . $extension;
     $filepath = $folder . $filename;
 
-    // Перемещаем файл
+    error_log('Attempting to move file from: ' . $fileTmpName . ' to: ' . $filepath);
+    error_log('File exists at tmp: ' . (file_exists($fileTmpName) ? 'YES' : 'NO'));
+    error_log('Target folder writable: ' . (is_writable($folder) ? 'YES' : 'NO'));
+    error_log('File size: ' . $fileSize . ' bytes');
+
+    // Пробуем разные способы перемещения файла
+    $moved = false;
+
+    // Способ 1: move_uploaded_file
     if (move_uploaded_file($fileTmpName, $filepath)) {
+        $moved = true;
+        error_log('File moved successfully with move_uploaded_file');
+    } else {
+        error_log('move_uploaded_file failed, trying copy...');
+
+        // Способ 2: copy + unlink
+        if (copy($fileTmpName, $filepath)) {
+            unlink($fileTmpName);
+            $moved = true;
+            error_log('File moved successfully with copy+unlink');
+        } else {
+            error_log('copy failed, trying file_put_contents...');
+
+            // Способ 3: file_put_contents
+            $fileContent = file_get_contents($fileTmpName);
+            if ($fileContent !== false && file_put_contents($filepath, $fileContent) !== false) {
+                unlink($fileTmpName);
+                $moved = true;
+                error_log('File moved successfully with file_put_contents');
+            }
+        }
+    }
+
+    if ($moved) {
+        error_log('File successfully saved to: ' . $filepath);
         return $filepath;
     }
 
+    error_log('All file moving methods failed. Last error: ' . error_get_last()['message'] ?? 'unknown');
     return '';
 }
 
@@ -60,6 +110,24 @@ function deleteImageFile($filepath) {
     if (!empty($filepath) && file_exists($filepath)) {
         unlink($filepath);
     }
+}
+
+// Создаем необходимые папки заранее
+$uploadBase = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
+$uploadPodcasts = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/';
+
+error_log('DOCUMENT_ROOT: ' . $_SERVER['DOCUMENT_ROOT']);
+error_log('Upload base path: ' . $uploadBase);
+error_log('Upload podcasts path: ' . $uploadPodcasts);
+
+if (!file_exists($uploadBase)) {
+    mkdir($uploadBase, 0777, true);
+    error_log('Created uploads base folder');
+}
+
+if (!file_exists($uploadPodcasts)) {
+    mkdir($uploadPodcasts, 0777, true);
+    error_log('Created podcasts upload folder');
 }
 
 // Получаем метод запроса
@@ -99,8 +167,18 @@ try {
             $image_path = uploadImage($_FILES['image'] ?? null);
             $author_photo_path = uploadImage($_FILES['author_photo'] ?? null);
 
-            error_log('Image path: ' . $image_path);
-            error_log('Author photo path: ' . $author_photo_path);
+            error_log('Image path result: ' . $image_path);
+            error_log('Author photo path result: ' . $author_photo_path);
+
+            // Для отладки - возвращаем информацию о загрузке
+            $debug_info = [
+                'files_received' => count($_FILES),
+                'image_path' => $image_path,
+                'author_photo_path' => $author_photo_path,
+                'upload_folder_exists' => file_exists(__DIR__ . '/../../uploads/podcasts/'),
+                'upload_folder_writable' => is_writable(__DIR__ . '/../../uploads/podcasts/')
+            ];
+            error_log('Debug info: ' . json_encode($debug_info));
 
             $stmt = $conn->prepare("
                 INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link)
