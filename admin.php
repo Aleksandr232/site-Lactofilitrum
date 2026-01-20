@@ -26,6 +26,11 @@ require_once 'php/auth_check.php';
                         <i class='bx bx-bar-chart'></i> Дашборд
                     </li>
                 </ul>
+                <ul>
+                    <li data-section="dashboard">
+                        <i class='bx bx-podcast'></i> Подкасты
+                    </li>
+                </ul>
             </nav>
 
             <div class="sidebar-footer">
@@ -67,17 +72,7 @@ require_once 'php/auth_check.php';
                     <p>Здесь вы можете отслеживать основную статистику системы.</p>
                 </div>
 
-                <!-- Быстрые действия -->
-                <div class="quick-actions">
-                    <h2>Управление контентом</h2>
-                    <div class="actions-grid">
-                        <a href="/podcasts" class="action-card">
-                            <i class='bx bx-podcast'></i>
-                            <h3>Подкасты</h3>
-                            <p>Управление подкастами с экспертами</p>
-                        </a>
-                    </div>
-                </div>
+                
 
             </section>
 
