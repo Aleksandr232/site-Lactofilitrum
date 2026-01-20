@@ -440,6 +440,28 @@ body {
     }
 }
 
+/* Секция приветствия */
+.welcome-section {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.welcome-section h2 {
+    margin: 0 0 10px 0;
+    font-size: 2.2em;
+    font-weight: 300;
+}
+
+.welcome-section p {
+    margin: 0;
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
 /* Иконки (простые CSS иконки) */
 .icon-dashboard:before { content: "📊"; }
 .icon-users:before { content: "👥"; }
