@@ -64,38 +64,52 @@ function initializeDatabase() {
 
 // Функция для создания таблиц
 function createTables($pdo) {
-    $sql = "
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(50) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL,
-            email VARCHAR(100),
-            role ENUM('admin', 'user') DEFAULT 'user',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP NULL,
-            is_active BOOLEAN DEFAULT TRUE
-        );
+    try {
+        // Создаем таблицу users
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                email VARCHAR(100),
+                role ENUM('admin', 'user') DEFAULT 'user',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_login TIMESTAMP NULL,
+                is_active BOOLEAN DEFAULT TRUE
+            )
+        ");
+        error_log("Таблица users создана");
 
-        CREATE INDEX IF NOT EXISTS idx_username ON users(username);
-        CREATE INDEX IF NOT EXISTS idx_email ON users(email);
+        // Создаем индексы для users
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_username ON users(username)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_email ON users(email)");
+        error_log("Индексы для users созданы");
 
-        CREATE TABLE IF NOT EXISTS login_logs (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT,
-            username VARCHAR(50),
-            ip_address VARCHAR(45),
-            user_agent TEXT,
-            login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            success BOOLEAN DEFAULT FALSE,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-        );
+        // Создаем таблицу login_logs
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS login_logs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT,
+                username VARCHAR(50),
+                ip_address VARCHAR(45),
+                user_agent TEXT,
+                login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                success BOOLEAN DEFAULT FALSE,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+            )
+        ");
+        error_log("Таблица login_logs создана");
 
-        CREATE INDEX IF NOT EXISTS idx_login_time ON login_logs(login_time);
-        CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id);
-    ";
+        // Создаем индексы для login_logs
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_login_time ON login_logs(login_time)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id)");
+        error_log("Индексы для login_logs созданы");
 
-    $pdo->exec($sql);
-    error_log("Таблицы базы данных созданы");
+        error_log("Все таблицы базы данных созданы успешно");
+    } catch (PDOException $e) {
+        error_log("Ошибка при создании таблиц: " . $e->getMessage());
+        throw $e; // Перебрасываем исключение
+    }
 }
 
 // Функция для создания администратора по умолчанию
@@ -135,30 +149,79 @@ function createDefaultAdmin($pdo) {
 // Функция для проверки существования таблиц
 function ensureTablesExist($pdo) {
     $requiredTables = ['users', 'login_logs'];
-    $tablesCreated = false;
+    $missingTables = [];
 
+    // Проверяем какие таблицы отсутствуют
     foreach ($requiredTables as $table) {
         $result = $pdo->query("SHOW TABLES LIKE '$table'");
-        $tableExists = $result->fetch();
+        if (!$result->fetch()) {
+            $missingTables[] = $table;
+        }
+    }
 
-        if (!$tableExists) {
-            // Создаем недостающие таблицы
-            createTables($pdo);
-            $tablesCreated = true;
-            break;
+    // Создаем недостающие таблицы по отдельности
+    if (!empty($missingTables)) {
+        error_log("Отсутствуют таблицы: " . implode(', ', $missingTables) . " - создаем...");
+
+        if (in_array('users', $missingTables)) {
+            try {
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        username VARCHAR(50) NOT NULL UNIQUE,
+                        password VARCHAR(255) NOT NULL,
+                        email VARCHAR(100),
+                        role ENUM('admin', 'user') DEFAULT 'user',
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP NULL,
+                        is_active BOOLEAN DEFAULT TRUE
+                    )
+                ");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_username ON users(username)");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_email ON users(email)");
+                error_log("Таблица users создана");
+            } catch (PDOException $e) {
+                error_log("Ошибка создания таблицы users: " . $e->getMessage());
+            }
+        }
+
+        if (in_array('login_logs', $missingTables)) {
+            try {
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS login_logs (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        user_id INT,
+                        username VARCHAR(50),
+                        ip_address VARCHAR(45),
+                        user_agent TEXT,
+                        login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        success BOOLEAN DEFAULT FALSE,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                    )
+                ");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_login_time ON login_logs(login_time)");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id)");
+                error_log("Таблица login_logs создана");
+            } catch (PDOException $e) {
+                error_log("Ошибка создания таблицы login_logs: " . $e->getMessage());
+            }
         }
     }
 
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
-    $stmt->execute();
-    $adminExists = $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
+        $stmt->execute();
+        $adminExists = $stmt->fetch();
 
-    if (!$adminExists) {
-        error_log("Администратор не найден, создаем...");
-        createDefaultAdmin($pdo);
-    } else {
-        error_log("Администратор уже существует");
+        if (!$adminExists) {
+            error_log("Администратор не найден, создаем...");
+            createDefaultAdmin($pdo);
+        } else {
+            error_log("Администратор уже существует");
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка проверки администратора: " . $e->getMessage());
     }
 }
 

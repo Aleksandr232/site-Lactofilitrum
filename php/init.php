@@ -102,7 +102,7 @@ header('Content-Type: text/html; charset=utf-8');
         }
 
         // Функция для проверки таблиц
-        function checkTables() {
+        function checkTables($autoCreate = false) {
             try {
                 $conn = connectDB();
 
@@ -120,8 +120,55 @@ header('Content-Type: text/html; charset=utf-8');
                     showStatus("✓ Все необходимые таблицы существуют", "success");
                     return true;
                 } else {
-                    showStatus("⚠ Отсутствуют таблицы: " . implode(', ', $missingTables), "error");
-                    return false;
+                    if ($autoCreate) {
+                        showStatus("⚠ Отсутствуют таблицы: " . implode(', ', $missingTables) . " - создаем...", "info");
+
+                        // Создаем таблицы по отдельности
+                        if (in_array('users', $missingTables)) {
+                            $conn->exec("
+                                CREATE TABLE IF NOT EXISTS users (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    username VARCHAR(50) NOT NULL UNIQUE,
+                                    password VARCHAR(255) NOT NULL,
+                                    email VARCHAR(100),
+                                    role ENUM('admin', 'user') DEFAULT 'user',
+                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    last_login TIMESTAMP NULL,
+                                    is_active BOOLEAN DEFAULT TRUE
+                                )
+                            ");
+                            $conn->exec("CREATE INDEX IF NOT EXISTS idx_username ON users(username)");
+                            $conn->exec("CREATE INDEX IF NOT EXISTS idx_email ON users(email)");
+                            showStatus("✓ Таблица users создана", "success");
+                        }
+
+                        if (in_array('login_logs', $missingTables)) {
+                            $conn->exec("
+                                CREATE TABLE IF NOT EXISTS login_logs (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    user_id INT,
+                                    username VARCHAR(50),
+                                    ip_address VARCHAR(45),
+                                    user_agent TEXT,
+                                    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    success BOOLEAN DEFAULT FALSE,
+                                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+                                )
+                            ");
+                            $conn->exec("CREATE INDEX IF NOT EXISTS idx_login_time ON login_logs(login_time)");
+                            $conn->exec("CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id)");
+                            showStatus("✓ Таблица login_logs создана", "success");
+                        }
+
+                        // Создаем администратора
+                        createDefaultAdmin($conn);
+                        showStatus("✓ Администратор создан", "success");
+
+                        return true;
+                    } else {
+                        showStatus("⚠ Отсутствуют таблицы: " . implode(', ', $missingTables), "error");
+                        return false;
+                    }
                 }
             } catch (Exception $e) {
                 showStatus("✗ Ошибка проверки таблиц: " . $e->getMessage(), "error");
@@ -200,7 +247,7 @@ header('Content-Type: text/html; charset=utf-8');
             showStatus("🔍 Проверяем состояние базы данных...", "info");
 
             $connectionOk = testConnection();
-            $tablesOk = $connectionOk ? checkTables() : false;
+            $tablesOk = $connectionOk ? checkTables(true) : false; // Автоматически создаем таблицы если отсутствуют
             $adminOk = $connectionOk ? checkAdmin() : false;
 
             if ($connectionOk && $tablesOk && $adminOk) {
