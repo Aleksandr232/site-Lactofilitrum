@@ -454,6 +454,60 @@ body {
     opacity: 0.9;
 }
 
+/* Быстрые действия */
+.quick-actions {
+    margin-top: 2rem;
+}
+
+.quick-actions h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.action-card {
+    display: block;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #3498db;
+}
+
+.action-card i {
+    font-size: 2.5em;
+    color: #3498db;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.action-card h3 {
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+.action-card p {
+    color: #7f8c8d;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
 /* Секция недавних подкастов в дашборде */
 .recent-podcasts {
     background: white;

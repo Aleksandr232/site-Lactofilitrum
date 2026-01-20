@@ -13,5 +13,8 @@ RewriteRule ^/?$ index.html [L]
 # Перенаправление /admin на admin.php
 RewriteRule ^admin/?$ admin.php [L]
 
+# Перенаправление /podcasts на podcasts.php
+RewriteRule ^podcasts/?$ podcasts.php [L]
+
 # Перенаправление /login на login.html
 RewriteRule ^login/?$ login.html [L]

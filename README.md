@@ -8,7 +8,8 @@
 lactofilitrum/
 ├── index.html          # Главная страница сайта
 ├── login.html          # Страница авторизации
-├── admin.php           # Админская панель (защищена авторизацией)
+├── admin.php           # Главная страница админ-панели
+├── podcasts.php        # Страница управления подкастами
 ├── css/
 │   ├── style.css       # Стили главной страницы
 │   ├── login.css       # Стили страницы авторизации
@@ -125,15 +126,16 @@ define('DB_PASS', 'your_password');  // Пароль MySQL
 
 ### Функционал админки
 
-- **Дашборд**: Общая статистика и последние действия
-- **Подкасты**: Управление подкастами с экспертами
+- **Дашборд**: Общая статистика системы
+- **Подкасты**: Отдельная страница управления подкастами с экспертами
 
 ## API endpoints
 
 - `GET/POST /php/api/users.php` - Управление пользователями
 - `GET /php/api/dashboard.php` - Данные дашборда
 - `GET /php/api/activity.php` - Логи активности
-- `GET/POST/DELETE /php/api/podcasts.php` - Управление подкастами
+- `GET/POST/DELETE /php/api/podcasts.php` - API управления подкастами
+- `GET /podcasts` - Страница управления подкастами
 
 ## ✨ Новые возможности
 
@@ -170,8 +172,9 @@ define('DB_PASS', 'your_password');  // Пароль MySQL
    - Нажмите "Инициализировать базу данных"
 
 3. **Использование:**
-   - Главная страница: `http://localhost/index.html`
-   - Админка: `http://localhost/login.html` (admin/admin123)
+   - Главная страница: `http://localhost/`
+   - Админка: `http://localhost/login` (admin/admin123)
+   - Управление подкастами: `http://localhost/podcasts`
 
 ## Автор
 
