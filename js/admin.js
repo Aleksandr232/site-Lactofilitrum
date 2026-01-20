@@ -49,12 +49,12 @@ function checkAuthStatus() {
     fetch('php/auth_check.php')
         .then(response => {
             if (!response.ok) {
-                window.location.href = 'login.html';
+                window.location.href = '/login';
             }
         })
         .catch(error => {
             console.error('Ошибка проверки авторизации:', error);
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         });
 }
 

@@ -10,8 +10,8 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # Перенаправление на index.html для корневого URL
 RewriteRule ^/?$ index.html [L]
 
-# Перенаправление /admin на admin.html
-RewriteRule ^admin/?$ admin.html [L]
+# Перенаправление /admin на admin.php
+RewriteRule ^admin/?$ admin.php [L]
 
 # Перенаправление /login на login.html
 RewriteRule ^login/?$ login.html [L]

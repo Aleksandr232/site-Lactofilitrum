@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     }
     // Если обычный запрос - перенаправляем на страницу входа
     else {
-        header('Location: ../login.html');
+        header('Location: /login');
         exit();
     }
 }
@@ -25,7 +25,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
 // Проверка истечения сессии
 if (isset($_SESSION['expire']) && time() > $_SESSION['expire']) {
     session_destroy();
-    header('Location: ../login.html');
+    header('Location: /login');
     exit();
 }
 
@@ -40,7 +40,7 @@ try {
 
     if (!$user || !$user['is_active']) {
         session_destroy();
-        header('Location: ../login.html');
+        header('Location: /login');
         exit();
     }
 
@@ -48,10 +48,23 @@ try {
     $_SESSION['username'] = $user['username'];
     $_SESSION['user_role'] = $user['role'];
 
+    // Проверка роли администратора для доступа к админке
+    if ($user['role'] !== 'admin') {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Недостаточно прав']);
+            exit();
+        } else {
+            header('Location: /');
+            exit();
+        }
+    }
+
 } catch (PDOException $e) {
     error_log("Ошибка проверки авторизации: " . $e->getMessage());
     session_destroy();
-    header('Location: ../login.html');
+    header('Location: /login');
     exit();
 }
 ?>
