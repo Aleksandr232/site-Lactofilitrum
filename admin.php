@@ -25,6 +25,9 @@ require_once 'php/auth_check.php';
                     <li class="active" data-section="dashboard">
                         <i class='bx bx-bar-chart'></i> Дашборд
                     </li>
+                    <li data-section="podcasts">
+                        <i class='bx bx-podcast'></i> Подкасты
+                    </li>
                 </ul>
             </nav>
 
@@ -63,7 +66,80 @@ require_once 'php/auth_check.php';
                     <p>Здесь вы можете отслеживать основную статистику системы.</p>
                 </div>
             </section>
+
+            <!-- Подкасты -->
+            <section id="podcasts-section" class="content-section">
+                <div class="section-header">
+                    <h1>Подкасты с экспертами</h1>
+                    <button id="add-podcast-btn" class="btn-primary">Добавить подкаст</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="podcasts-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Автор</th>
+                                <th>Дата создания</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">Загрузка подкастов...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
+    </div>
+
+    <!-- Модальное окно для добавления подкаста -->
+    <div id="podcast-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить подкаст</h2>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="podcast-form">
+                    <div class="form-group">
+                        <label for="podcast-title">Название подкаста:</label>
+                        <input type="text" id="podcast-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-description">Описание подкаста:</label>
+                        <textarea id="podcast-description" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-image">Картинка подкаста (URL):</label>
+                        <input type="url" id="podcast-image" name="image">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-author">Автор подкаста:</label>
+                        <input type="text" id="podcast-author" name="author">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-author-photo">Фото автора подкаста (URL):</label>
+                        <input type="url" id="podcast-author-photo" name="author_photo">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-button-link">Кнопка подкаста (ссылка):</label>
+                        <input type="url" id="podcast-button-link" name="button_link">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-additional-link">Доп. ссылка подкаста:</label>
+                        <input type="url" id="podcast-additional-link" name="additional_link">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-podcast-btn">Отмена</button>
+                <button class="btn-primary" id="save-podcast-btn">Сохранить</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/admin.js?v=20241203"></script>

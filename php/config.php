@@ -105,6 +105,28 @@ function createTables($pdo) {
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_user_id ON login_logs(user_id)");
         error_log("Индексы для login_logs созданы");
 
+        // Создаем таблицу podcasts
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS podcasts (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                image VARCHAR(500),
+                author VARCHAR(255),
+                author_photo VARCHAR(500),
+                button_link VARCHAR(500),
+                additional_link VARCHAR(500),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        ");
+        error_log("Таблица podcasts создана");
+
+        // Создаем индексы для podcasts
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_title ON podcasts(title)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_author ON podcasts(author)");
+        error_log("Индексы для podcasts созданы");
+
         error_log("Все таблицы базы данных созданы успешно");
     } catch (PDOException $e) {
         error_log("Ошибка при создании таблиц: " . $e->getMessage());
@@ -148,7 +170,7 @@ function createDefaultAdmin($pdo) {
 
 // Функция для проверки существования таблиц
 function ensureTablesExist($pdo) {
-    $requiredTables = ['users', 'login_logs'];
+    $requiredTables = ['users', 'login_logs', 'podcasts'];
     $missingTables = [];
 
     // Проверяем какие таблицы отсутствуют
@@ -204,6 +226,30 @@ function ensureTablesExist($pdo) {
                 error_log("Таблица login_logs создана");
             } catch (PDOException $e) {
                 error_log("Ошибка создания таблицы login_logs: " . $e->getMessage());
+            }
+        }
+
+        if (in_array('podcasts', $missingTables)) {
+            try {
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS podcasts (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        image VARCHAR(500),
+                        author VARCHAR(255),
+                        author_photo VARCHAR(500),
+                        button_link VARCHAR(500),
+                        additional_link VARCHAR(500),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_title ON podcasts(title)");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_author ON podcasts(author)");
+                error_log("Таблица podcasts создана");
+            } catch (PDOException $e) {
+                error_log("Ошибка создания таблицы podcasts: " . $e->getMessage());
             }
         }
     }

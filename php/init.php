@@ -106,7 +106,7 @@ header('Content-Type: text/html; charset=utf-8');
             try {
                 $conn = connectDB();
 
-                $tables = ['users', 'login_logs'];
+                $tables = ['users', 'login_logs', 'podcasts'];
                 $missingTables = [];
 
                 foreach ($tables as $table) {
@@ -282,7 +282,7 @@ header('Content-Type: text/html; charset=utf-8');
         <h2>Что делает инициализация:</h2>
         <ul>
             <li>Создает базу данных <code><?php echo DB_NAME; ?></code>, если она не существует</li>
-            <li>Создает необходимые таблицы (users, login_logs)</li>
+            <li>Создает необходимые таблицы (users, login_logs, podcasts)</li>
             <li>Добавляет администратора по умолчанию (admin/admin123)</li>
             <li>Настраивает индексы для оптимизации производительности</li>
         </ul>
