@@ -134,9 +134,17 @@ header('Content-Type: text/html; charset=utf-8');
             try {
                 $conn = connectDB();
 
+                // Сначала проверим, что мы в правильной базе данных
+                $stmt = $conn->prepare("SELECT DATABASE() as current_db");
+                $stmt->execute();
+                $currentDb = $stmt->fetch();
+                showStatus("Текущая база данных: " . $currentDb['current_db'], "info");
+
                 $stmt = $conn->prepare("SELECT COUNT(*) as count FROM users WHERE username = 'admin'");
                 $stmt->execute();
                 $result = $stmt->fetch();
+
+                showStatus("Количество администраторов: " . $result['count'], "info");
 
                 if ($result['count'] > 0) {
                     showStatus("✓ Администратор по умолчанию существует", "success");
@@ -170,6 +178,23 @@ header('Content-Type: text/html; charset=utf-8');
             } else {
                 showStatus("❌ Инициализация не удалась", "error");
             }
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_admin'])) {
+            showStatus("🔄 Создаем администратора...", "info");
+
+            try {
+                $conn = connectDB();
+                createDefaultAdmin($conn);
+                showStatus("✅ Администратор создан!", "success");
+
+                echo "<p><strong>Данные для входа:</strong></p>";
+                echo "<ul>";
+                echo "<li><strong>Логин:</strong> admin</li>";
+                echo "<li><strong>Пароль:</strong> admin123</li>";
+                echo "</ul>";
+                echo "<p><a href='/login' class='btn'>Перейти к авторизации</a></p>";
+            } catch (Exception $e) {
+                showStatus("❌ Ошибка создания администратора: " . $e->getMessage(), "error");
+            }
         } else {
             // Проверяем текущее состояние
             showStatus("🔍 Проверяем состояние базы данных...", "info");
@@ -182,6 +207,13 @@ header('Content-Type: text/html; charset=utf-8');
                 showStatus("✅ База данных полностью настроена и готова к работе!", "success");
                 echo "<p><a href='/login' class='btn'>Перейти к авторизации</a></p>";
                 echo "<p><a href='/' class='btn btn-secondary'>Перейти на сайт</a></p>";
+            } elseif ($connectionOk && $tablesOk && !$adminOk) {
+                showStatus("⚠ База данных настроена, но отсутствует администратор", "error");
+                echo "<form method='post' style='display: inline-block; margin-right: 10px;'>";
+                echo "<button type='submit' name='create_admin' value='1' class='btn'>Создать администратора</button>";
+                echo "</form>";
+                echo "<p><a href='../create_admin.php' class='btn btn-secondary'>Ручное создание администратора</a></p>";
+                echo "<p><strong>Будет создан пользователь:</strong> admin / admin123</p>";
             } else {
                 showStatus("⚠ База данных требует инициализации", "error");
                 echo "<form method='post'>";

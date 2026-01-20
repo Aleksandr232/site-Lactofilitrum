@@ -100,25 +100,42 @@ function createTables($pdo) {
 
 // Функция для создания администратора по умолчанию
 function createDefaultAdmin($pdo) {
-    // Проверяем, существует ли уже администратор
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
-    $stmt->execute();
-    $adminExists = $stmt->fetch();
+    try {
+        // Проверяем текущую базу данных
+        $stmt = $pdo->prepare("SELECT DATABASE() as current_db");
+        $stmt->execute();
+        $currentDb = $stmt->fetch();
+        error_log("Создание администратора в базе данных: " . $currentDb['current_db']);
 
-    if (!$adminExists) {
-        // Пароль: admin123 (захеширован с помощью password_hash)
-        $hashedPassword = password_hash('admin123', PASSWORD_DEFAULT);
+        // Проверяем, существует ли уже администратор
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
+        $stmt->execute();
+        $adminExists = $stmt->fetch();
 
-        $stmt = $pdo->prepare("INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)");
-        $stmt->execute(['admin', $hashedPassword, 'admin@lactofilitrum.com', 'admin']);
+        if (!$adminExists) {
+            // Пароль: admin123 (захеширован с помощью password_hash)
+            $hashedPassword = password_hash('admin123', PASSWORD_DEFAULT);
 
-        error_log("Администратор по умолчанию создан (логин: admin, пароль: admin123)");
+            $stmt = $pdo->prepare("INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)");
+            $result = $stmt->execute(['admin', $hashedPassword, 'admin@lactofilitrum.com', 'admin']);
+
+            if ($result) {
+                error_log("Администратор по умолчанию создан успешно (логин: admin, пароль: admin123)");
+            } else {
+                error_log("Ошибка при создании администратора: execute вернул false");
+            }
+        } else {
+            error_log("Администратор уже существует");
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка при создании администратора: " . $e->getMessage());
     }
 }
 
 // Функция для проверки существования таблиц
 function ensureTablesExist($pdo) {
     $requiredTables = ['users', 'login_logs'];
+    $tablesCreated = false;
 
     foreach ($requiredTables as $table) {
         $result = $pdo->query("SHOW TABLES LIKE '$table'");
@@ -127,17 +144,21 @@ function ensureTablesExist($pdo) {
         if (!$tableExists) {
             // Создаем недостающие таблицы
             createTables($pdo);
+            $tablesCreated = true;
             break;
         }
     }
 
-    // Проверяем, есть ли администратор
+    // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
     $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
     $stmt->execute();
     $adminExists = $stmt->fetch();
 
     if (!$adminExists) {
+        error_log("Администратор не найден, создаем...");
         createDefaultAdmin($pdo);
+    } else {
+        error_log("Администратор уже существует");
     }
 }
 
