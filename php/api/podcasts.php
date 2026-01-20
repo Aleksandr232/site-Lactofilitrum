@@ -6,7 +6,10 @@ header('Content-Type: application/json');
 
 // Функция для обработки загруженного изображения
 function uploadImage($file, $folder = 'uploads/podcasts/') {
+    error_log('uploadImage called with file: ' . print_r($file, true));
+
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        error_log('File not set or error: ' . ($file['error'] ?? 'not set'));
         return '';
     }
 
@@ -88,9 +91,16 @@ try {
                 exit;
             }
 
+            // Логируем полученные файлы для отладки
+            error_log('FILES received: ' . print_r($_FILES, true));
+            error_log('POST data: ' . print_r($_POST, true));
+
             // Обрабатываем загруженные изображения
             $image_path = uploadImage($_FILES['image'] ?? null);
             $author_photo_path = uploadImage($_FILES['author_photo'] ?? null);
+
+            error_log('Image path: ' . $image_path);
+            error_log('Author photo path: ' . $author_photo_path);
 
             $stmt = $conn->prepare("
                 INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link)

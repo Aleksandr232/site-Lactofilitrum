@@ -56,12 +56,25 @@ function loadPodcasts() {
 
             if (data.success && data.podcasts && data.podcasts.length > 0) {
                 data.podcasts.forEach(podcast => {
-                    const imageHtml = podcast.image ?
-                        `<img src="${podcast.image}" alt="${podcast.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
+                    // Функция для получения полного URL изображения
+                    const getImageUrl = (imagePath) => {
+                        if (!imagePath) return null;
+                        // Если путь уже содержит http/https, возвращаем как есть
+                        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                            return imagePath;
+                        }
+                        // Иначе добавляем базовый URL
+                        return window.location.origin + '/' + imagePath;
+                    };
+
+                    const imageUrl = getImageUrl(podcast.image);
+                    const imageHtml = imageUrl ?
+                        `<img src="${imageUrl}" alt="${podcast.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
                         '<span style="color: #7f8c8d;">Нет картинки</span>';
 
+                    const authorPhotoUrl = getImageUrl(podcast.author_photo);
                     const authorHtml = podcast.author ?
-                        `${podcast.author}${podcast.author_photo ? ` <img src="${podcast.author_photo}" alt="${podcast.author}" style="width: 24px; height: 24px; object-fit: cover; border-radius: 50%; vertical-align: middle;">` : ''}` :
+                        `${podcast.author}${authorPhotoUrl ? ` <img src="${authorPhotoUrl}" alt="${podcast.author}" style="width: 24px; height: 24px; object-fit: cover; border-radius: 50%; vertical-align: middle;">` : ''}` :
                         '-';
 
                     const row = document.createElement('tr');
@@ -88,6 +101,8 @@ function loadPodcasts() {
 }
 
 function savePodcast() {
+    console.log('savePodcast called');
+
     const formData = new FormData();
     formData.append('title', document.getElementById('podcast-title').value);
     formData.append('description', document.getElementById('podcast-description').value);
@@ -95,18 +110,29 @@ function savePodcast() {
     // Добавляем файлы изображений
     const imageInput = document.getElementById('podcast-image');
     if (imageInput.files[0]) {
+        console.log('Adding image file:', imageInput.files[0]);
         formData.append('image', imageInput.files[0]);
+    } else {
+        console.log('No image file selected');
     }
 
     formData.append('author', document.getElementById('podcast-author').value);
 
     const authorPhotoInput = document.getElementById('podcast-author-photo');
     if (authorPhotoInput.files[0]) {
+        console.log('Adding author photo file:', authorPhotoInput.files[0]);
         formData.append('author_photo', authorPhotoInput.files[0]);
+    } else {
+        console.log('No author photo file selected');
     }
 
     formData.append('button_link', document.getElementById('podcast-button-link').value);
     formData.append('additional_link', document.getElementById('podcast-additional-link').value);
+
+    // Логируем содержимое FormData
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
 
     fetch('php/api/podcasts.php', {
         method: 'POST',
