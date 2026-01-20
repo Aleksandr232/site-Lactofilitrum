@@ -454,6 +454,88 @@ body {
     opacity: 0.9;
 }
 
+/* Секция недавних подкастов в дашборде */
+.recent-podcasts {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.recent-podcasts h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.podcasts-list {
+    margin-bottom: 1.5rem;
+}
+
+.podcast-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #ecf0f1;
+    transition: background-color 0.3s;
+}
+
+.podcast-item:hover {
+    background-color: #f8f9fa;
+}
+
+.podcast-item:last-child {
+    border-bottom: none;
+}
+
+.podcast-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 1rem;
+    background-color: #ecf0f1;
+}
+
+.podcast-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.podcast-info p {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.podcast-author {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.author-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.5rem;
+    background-color: #bdc3c7;
+}
+
+.podcasts-actions {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+}
+
+.podcasts-actions .btn-primary {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
 /* Boxicons стили */
 .sidebar-nav li i.bx,
 .logout-btn i.bx {

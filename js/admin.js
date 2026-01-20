@@ -72,7 +72,7 @@ function logout() {
 }
 
 function loadDashboardData() {
-    // Загрузка статистики
+    // Загрузка статистики пользователей
     fetch('php/api/dashboard.php')
         .then(response => response.json())
         .then(data => {
@@ -82,6 +82,60 @@ function loadDashboardData() {
         })
         .catch(error => {
             console.error('Ошибка загрузки данных дашборда:', error);
+        });
+
+    // Загрузка статистики подкастов
+    fetch('php/api/podcasts.php')
+        .then(response => response.json())
+        .then(data => {
+            const totalPodcasts = data.success && data.podcasts ? data.podcasts.length : 0;
+            document.getElementById('total-podcasts').textContent = totalPodcasts;
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки статистики подкастов:', error);
+            document.getElementById('total-podcasts').textContent = '0';
+        });
+
+    // Загрузка последних подкастов
+    loadRecentPodcasts();
+}
+
+function loadRecentPodcasts() {
+    fetch('php/api/podcasts.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('recent-podcasts-list');
+            container.innerHTML = '';
+
+            if (data.success && data.podcasts && data.podcasts.length > 0) {
+                // Показываем только последние 3 подкаста
+                const recentPodcasts = data.podcasts.slice(0, 3);
+
+                recentPodcasts.forEach(podcast => {
+                    const podcastItem = document.createElement('div');
+                    podcastItem.className = 'podcast-item';
+                    podcastItem.innerHTML = `
+                        <img src="${podcast.image || '/placeholder-podcast.jpg'}" alt="${podcast.title}" class="podcast-image" onerror="this.src='/placeholder-podcast.jpg'">
+                        <div class="podcast-info">
+                            <h4>${podcast.title}</h4>
+                            <p>${podcast.description ? podcast.description.substring(0, 100) + '...' : 'Без описания'}</p>
+                            ${podcast.author ? `
+                                <div class="podcast-author">
+                                    <img src="${podcast.author_photo || '/placeholder-avatar.jpg'}" alt="${podcast.author}" class="author-avatar" onerror="this.src='/placeholder-avatar.jpg'">
+                                    <span>${podcast.author}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(podcastItem);
+                });
+            } else {
+                container.innerHTML = '<p>Подкасты еще не добавлены</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки последних подкастов:', error);
+            document.getElementById('recent-podcasts-list').innerHTML = '<p>Ошибка загрузки подкастов</p>';
         });
 }
 

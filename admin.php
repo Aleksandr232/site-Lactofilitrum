@@ -52,6 +52,10 @@ require_once 'php/auth_check.php';
                         <div class="stat-number" id="total-users">0</div>
                     </div>
                     <div class="stat-card">
+                        <h3>Всего подкастов</h3>
+                        <div class="stat-number" id="total-podcasts">0</div>
+                    </div>
+                    <div class="stat-card">
                         <h3>Активных сессий</h3>
                         <div class="stat-number" id="active-sessions">0</div>
                     </div>
@@ -64,6 +68,17 @@ require_once 'php/auth_check.php';
                 <div class="welcome-section">
                     <h2>Добро пожаловать в админ-панель!</h2>
                     <p>Здесь вы можете отслеживать основную статистику системы.</p>
+                </div>
+
+                <!-- Последние подкасты -->
+                <div class="recent-podcasts">
+                    <h2>Недавние подкасты</h2>
+                    <div id="recent-podcasts-list" class="podcasts-list">
+                        <p>Загрузка подкастов...</p>
+                    </div>
+                    <div class="podcasts-actions">
+                        <a href="#" onclick="showSection('podcasts')" class="btn-primary">Управление подкастами</a>
+                    </div>
                 </div>
             </section>
 
