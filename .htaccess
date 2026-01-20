@@ -1,27 +1,7 @@
-# Минимальные настройки для Timeweb
+RewriteEngine On
 
-# Запрет доступа к конфиденциальным файлам
-<Files "config.php">
-    Order deny,allow
-    Deny from all
-</Files>
+RewriteBase /
 
-<Files "database.sql">
-    Order deny,allow
-    Deny from all
-</Files>
-
-# Разрешить доступ к тестовым файлам
-<Files "test.php">
-    Order deny,allow
-    Allow from all
-</Files>
-
-<Files "db_test.php">
-    Order deny,allow
-    Allow from all
-</Files>
-
-# Обработка ошибок
-ErrorDocument 404 /index.html
-ErrorDocument 500 /index.html
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
