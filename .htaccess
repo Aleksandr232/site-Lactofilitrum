@@ -1,0 +1,52 @@
+# Базовые настройки для Apache
+
+# Включаем перезапись URL
+RewriteEngine On
+
+# Защита от прямого доступа к PHP файлам
+<Files *.php>
+    Order Deny,Allow
+    Allow from all
+</Files>
+
+# Запрет доступа к конфиденциальным файлам
+<Files "config.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "database.sql">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Защита папки data
+<Directory "data">
+    Order Deny,Allow
+    Deny from all
+    <Files "content.json">
+        Allow from all
+    </Files>
+</Directory>
+
+# Настройки кэширования для статических файлов
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+</IfModule>
+
+# Безопасные заголовки
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Обработка ошибок
+ErrorDocument 404 /index.html
+ErrorDocument 403 /index.html
