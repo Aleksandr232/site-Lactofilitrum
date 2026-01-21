@@ -127,6 +127,23 @@ function createTables($pdo) {
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_author ON podcasts(author)");
         error_log("Индексы для podcasts созданы");
 
+        // Создаем таблицу remission_library
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS remission_library (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                image VARCHAR(500),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        ");
+        error_log("Таблица remission_library создана");
+
+        // Создаем индексы для remission_library
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_remission_title ON remission_library(title)");
+        error_log("Индексы для remission_library созданы");
+
         error_log("Все таблицы базы данных созданы успешно");
     } catch (PDOException $e) {
         error_log("Ошибка при создании таблиц: " . $e->getMessage());

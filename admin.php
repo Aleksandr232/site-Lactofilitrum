@@ -28,6 +28,9 @@ require_once 'php/auth_check.php';
                     <li data-href="/podcasts">
                         <i class='bx bx-podcast'></i> Подкасты
                     </li>
+                    <li data-section="remission">
+                        <i class='bx bx-book'></i> Библиотека Ремиссии
+                    </li>
                 </ul>
             </nav>
 
@@ -56,6 +59,10 @@ require_once 'php/auth_check.php';
                         <div class="stat-number" id="total-podcasts">0</div>
                     </div>
                     <div class="stat-card">
+                        <h3>Библиотека Ремиссии</h3>
+                        <div class="stat-number" id="total-remission">0</div>
+                    </div>
+                    <div class="stat-card">
                         <h3>Активных сессий</h3>
                         <div class="stat-number" id="active-sessions">0</div>
                     </div>
@@ -74,9 +81,67 @@ require_once 'php/auth_check.php';
 
             </section>
 
+            <!-- Библиотека Ремиссии -->
+            <section id="remission-section" class="content-section">
+                <div class="section-header">
+                    <h1>Библиотека Ремиссии</h1>
+                    <button id="add-remission-btn" class="btn-primary">Добавить элемент</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="remission-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Картинка</th>
+                                <th>Название</th>
+                                <th>Описание</th>
+                                <th>Дата создания</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6">Загрузка элементов...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
         </main>
     </div>
 
+
+    <!-- Модальное окно для добавления элемента библиотеки ремиссии -->
+    <div id="remission-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить элемент библиотеки</h2>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="remission-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="remission-title">Название:</label>
+                        <input type="text" id="remission-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="remission-description">Описание:</label>
+                        <textarea id="remission-description" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="remission-image">Картинка:</label>
+                        <input type="file" id="remission-image" name="image" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-remission-btn">Отмена</button>
+                <button class="btn-primary" id="save-remission-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
 
     <script src="js/admin.js?v=20241210"></script>
 </body>
