@@ -6,10 +6,13 @@ header('Content-Type: application/json');
 
 // Функция для обработки загруженного изображения
 function uploadImage($file, $folder = null) {
-    // Используем путь относительно DOCUMENT_ROOT
+    // Используем путь относительно DOCUMENT_ROOT для сохранения файла
     if ($folder === null) {
         $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/remission/';
     }
+
+    // Относительный путь для сохранения в БД
+    $relativeFolder = 'uploads/remission/';
     error_log('uploadImage called with file: ' . print_r($file, true));
 
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -98,7 +101,8 @@ function uploadImage($file, $folder = null) {
 
     if ($moved) {
         error_log('File successfully saved to: ' . $filepath);
-        return $filepath;
+        // Возвращаем относительный путь для сохранения в БД
+        return $relativeFolder . $filename;
     }
 
     error_log('All file moving methods failed. Last error: ' . error_get_last()['message'] ?? 'unknown');
@@ -107,8 +111,15 @@ function uploadImage($file, $folder = null) {
 
 // Функция для удаления файла изображения
 function deleteImageFile($filepath) {
-    if (!empty($filepath) && file_exists($filepath)) {
-        unlink($filepath);
+    if (!empty($filepath)) {
+        // Если путь относительный, преобразуем в полный
+        if (strpos($filepath, 'uploads/') === 0) {
+            $filepath = $_SERVER['DOCUMENT_ROOT'] . '/' . $filepath;
+        }
+
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
     }
 }
 
