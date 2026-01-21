@@ -1,5 +1,10 @@
 <?php
 // Проверка авторизации для доступа к админке
+require_once 'php/config.php';
+
+// Инициализируем базу данных, если нужно
+initializeDatabase();
+
 require_once 'php/auth_check.php';
 ?>
 <!DOCTYPE html>

@@ -187,7 +187,7 @@ function createDefaultAdmin($pdo) {
 
 // Функция для проверки существования таблиц
 function ensureTablesExist($pdo) {
-    $requiredTables = ['users', 'login_logs', 'podcasts'];
+    $requiredTables = ['users', 'login_logs', 'podcasts', 'remission_library'];
     $missingTables = [];
 
     // Проверяем какие таблицы отсутствуют
@@ -267,6 +267,25 @@ function ensureTablesExist($pdo) {
                 error_log("Таблица podcasts создана");
             } catch (PDOException $e) {
                 error_log("Ошибка создания таблицы podcasts: " . $e->getMessage());
+            }
+        }
+
+        if (in_array('remission_library', $missingTables)) {
+            try {
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS remission_library (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        image VARCHAR(500),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                ");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_remission_title ON remission_library(title)");
+                error_log("Таблица remission_library создана");
+            } catch (PDOException $e) {
+                error_log("Ошибка создания таблицы remission_library: " . $e->getMessage());
             }
         }
     }

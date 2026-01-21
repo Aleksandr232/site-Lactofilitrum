@@ -1,5 +1,10 @@
 <?php
 // Страница библиотеки ремиссии
+require_once 'php/config.php';
+
+// Инициализируем базу данных, если нужно
+initializeDatabase();
+
 require_once 'php/auth_check.php';
 ?>
 <!DOCTYPE html>
@@ -105,15 +110,175 @@ require_once 'php/auth_check.php';
 
     <script src="js/admin.js?v=20241210"></script>
     <script>
+        // Функции для работы с библиотекой ремиссии (локальные для этой страницы)
+        function setupRemissionModal() {
+            const modal = document.getElementById('remission-modal');
+            if (!modal) {
+                console.error('Modal remission-modal not found');
+                return;
+            }
+
+            const addBtn = document.getElementById('add-remission-btn');
+            const closeBtn = document.querySelector('#remission-modal .modal-close');
+            const cancelBtn = document.getElementById('cancel-remission-btn');
+            const saveBtn = document.getElementById('save-remission-btn');
+
+            console.log('Setting up remission modal, addBtn:', !!addBtn);
+
+            // Открытие модального окна
+            if (addBtn) {
+                addBtn.addEventListener('click', () => {
+                    console.log('Add remission button clicked');
+                    modal.style.display = 'block';
+                    const form = document.getElementById('remission-form');
+                    if (form) {
+                        form.reset();
+                        // Очищаем значения файловых input
+                        document.getElementById('remission-image').value = '';
+                    }
+                });
+            }
+
+            // Закрытие модального окна
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+            }
+
+            // Сохранение элемента
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveRemission);
+            }
+
+            // Закрытие по клику вне модального окна
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        function loadRemission() {
+            const tableBody = document.querySelector('#remission-table tbody');
+            if (!tableBody) {
+                console.error('Remission table body not found');
+                return;
+            }
+
+            console.log('Loading remission items...');
+
+            fetch('php/api/remission.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Remission data received:', data);
+                    tableBody.innerHTML = '';
+
+                    if (data.success && data.items && data.items.length > 0) {
+                        data.items.forEach(item => {
+                            // Функция для получения полного URL изображения
+                            const getImageUrl = (imagePath) => {
+                                if (!imagePath) return null;
+                                // Если путь уже содержит http/https, возвращаем как есть
+                                if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                                    return imagePath;
+                                }
+                                // Иначе добавляем базовый URL
+                                return window.location.origin + '/' + imagePath;
+                            };
+
+                            const imageUrl = getImageUrl(item.image);
+                            const imageHtml = imageUrl ?
+                                `<img src="${imageUrl}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
+                                '<span style="color: #7f8c8d;">Нет картинки</span>';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.id}</td>
+                                <td>${imageHtml}</td>
+                                <td>${item.title}</td>
+                                <td>${item.description || '-'}</td>
+                                <td>${new Date(item.created_at).toLocaleDateString('ru-RU')}</td>
+                                <td>
+                                    <button class="btn-danger" onclick="deleteRemission(${item.id})">Удалить</button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="6">Нет элементов</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки элементов remission:', error);
+                    tableBody.innerHTML = '<tr><td colspan="6" style="color: red;">Ошибка загрузки</td></tr>';
+                });
+        }
+
+        function saveRemission() {
+            console.log('saveRemission called');
+
+            // Альтернативный способ: используем FormData из самой формы
+            const form = document.getElementById('remission-form');
+            const formData = new FormData(form);
+
+            console.log('Form element found:', !!form);
+
+            // Проверяем, что файлы добавлены
+            const imageInput = document.getElementById('remission-image');
+
+            console.log('Image input files:', imageInput.files.length);
+
+            fetch('php/api/remission.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Save response:', data);
+                if (data.success) {
+                    alert('Элемент успешно добавлен');
+                    const modal = document.getElementById('remission-modal');
+                    if (modal) modal.style.display = 'none';
+                    loadRemission(); // Перезагружаем список
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка сохранения элемента remission:', error);
+                alert('Ошибка сохранения элемента');
+            });
+        }
+
+        function deleteRemission(itemId) {
+            if (confirm('Вы уверены, что хотите удалить этот элемент?')) {
+                fetch(`php/api/remission.php?id=${itemId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadRemission(); // Перезагружаем список после удаления
+                    } else {
+                        alert('Ошибка: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка удаления элемента remission:', error);
+                    alert('Ошибка удаления элемента');
+                });
+            }
+        }
+
         // Специфичный код для страницы библиотеки ремиссии
         function initRemissionPage() {
-            // Инициализация только для remission
-            if (typeof setupRemissionModal === 'function') {
-                setupRemissionModal();
-            }
-            if (typeof loadRemission === 'function') {
-                loadRemission();
-            }
+            console.log('initRemissionPage called');
+
+            // Инициализация remission
+            setupRemissionModal();
+            loadRemission();
 
             // Установка имени пользователя
             fetch('php/auth_check.php')
