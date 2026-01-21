@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход в админку - Lactofilitrum</title>
-    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
     <div class="login-container">
@@ -33,6 +32,16 @@
         </div>
     </div>
 
-    <script src="js/login.js?v=<?= time() ?>"></script>
+    <script>
+        // Предотвращаем кеширование стилей и скриптов
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'css/login.css?v=' + Date.now();
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = 'js/login.js?v=' + Date.now();
+        document.head.appendChild(script);
+    </script>
 </body>
 </html>
