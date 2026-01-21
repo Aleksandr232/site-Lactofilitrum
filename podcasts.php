@@ -28,6 +28,9 @@ require_once 'php/auth_check.php';
                     <li class="active" data-section="podcasts">
                         <i class='bx bx-podcast'></i> Подкасты
                     </li>
+                    <li data-href="/remission">
+                        <i class='bx bx-book'></i> Библиотека Ремиссии
+                    </li>
                 </ul>
             </nav>
 
