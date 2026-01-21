@@ -16,5 +16,5 @@ RewriteRule ^admin/?$ admin.php [L]
 # Перенаправление /podcasts на podcasts.php
 RewriteRule ^podcasts/?$ podcasts.php [L]
 
-# Перенаправление /login на login.html
-RewriteRule ^login/?$ login.html [L]
+# Перенаправление /login на login.php
+RewriteRule ^login/?$ login.php [L]
