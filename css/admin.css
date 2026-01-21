@@ -454,7 +454,7 @@ body {
 .welcome-section {
     text-align: center;
     padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #3498db;
     color: white;
     border-radius: 8px;
     margin-top: 30px;
