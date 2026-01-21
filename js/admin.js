@@ -225,16 +225,6 @@ function showSection(sectionName) {
     const targetSection = document.getElementById(sectionName + '-section');
     if (targetSection) {
         targetSection.classList.add('active');
-
-        // Загружаем данные для соответствующего раздела
-        if (sectionName === 'remission') {
-            if (typeof loadRemission === 'function') {
-                loadRemission();
-            }
-            if (typeof setupRemissionModal === 'function') {
-                setupRemissionModal();
-            }
-        }
     }
 }
 
@@ -274,17 +264,6 @@ function loadDashboardData() {
             document.getElementById('total-podcasts').textContent = '0';
         });
 
-    // Загрузка статистики remission
-    fetch('php/api/remission.php')
-        .then(response => response.json())
-        .then(data => {
-            const totalRemission = data.success && data.items ? data.items.length : 0;
-            document.getElementById('total-remission').textContent = totalRemission;
-        })
-        .catch(error => {
-            console.error('Ошибка загрузки статистики remission:', error);
-            document.getElementById('total-remission').textContent = '0';
-        });
 }
 
 // Функции для работы с библиотекой ремиссии
