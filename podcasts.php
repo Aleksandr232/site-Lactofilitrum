@@ -117,7 +117,7 @@ $timestamp = time();
                                         <div class="file-preview-size"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-image')">
+                                <button type="button" class="file-preview-remove" onclick="console.log('Remove button clicked'); removeFile('podcast-image')">
                                     <i class='bx bx-x'></i>
                                 </button>
                             </div>
@@ -150,7 +150,7 @@ $timestamp = time();
                                         <div class="file-preview-size"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-author-photo')">
+                                <button type="button" class="file-preview-remove" onclick="console.log('Remove button clicked'); removeFile('podcast-author-photo')">
                                     <i class='bx bx-x'></i>
                                 </button>
                             </div>
@@ -247,10 +247,18 @@ $timestamp = time();
         }
 
         function removeFile(inputId) {
+            console.log('Removing file for:', inputId);
             const input = document.getElementById(inputId);
             const wrapper = input.closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
+
+            console.log('Elements found:', {
+                input: !!input,
+                wrapper: !!wrapper,
+                label: !!label,
+                preview: !!preview
+            });
 
             // Очищаем input
             input.value = '';
@@ -258,6 +266,7 @@ $timestamp = time();
             // Скрываем превью, показываем label
             preview.classList.remove('show');
             label.style.display = 'flex';
+            console.log('File removed successfully');
         }
 
         function formatFileSize(bytes) {
@@ -269,18 +278,32 @@ $timestamp = time();
         }
 
         function showUploadProgress(inputId, show) {
-            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
-            const progress = wrapper.querySelector('.upload-progress');
+            console.log('showUploadProgress called for:', inputId, 'show:', show);
+            // Элемент progress находится рядом с wrapper, а не внутри него
+            const progress = document.getElementById(inputId + '-progress');
 
-            if (show) {
-                progress.classList.add('show');
+            console.log('Progress element found:', !!progress);
+
+            if (progress) {
+                if (show) {
+                    progress.classList.add('show');
+                    console.log('Added show class to progress');
+                } else {
+                    progress.classList.remove('show');
+                    console.log('Removed show class from progress');
+                }
             } else {
-                progress.classList.remove('show');
+                console.error('Progress element not found for inputId:', inputId);
             }
         }
 
+        // Глобальные функции для совместимости
+        window.showUploadProgress = showUploadProgress;
+        window.removeFile = removeFile;
+
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {
+            console.log('initPodcastsPage called');
             // Инициализация только для подкастов
             if (typeof setupPodcastModal === 'function') {
                 setupPodcastModal();

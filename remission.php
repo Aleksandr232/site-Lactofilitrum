@@ -117,7 +117,7 @@ $timestamp = time();
                                         <div class="file-preview-size"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="file-preview-remove" onclick="removeFile('remission-image')">
+                                <button type="button" class="file-preview-remove" onclick="console.log('Remove button clicked'); removeFile('remission-image')">
                                     <i class='bx bx-x'></i>
                                 </button>
                             </div>
@@ -177,7 +177,10 @@ $timestamp = time();
 
             // Сохранение элемента
             if (saveBtn) {
-                saveBtn.addEventListener('click', saveRemission);
+                saveBtn.addEventListener('click', () => {
+                    console.log('Save button clicked');
+                    saveRemission();
+                });
             }
 
             // Закрытие по клику вне модального окна
@@ -390,10 +393,18 @@ $timestamp = time();
         }
 
         function removeFile(inputId) {
+            console.log('Removing file for:', inputId);
             const input = document.getElementById(inputId);
             const wrapper = input.closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
+
+            console.log('Elements found:', {
+                input: !!input,
+                wrapper: !!wrapper,
+                label: !!label,
+                preview: !!preview
+            });
 
             // Очищаем input
             input.value = '';
@@ -401,6 +412,7 @@ $timestamp = time();
             // Скрываем превью, показываем label
             preview.classList.remove('show');
             label.style.display = 'flex';
+            console.log('File removed successfully');
         }
 
         function formatFileSize(bytes) {
@@ -412,19 +424,41 @@ $timestamp = time();
         }
 
         function showUploadProgress(inputId, show) {
-            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
-            const progress = wrapper.querySelector('.upload-progress');
+            console.log('showUploadProgress called for:', inputId, 'show:', show);
+            // Элемент progress находится рядом с wrapper, а не внутри него
+            const progress = document.getElementById(inputId + '-progress');
 
-            if (show) {
-                progress.classList.add('show');
+            console.log('Progress element found:', !!progress);
+
+            if (progress) {
+                if (show) {
+                    progress.classList.add('show');
+                    console.log('Added show class to progress');
+                } else {
+                    progress.classList.remove('show');
+                    console.log('Removed show class from progress');
+                }
             } else {
-                progress.classList.remove('show');
+                console.error('Progress element not found for inputId:', inputId);
             }
         }
+
+        // Глобальные функции для совместимости
+        window.showUploadProgress = showUploadProgress;
+        window.removeFile = removeFile;
 
         // Специфичный код для страницы библиотеки ремиссии
         function initRemissionPage() {
             console.log('initRemissionPage called');
+
+            // Проверяем, что функции доступны
+            console.log('Functions available:', {
+                setupRemissionModal: typeof setupRemissionModal,
+                setupFileUpload: typeof setupFileUpload,
+                loadRemission: typeof loadRemission,
+                showUploadProgress: typeof showUploadProgress,
+                removeFile: typeof removeFile
+            });
 
             // Инициализация remission
             setupRemissionModal();

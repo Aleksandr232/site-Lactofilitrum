@@ -101,16 +101,22 @@ function loadPodcasts() {
 }
 
 function showUploadProgress(inputId, show) {
-    const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
-    if (wrapper) {
-        const progress = wrapper.querySelector('.upload-progress');
-        if (progress) {
-            if (show) {
-                progress.classList.add('show');
-            } else {
-                progress.classList.remove('show');
-            }
+    console.log('showUploadProgress (admin.js) called for:', inputId, 'show:', show);
+    // Элемент progress находится рядом с wrapper, а не внутри него
+    const progress = document.getElementById(inputId + '-progress');
+
+    console.log('Progress element found:', !!progress);
+
+    if (progress) {
+        if (show) {
+            progress.classList.add('show');
+            console.log('Added show class to progress');
+        } else {
+            progress.classList.remove('show');
+            console.log('Removed show class from progress');
         }
+    } else {
+        console.error('Progress element not found in admin.js for inputId:', inputId);
     }
 }
 
