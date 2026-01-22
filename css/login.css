@@ -34,7 +34,7 @@ body {
 
 .form-group {
     margin-bottom: 1.5rem;
-    text-align: left;
+    text-align: center;
 }
 
 .form-group label {
@@ -118,9 +118,31 @@ body {
 }
 
 /* Адаптивность */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+        max-width: 320px;
+    }
+
+    .login-form {
+        padding: 1.75rem;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .login-btn {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+}
+
 @media (max-width: 480px) {
     .login-container {
         padding: 15px;
+        max-width: 300px;
     }
 
     .login-form {
@@ -128,7 +150,21 @@ body {
     }
 
     .login-form h2 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         margin-bottom: 1.5rem;
+    }
+
+    .form-group input {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .login-btn {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
     }
 }
