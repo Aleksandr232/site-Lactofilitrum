@@ -100,50 +100,17 @@ function loadPodcasts() {
         });
 }
 
-function showUploadProgress(inputId, show) {
-    console.log('showUploadProgress (admin.js) called for:', inputId, 'show:', show);
-    // Элемент progress находится рядом с wrapper, а не внутри него
-    const progress = document.getElementById(inputId + '-progress');
-
-    console.log('Progress element found:', !!progress);
-
-    if (progress) {
-        if (show) {
-            progress.classList.add('show');
-            console.log('Added show class to progress');
-        } else {
-            progress.classList.remove('show');
-            console.log('Removed show class from progress');
-        }
-    } else {
-        console.error('Progress element not found in admin.js for inputId:', inputId);
-    }
-}
-
-function removeFile(inputId) {
-    const input = document.getElementById(inputId);
-    if (input) {
-        const wrapper = input.closest('.file-upload-wrapper');
-        if (wrapper) {
-            const label = wrapper.querySelector('.file-upload-label');
-            const preview = wrapper.querySelector('.file-upload-preview');
-
-            // Очищаем input
-            input.value = '';
-
-            // Скрываем превью, показываем label
-            if (preview) preview.classList.remove('show');
-            if (label) label.style.display = 'flex';
-        }
-    }
-}
+// Эти функции теперь определяются локально на каждой странице
+// Глобальные версии доступны через window.showUploadProgress и window.removeFile
 
 function savePodcast() {
     console.log('savePodcast called');
 
-    // Показываем индикатор загрузки
-    showUploadProgress('podcast-image', true);
-    showUploadProgress('podcast-author-photo', true);
+    // Показываем индикатор загрузки (используем глобальные функции)
+    if (window.showUploadProgress) {
+        window.showUploadProgress('podcast-image', true);
+        window.showUploadProgress('podcast-author-photo', true);
+    }
 
     // Альтернативный способ: используем FormData из самой формы
     const form = document.getElementById('podcast-form');
@@ -183,9 +150,15 @@ function savePodcast() {
             alert('Подкаст успешно добавлен');
             const modal = document.getElementById('podcast-modal');
             if (modal) modal.style.display = 'none';
-            // Очищаем форму
-            removeFile('podcast-image');
-            removeFile('podcast-author-photo');
+            // Очищаем всю форму
+            if (form) {
+                form.reset();
+            }
+            // Очищаем превью файлов
+            if (window.removeFile) {
+                window.removeFile('podcast-image');
+                window.removeFile('podcast-author-photo');
+            }
             loadPodcasts(); // Перезагружаем список
         } else {
             alert('Ошибка: ' + data.message);
@@ -194,8 +167,10 @@ function savePodcast() {
     .catch(error => {
         console.error('Ошибка сохранения подкаста:', error);
         // Скрываем индикатор загрузки
-        showUploadProgress('podcast-image', false);
-        showUploadProgress('podcast-author-photo', false);
+        if (window.showUploadProgress) {
+            window.showUploadProgress('podcast-image', false);
+            window.showUploadProgress('podcast-author-photo', false);
+        }
         alert('Ошибка сохранения подкаста');
     });
 }
@@ -412,51 +387,6 @@ function loadRemission() {
         });
 }
 
-function saveRemission() {
-    console.log('saveRemission called');
-
-    // Альтернативный способ: используем FormData из самой формы
-    const form = document.getElementById('remission-form');
-    const formData = new FormData(form);
-
-    console.log('Form element found:', !!form);
-    console.log('Form has enctype:', form.getAttribute('enctype'));
-
-    // Проверяем, что файлы добавлены
-    const imageInput = document.getElementById('remission-image');
-
-    console.log('Image input files:', imageInput.files.length);
-
-    // Логируем содержимое FormData
-    console.log('FormData contents:');
-    for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-            console.log(key, '(File):', value.name, 'size:', value.size);
-        } else {
-            console.log(key, '(Text):', value);
-        }
-    }
-
-    fetch('php/api/remission.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Элемент успешно добавлен');
-            const modal = document.getElementById('remission-modal');
-            if (modal) modal.style.display = 'none';
-            loadRemission(); // Перезагружаем список
-        } else {
-            alert('Ошибка: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Ошибка сохранения элемента remission:', error);
-        alert('Ошибка сохранения элемента');
-    });
-}
 
 function deleteRemission(itemId) {
     if (confirm('Вы уверены, что хотите удалить этот элемент?')) {
