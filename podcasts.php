@@ -223,7 +223,7 @@ $timestamp = time();
         };
     </script>
     <script src="js/admin.js?v=20241210"></script>
-
+    <script>
         // Функции для работы с загрузкой файлов
         function setupFileUpload(inputId) {
             const input = document.getElementById(inputId);
@@ -346,14 +346,25 @@ $timestamp = time();
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {
             console.log('initPodcastsPage called');
+            console.log('setupPodcastModal available:', typeof setupPodcastModal);
+            console.log('loadPodcasts available:', typeof loadPodcasts);
+
             // Инициализация только для подкастов
             if (typeof setupPodcastModal === 'function') {
+                console.log('Calling setupPodcastModal');
                 setupPodcastModal();
+            } else {
+                console.error('setupPodcastModal function not found');
             }
+
             setupFileUpload('podcast-image');
             setupFileUpload('podcast-author-photo');
+
             if (typeof loadPodcasts === 'function') {
+                console.log('Calling loadPodcasts');
                 loadPodcasts();
+            } else {
+                console.error('loadPodcasts function not found');
             }
 
             // Установка имени пользователя
@@ -369,12 +380,11 @@ $timestamp = time();
                 });
         }
 
-        // Запуск инициализации после загрузки страницы
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initPodcastsPage);
-        } else {
-            initPodcastsPage();
-        }
+        // Запуск инициализации после загрузки всех ресурсов
+        window.addEventListener('load', function() {
+            // Ждем небольшую задержку, чтобы все скрипты точно загрузились
+            setTimeout(initPodcastsPage, 100);
+        });
     </script>
 </body>
 </html>

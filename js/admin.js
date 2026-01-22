@@ -2,10 +2,13 @@
 
 // Функции для работы с подкастами (определены глобально)
 function setupPodcastModal() {
+    console.log('setupPodcastModal called');
     const modal = document.getElementById('podcast-modal');
+    console.log('Modal found:', !!modal);
     if (!modal) return; // Если модального окна нет на странице, выходим
 
     const addBtn = document.getElementById('add-podcast-btn');
+    console.log('Add button found:', !!addBtn);
     const closeBtn = document.querySelector('#podcast-modal .modal-close');
     const cancelBtn = document.getElementById('cancel-podcast-btn');
     const saveBtn = document.getElementById('save-podcast-btn');
@@ -13,6 +16,7 @@ function setupPodcastModal() {
     // Открытие модального окна
     if (addBtn) {
         addBtn.addEventListener('click', () => {
+            console.log('Add button clicked for modal');
             modal.style.display = 'block';
             const form = document.getElementById('podcast-form');
             if (form) {
@@ -306,6 +310,7 @@ function setupRemissionModal() {
     // Открытие модального окна
     if (addBtn) {
         addBtn.addEventListener('click', () => {
+            console.log('Add button clicked for modal');
             modal.style.display = 'block';
             const form = document.getElementById('remission-form');
             if (form) {

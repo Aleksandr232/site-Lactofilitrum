@@ -526,12 +526,11 @@ $timestamp = time();
                 });
         }
 
-        // Запуск инициализации после загрузки страницы
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initRemissionPage);
-        } else {
-            initRemissionPage();
-        }
+        // Запуск инициализации после загрузки всех ресурсов
+        window.addEventListener('load', function() {
+            // Ждем небольшую задержку, чтобы все скрипты точно загрузились
+            setTimeout(initRemissionPage, 100);
+        });
     </script>
 </body>
 </html>
