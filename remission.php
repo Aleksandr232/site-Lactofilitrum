@@ -136,6 +136,51 @@ $timestamp = time();
         </div>
     </div>
 
+    <script>
+        // Глобальные функции для совместимости (определяем до загрузки admin.js)
+        window.showUploadProgress = function(inputId, show) {
+            console.log('showUploadProgress called for:', inputId, 'show:', show);
+            // Элемент progress находится рядом с wrapper, а не внутри него
+            const progress = document.getElementById(inputId + '-progress');
+
+            console.log('Progress element found:', !!progress);
+
+            if (progress) {
+                if (show) {
+                    progress.classList.add('show');
+                    console.log('Added show class to progress');
+                } else {
+                    progress.classList.remove('show');
+                    console.log('Removed show class from progress');
+                }
+            } else {
+                console.error('Progress element not found for inputId:', inputId);
+            }
+        };
+
+        window.removeFile = function(inputId) {
+            console.log('Removing file for:', inputId);
+            const input = document.getElementById(inputId);
+            const wrapper = input.closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+
+            console.log('Elements found:', {
+                input: !!input,
+                wrapper: !!wrapper,
+                label: !!label,
+                preview: !!preview
+            });
+
+            // Очищаем input
+            input.value = '';
+
+            // Скрываем превью, показываем label
+            preview.classList.remove('show');
+            label.style.display = 'flex';
+            console.log('File removed successfully');
+        };
+    </script>
     <script src="js/admin.js?v=20241210"></script>
     <script>
         // Функции для работы с библиотекой ремиссии (локальные для этой страницы)
@@ -319,49 +364,6 @@ $timestamp = time();
             }
         }
 
-        // Глобальные функции для совместимости (определяем в начале)
-        window.showUploadProgress = function(inputId, show) {
-            console.log('showUploadProgress called for:', inputId, 'show:', show);
-            // Элемент progress находится рядом с wrapper, а не внутри него
-            const progress = document.getElementById(inputId + '-progress');
-
-            console.log('Progress element found:', !!progress);
-
-            if (progress) {
-                if (show) {
-                    progress.classList.add('show');
-                    console.log('Added show class to progress');
-                } else {
-                    progress.classList.remove('show');
-                    console.log('Removed show class from progress');
-                }
-            } else {
-                console.error('Progress element not found for inputId:', inputId);
-            }
-        };
-
-        window.removeFile = function(inputId) {
-            console.log('Removing file for:', inputId);
-            const input = document.getElementById(inputId);
-            const wrapper = input.closest('.file-upload-wrapper');
-            const label = wrapper.querySelector('.file-upload-label');
-            const preview = wrapper.querySelector('.file-upload-preview');
-
-            console.log('Elements found:', {
-                input: !!input,
-                wrapper: !!wrapper,
-                label: !!label,
-                preview: !!preview
-            });
-
-            // Очищаем input
-            input.value = '';
-
-            // Скрываем превью, показываем label
-            preview.classList.remove('show');
-            label.style.display = 'flex';
-            console.log('File removed successfully');
-        };
 
         // Функции для работы с загрузкой файлов
         function setupFileUpload(inputId) {

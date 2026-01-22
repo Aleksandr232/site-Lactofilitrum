@@ -177,9 +177,8 @@ $timestamp = time();
         </div>
     </div>
 
-    <script src="js/admin.js?v=20241210"></script>
     <script>
-        // Глобальные функции для совместимости (определяем в начале)
+        // Глобальные функции для совместимости (определяем до загрузки admin.js)
         window.showUploadProgress = function(inputId, show) {
             console.log('showUploadProgress called for:', inputId, 'show:', show);
             // Элемент progress находится рядом с wrapper, а не внутри него
@@ -222,6 +221,8 @@ $timestamp = time();
             label.style.display = 'flex';
             console.log('File removed successfully');
         };
+    </script>
+    <script src="js/admin.js?v=20241210"></script>
 
         // Функции для работы с загрузкой файлов
         function setupFileUpload(inputId) {
