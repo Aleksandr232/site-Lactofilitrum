@@ -6,6 +6,9 @@ require_once 'php/config.php';
 initializeDatabase();
 
 require_once 'php/auth_check.php';
+
+// Генерируем timestamp для предотвращения кеширования
+$timestamp = time();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -310,14 +313,18 @@ require_once 'php/auth_check.php';
 
         // Функции для работы с загрузкой файлов
         function setupFileUpload(inputId) {
+            console.log('Setting up file upload for:', inputId);
             const input = document.getElementById(inputId);
             const wrapper = input.closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
             const progress = wrapper.querySelector('.upload-progress');
 
+            console.log('Elements found:', { input: !!input, wrapper: !!wrapper, label: !!label, preview: !!preview, progress: !!progress });
+
             // Обработка выбора файла
             input.addEventListener('change', function(e) {
+                console.log('File input changed for:', inputId);
                 handleFileSelect(e.target.files[0], inputId);
             });
 
@@ -343,12 +350,15 @@ require_once 'php/auth_check.php';
         }
 
         function handleFileSelect(file, inputId) {
+            console.log('handleFileSelect called for:', inputId, 'file:', file);
             if (!file) return;
 
             const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
             const progress = wrapper.querySelector('.upload-progress');
+
+            console.log('Wrapper elements:', { wrapper: !!wrapper, label: !!label, preview: !!preview, progress: !!progress });
 
             // Проверяем размер файла (10MB)
             const maxSize = 10 * 1024 * 1024; // 10MB
@@ -368,11 +378,15 @@ require_once 'php/auth_check.php';
             const previewName = preview.querySelector('.file-preview-name');
             const previewSize = preview.querySelector('.file-preview-size');
 
+            console.log('Preview elements:', { previewName: !!previewName, previewSize: !!previewSize });
+
             previewName.textContent = file.name;
             previewSize.textContent = formatFileSize(file.size);
 
+            console.log('Setting label display to none and adding show class to preview');
             label.style.display = 'none';
             preview.classList.add('show');
+            console.log('Preview classList:', preview.classList);
         }
 
         function removeFile(inputId) {

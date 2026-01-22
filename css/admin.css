@@ -245,7 +245,7 @@ body {
     color: #2c3e50;
 }
 
-.form-group input,
+.form-group input:not(.file-upload-input),
 .form-group select,
 .form-group textarea {
     width: 100%;
@@ -265,7 +265,8 @@ body {
 /* Кастомные стили для загрузки файлов */
 .file-upload-wrapper {
     position: relative;
-    display: block;
+    display: block !important;
+    margin-bottom: 1rem;
 }
 
 .file-upload-input {
@@ -278,17 +279,19 @@ body {
 }
 
 .file-upload-label {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    border: 2px dashed #bdc3c7;
+    border: 2px dashed #bdc3c7 !important;
     border-radius: 6px;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
     cursor: pointer;
     transition: all 0.3s ease;
     min-height: 120px;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .file-upload-label:hover {
@@ -324,7 +327,7 @@ body {
 }
 
 .file-upload-preview {
-    display: none;
+    display: none !important;
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem;
@@ -335,7 +338,7 @@ body {
 }
 
 .file-upload-preview.show {
-    display: flex;
+    display: flex !important;
 }
 
 .file-preview-info {
@@ -404,7 +407,7 @@ body {
 
 /* Скрытый спиннер загрузки для форм */
 .upload-progress {
-    display: none;
+    display: none !important;
     align-items: center;
     justify-content: center;
     padding: 1rem;
@@ -415,7 +418,7 @@ body {
 }
 
 .upload-progress.show {
-    display: flex;
+    display: flex !important;
 }
 
 .upload-progress .loading-spinner {

@@ -6,6 +6,9 @@ require_once 'php/config.php';
 initializeDatabase();
 
 require_once 'php/auth_check.php';
+
+// Генерируем timestamp для предотвращения кеширования
+$timestamp = time();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
