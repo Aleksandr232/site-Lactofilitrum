@@ -97,7 +97,32 @@ require_once 'php/auth_check.php';
                     </div>
                     <div class="form-group">
                         <label for="remission-image">Картинка:</label>
-                        <input type="file" id="remission-image" name="image" accept="image/*">
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="remission-image" name="image" accept="image/*" class="file-upload-input">
+                            <div class="file-upload-label" for="remission-image">
+                                <div>
+                                    <i class='bx bx-cloud-upload file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите файл или перетащите сюда</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="remission-image-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('remission-image')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="remission-image-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -219,6 +244,9 @@ require_once 'php/auth_check.php';
         function saveRemission() {
             console.log('saveRemission called');
 
+            // Показываем индикатор загрузки
+            showUploadProgress('remission-image', true);
+
             // Альтернативный способ: используем FormData из самой формы
             const form = document.getElementById('remission-form');
             const formData = new FormData(form);
@@ -237,10 +265,16 @@ require_once 'php/auth_check.php';
             .then(response => response.json())
             .then(data => {
                 console.log('Save response:', data);
+
+                // Скрываем индикатор загрузки
+                showUploadProgress('remission-image', false);
+
                 if (data.success) {
                     alert('Элемент успешно добавлен');
                     const modal = document.getElementById('remission-modal');
                     if (modal) modal.style.display = 'none';
+                    // Очищаем форму
+                    removeFile('remission-image');
                     loadRemission(); // Перезагружаем список
                 } else {
                     alert('Ошибка: ' + data.message);
@@ -248,6 +282,8 @@ require_once 'php/auth_check.php';
             })
             .catch(error => {
                 console.error('Ошибка сохранения элемента remission:', error);
+                // Скрываем индикатор загрузки
+                showUploadProgress('remission-image', false);
                 alert('Ошибка сохранения элемента');
             });
         }
@@ -272,12 +308,113 @@ require_once 'php/auth_check.php';
             }
         }
 
+        // Функции для работы с загрузкой файлов
+        function setupFileUpload(inputId) {
+            const input = document.getElementById(inputId);
+            const wrapper = input.closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            // Обработка выбора файла
+            input.addEventListener('change', function(e) {
+                handleFileSelect(e.target.files[0], inputId);
+            });
+
+            // Drag and drop
+            label.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                label.classList.add('dragover');
+            });
+
+            label.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                label.classList.remove('dragover');
+            });
+
+            label.addEventListener('drop', function(e) {
+                e.preventDefault();
+                label.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0], inputId);
+                }
+            });
+        }
+
+        function handleFileSelect(file, inputId) {
+            if (!file) return;
+
+            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            // Проверяем размер файла (10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                alert('Файл слишком большой. Максимальный размер: 10MB');
+                return;
+            }
+
+            // Проверяем тип файла
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
+                return;
+            }
+
+            // Показываем превью
+            const previewName = preview.querySelector('.file-preview-name');
+            const previewSize = preview.querySelector('.file-preview-size');
+
+            previewName.textContent = file.name;
+            previewSize.textContent = formatFileSize(file.size);
+
+            label.style.display = 'none';
+            preview.classList.add('show');
+        }
+
+        function removeFile(inputId) {
+            const input = document.getElementById(inputId);
+            const wrapper = input.closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+
+            // Очищаем input
+            input.value = '';
+
+            // Скрываем превью, показываем label
+            preview.classList.remove('show');
+            label.style.display = 'flex';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showUploadProgress(inputId, show) {
+            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            if (show) {
+                progress.classList.add('show');
+            } else {
+                progress.classList.remove('show');
+            }
+        }
+
         // Специфичный код для страницы библиотеки ремиссии
         function initRemissionPage() {
             console.log('initRemissionPage called');
 
             // Инициализация remission
             setupRemissionModal();
+            setupFileUpload('remission-image');
             loadRemission();
 
             // Установка имени пользователя

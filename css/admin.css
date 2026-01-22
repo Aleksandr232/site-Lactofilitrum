@@ -262,6 +262,170 @@ body {
     border-color: #3498db;
 }
 
+/* Кастомные стили для загрузки файлов */
+.file-upload-wrapper {
+    position: relative;
+    display: block;
+}
+
+.file-upload-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px dashed #bdc3c7;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    text-align: center;
+}
+
+.file-upload-label:hover {
+    border-color: #3498db;
+    background-color: #ecf0f1;
+}
+
+.file-upload-label.dragover {
+    border-color: #3498db;
+    background-color: #d4edda;
+}
+
+.file-upload-icon {
+    font-size: 2.5rem;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.file-upload-label:hover .file-upload-icon {
+    color: #3498db;
+}
+
+.file-upload-text {
+    color: #2c3e50;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.file-upload-subtext {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.file-upload-preview {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    background-color: #ecf0f1;
+    margin-top: 0.5rem;
+}
+
+.file-upload-preview.show {
+    display: flex;
+}
+
+.file-preview-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.file-preview-icon {
+    font-size: 1.5rem;
+    color: #3498db;
+    margin-right: 0.75rem;
+}
+
+.file-preview-details {
+    flex: 1;
+}
+
+.file-preview-name {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.file-preview-size {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.file-preview-remove {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    font-size: 1.2rem;
+}
+
+.file-preview-remove:hover {
+    background-color: #f8d7da;
+}
+
+/* Индикатор загрузки */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+.loading-text {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Скрытый спиннер загрузки для форм */
+.upload-progress {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.upload-progress.show {
+    display: flex;
+}
+
+.upload-progress .loading-spinner {
+    margin-right: 0.5rem;
+}
+
+.upload-progress .loading-text {
+    color: #6c757d;
+}
+
 /* Редактор контента */
 .content-editor {
     background: white;

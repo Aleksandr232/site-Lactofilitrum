@@ -97,7 +97,32 @@ require_once 'php/auth_check.php';
                     </div>
                     <div class="form-group">
                         <label for="podcast-image">Картинка подкаста:</label>
-                        <input type="file" id="podcast-image" name="image" accept="image/*">
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="podcast-image" name="image" accept="image/*" class="file-upload-input">
+                            <div class="file-upload-label" for="podcast-image">
+                                <div>
+                                    <i class='bx bx-cloud-upload file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите файл или перетащите сюда</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="podcast-image-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-image')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="podcast-image-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="podcast-author">Автор подкаста:</label>
@@ -105,7 +130,32 @@ require_once 'php/auth_check.php';
                     </div>
                     <div class="form-group">
                         <label for="podcast-author-photo">Фото автора подкаста:</label>
-                        <input type="file" id="podcast-author-photo" name="author_photo" accept="image/*">
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="podcast-author-photo" name="author_photo" accept="image/*" class="file-upload-input">
+                            <div class="file-upload-label" for="podcast-author-photo">
+                                <div>
+                                    <i class='bx bx-cloud-upload file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите файл или перетащите сюда</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="podcast-author-photo-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-author-photo')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="podcast-author-photo-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="podcast-button-link">Кнопка подкаста (ссылка):</label>
@@ -126,12 +176,114 @@ require_once 'php/auth_check.php';
 
     <script src="js/admin.js?v=20241210"></script>
     <script>
+        // Функции для работы с загрузкой файлов
+        function setupFileUpload(inputId) {
+            const input = document.getElementById(inputId);
+            const wrapper = input.closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            // Обработка выбора файла
+            input.addEventListener('change', function(e) {
+                handleFileSelect(e.target.files[0], inputId);
+            });
+
+            // Drag and drop
+            label.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                label.classList.add('dragover');
+            });
+
+            label.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                label.classList.remove('dragover');
+            });
+
+            label.addEventListener('drop', function(e) {
+                e.preventDefault();
+                label.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0], inputId);
+                }
+            });
+        }
+
+        function handleFileSelect(file, inputId) {
+            if (!file) return;
+
+            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            // Проверяем размер файла (10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                alert('Файл слишком большой. Максимальный размер: 10MB');
+                return;
+            }
+
+            // Проверяем тип файла
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
+                return;
+            }
+
+            // Показываем превью
+            const previewName = preview.querySelector('.file-preview-name');
+            const previewSize = preview.querySelector('.file-preview-size');
+
+            previewName.textContent = file.name;
+            previewSize.textContent = formatFileSize(file.size);
+
+            label.style.display = 'none';
+            preview.classList.add('show');
+        }
+
+        function removeFile(inputId) {
+            const input = document.getElementById(inputId);
+            const wrapper = input.closest('.file-upload-wrapper');
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+
+            // Очищаем input
+            input.value = '';
+
+            // Скрываем превью, показываем label
+            preview.classList.remove('show');
+            label.style.display = 'flex';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showUploadProgress(inputId, show) {
+            const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
+            const progress = wrapper.querySelector('.upload-progress');
+
+            if (show) {
+                progress.classList.add('show');
+            } else {
+                progress.classList.remove('show');
+            }
+        }
+
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {
             // Инициализация только для подкастов
             if (typeof setupPodcastModal === 'function') {
                 setupPodcastModal();
             }
+            setupFileUpload('podcast-image');
+            setupFileUpload('podcast-author-photo');
             if (typeof loadPodcasts === 'function') {
                 loadPodcasts();
             }

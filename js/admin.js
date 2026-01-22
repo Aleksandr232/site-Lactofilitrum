@@ -100,8 +100,44 @@ function loadPodcasts() {
         });
 }
 
+function showUploadProgress(inputId, show) {
+    const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
+    if (wrapper) {
+        const progress = wrapper.querySelector('.upload-progress');
+        if (progress) {
+            if (show) {
+                progress.classList.add('show');
+            } else {
+                progress.classList.remove('show');
+            }
+        }
+    }
+}
+
+function removeFile(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        const wrapper = input.closest('.file-upload-wrapper');
+        if (wrapper) {
+            const label = wrapper.querySelector('.file-upload-label');
+            const preview = wrapper.querySelector('.file-upload-preview');
+
+            // Очищаем input
+            input.value = '';
+
+            // Скрываем превью, показываем label
+            if (preview) preview.classList.remove('show');
+            if (label) label.style.display = 'flex';
+        }
+    }
+}
+
 function savePodcast() {
     console.log('savePodcast called');
+
+    // Показываем индикатор загрузки
+    showUploadProgress('podcast-image', true);
+    showUploadProgress('podcast-author-photo', true);
 
     // Альтернативный способ: используем FormData из самой формы
     const form = document.getElementById('podcast-form');
@@ -133,10 +169,17 @@ function savePodcast() {
     })
     .then(response => response.json())
     .then(data => {
+        // Скрываем индикатор загрузки
+        showUploadProgress('podcast-image', false);
+        showUploadProgress('podcast-author-photo', false);
+
         if (data.success) {
             alert('Подкаст успешно добавлен');
             const modal = document.getElementById('podcast-modal');
             if (modal) modal.style.display = 'none';
+            // Очищаем форму
+            removeFile('podcast-image');
+            removeFile('podcast-author-photo');
             loadPodcasts(); // Перезагружаем список
         } else {
             alert('Ошибка: ' + data.message);
@@ -144,6 +187,9 @@ function savePodcast() {
     })
     .catch(error => {
         console.error('Ошибка сохранения подкаста:', error);
+        // Скрываем индикатор загрузки
+        showUploadProgress('podcast-image', false);
+        showUploadProgress('podcast-author-photo', false);
         alert('Ошибка сохранения подкаста');
     });
 }
