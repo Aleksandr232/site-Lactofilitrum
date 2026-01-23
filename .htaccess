@@ -7,8 +7,8 @@ RewriteCond %{HTTPS} off
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Перенаправление на index.html для корневого URL
-RewriteRule ^/?$ index.html [L]
+# Перенаправление на index.php для корневого URL
+RewriteRule ^/?$ index.php [L]
 
 # Перенаправление /admin на admin.php
 RewriteRule ^admin/?$ admin.php [L]
