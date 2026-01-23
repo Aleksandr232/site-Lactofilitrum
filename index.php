@@ -28,11 +28,11 @@ $timestamp = time();
 				<div class="mobile_header_top d_flex a_items_center j_content_between">
 					<div class="mobile_header_logo">
 						<a href="#">
-							<img src="img/logo_header.svg" alt=""/>
+							<img src="frontend/img/logo_header.svg" alt=""/>
 						</a>
 					</div>
 					<div class="mobile_header_close">
-						<img src="img/icon_menu_close.svg" alt=""/>
+						<img src="frontend/img/icon_menu_close.svg" alt=""/>
 					</div>
 				</div>
 				<div class="mobile_header_menu">
