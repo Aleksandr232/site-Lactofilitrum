@@ -890,6 +890,8 @@ $timestamp = time();
 						var btnText = (p.button_link && p.button_link.trim()) ? p.button_link : 'Подробнее';
 						var linkText = (p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Получить памятку с кратким содержанием выпуска';
 						var linkHref = p.extra_link ? url(p.extra_link) : '#';
+						var slug = (p.slug && p.slug.trim()) ? p.slug : '';
+						var btnHref = slug ? '/single/' + escAttr(slug) : '#';
 						var slide = document.createElement('div');
 						slide.className = 'swiper-slide';
 						slide.innerHTML =
@@ -912,7 +914,7 @@ $timestamp = time();
 								'</div>' +
 								'<div class="podcasts_bottom d_flex a_items_center">' +
 									'<div class="podcasts_btn">' +
-										'<a href="#" class="btn btn_green">' + esc(btnText) + '</a>' +
+										'<a href="' + btnHref + '" class="btn btn_green">' + esc(btnText) + '</a>' +
 									'</div>' +
 									'<div class="podcasts_note">' +
 										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +

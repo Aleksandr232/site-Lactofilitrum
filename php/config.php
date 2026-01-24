@@ -110,6 +110,7 @@ function createTables($pdo) {
             CREATE TABLE IF NOT EXISTS podcasts (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
+                slug VARCHAR(255) DEFAULT NULL,
                 description TEXT,
                 image VARCHAR(500),
                 author VARCHAR(255),
@@ -136,10 +137,20 @@ function createTables($pdo) {
             $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
             error_log("Колонка extra_link добавлена в podcasts");
         }
+        // Миграция: добавить slug, если колонки ещё нет
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'slug'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN slug VARCHAR(255) DEFAULT NULL AFTER title");
+            $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
+            error_log("Колонка slug добавлена в podcasts");
+        }
 
         // Создаем индексы для podcasts
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_title ON podcasts(title)");
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_author ON podcasts(author)");
+        try {
+            $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
+        } catch (PDOException $e) { /* уже есть */ }
         error_log("Индексы для podcasts созданы");
 
         // Создаем таблицу remission_library
@@ -267,6 +278,7 @@ function ensureTablesExist($pdo) {
                     CREATE TABLE IF NOT EXISTS podcasts (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         title VARCHAR(255) NOT NULL,
+                        slug VARCHAR(255) DEFAULT NULL,
                         description TEXT,
                         image VARCHAR(500),
                         author VARCHAR(255),
@@ -326,6 +338,40 @@ function ensureTablesExist($pdo) {
     } catch (PDOException $e) {
         error_log("Ошибка миграции extra_link для podcasts: " . $e->getMessage());
     }
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'slug'");
+        if ($stmt && $stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN slug VARCHAR(255) DEFAULT NULL AFTER title");
+            try {
+                $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
+            } catch (PDOException $e) { /* индекс уже есть */ }
+            error_log("Колонка slug добавлена в podcasts (миграция ensureTablesExist)");
+        }
+        // Обратная заливка slug для старых записей (где slug IS NULL или пустой)
+        $stmt = $pdo->query("SELECT id, title FROM podcasts WHERE slug IS NULL OR slug = ''");
+        if ($stmt) {
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rows as $row) {
+                $baseSlug = slugify($row['title']);
+                $slug = $baseSlug;
+                $n = 2;
+                while (true) {
+                    $chk = $pdo->prepare("SELECT id FROM podcasts WHERE slug = ? AND id != ? LIMIT 1");
+                    $chk->execute([$slug, (int) $row['id']]);
+                    if (!$chk->fetch()) break;
+                    $slug = $baseSlug . '-' . $n;
+                    $n++;
+                }
+                $up = $pdo->prepare("UPDATE podcasts SET slug = ? WHERE id = ?");
+                $up->execute([$slug, (int) $row['id']]);
+            }
+            if (count($rows) > 0) {
+                error_log("Обратная заливка slug: обновлено " . count($rows) . " подкастов");
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка миграции slug для podcasts: " . $e->getMessage());
+    }
 
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
     try {
@@ -374,6 +420,27 @@ function connectDB() {
 // Функция для очистки входных данных
 function sanitize($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+}
+
+// Транслит кириллицы → латиница для slug (SEO-friendly URL)
+function slugify($str) {
+    $str = trim($str);
+    if ($str === '') return 'podcast';
+    $map = [
+        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'e', 'ж' => 'zh', 'з' => 'z',
+        'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r',
+        'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch',
+        'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+        'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z',
+        'И' => 'I', 'Й' => 'Y', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R',
+        'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'Ts', 'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch',
+        'Ъ' => '', 'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
+    ];
+    $str = strtr($str, $map);
+    $str = mb_strtolower($str, 'UTF-8');
+    $str = preg_replace('/[^a-z0-9]+/u', '-', $str);
+    $str = trim($str, '-');
+    return $str === '' ? 'podcast' : $str;
 }
 
 // Функция для проверки авторизации

@@ -21,3 +21,6 @@ RewriteRule ^remission/?$ remission.php [L]
 
 # Перенаправление /login на login.php
 RewriteRule ^login/?$ login.php [L]
+
+# Страница подкаста по slug: /single/atopiya-bez-paniki
+RewriteRule ^single/([a-z0-9\-]+)/?$ single.php?slug=$1 [L,QSA]

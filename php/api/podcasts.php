@@ -209,12 +209,25 @@ try {
 
     switch ($method) {
         case 'GET':
-            // Получить все подкасты (без авторизации)
-            $stmt = $conn->prepare("SELECT * FROM podcasts ORDER BY created_at DESC");
-            $stmt->execute();
-            $podcasts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            echo json_encode(['success' => true, 'podcasts' => $podcasts], JSON_UNESCAPED_UNICODE);
+            $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+            if ($slug !== '') {
+                // Один подкаст по slug (для single.php)
+                $stmt = $conn->prepare("SELECT * FROM podcasts WHERE slug = ? LIMIT 1");
+                $stmt->execute([$slug]);
+                $podcast = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($podcast) {
+                    echo json_encode(['success' => true, 'podcast' => $podcast], JSON_UNESCAPED_UNICODE);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(['success' => false, 'message' => 'Подкаст не найден'], JSON_UNESCAPED_UNICODE);
+                }
+            } else {
+                // Все подкасты (для слайдера)
+                $stmt = $conn->prepare("SELECT * FROM podcasts ORDER BY created_at DESC");
+                $stmt->execute();
+                $podcasts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode(['success' => true, 'podcasts' => $podcasts], JSON_UNESCAPED_UNICODE);
+            }
             break;
 
         case 'POST':
@@ -254,12 +267,23 @@ try {
             ];
             error_log('Debug info: ' . json_encode($debug_info));
 
+            $baseSlug = slugify($title);
+            $slug = $baseSlug;
+            $n = 2;
+            while (true) {
+                $stmt = $conn->prepare("SELECT id FROM podcasts WHERE slug = ? LIMIT 1");
+                $stmt->execute([$slug]);
+                if (!$stmt->fetch()) break;
+                $slug = $baseSlug . '-' . $n;
+                $n++;
+            }
+
             $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link, extra_link, video_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO podcasts (title, slug, description, image, author, author_photo, button_link, additional_link, extra_link, video_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
+            $result = $stmt->execute([$title, $slug, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);

@@ -1,18 +1,48 @@
 <?php
-// Генерируем timestamp для предотвращения кеширования
+require_once __DIR__ . '/php/config.php';
+
 $timestamp = time();
+$slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+
+if ($slug === '') {
+    header('Location: /');
+    exit;
+}
+
+$conn = connectDB();
+$stmt = $conn->prepare("SELECT * FROM podcasts WHERE slug = ? LIMIT 1");
+$stmt->execute([$slug]);
+$p = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$p) {
+    header('Location: /');
+    exit;
+}
+
+function asset_url($path) {
+    if (!$path) return '';
+    if (strpos($path, 'http') === 0) return $path;
+    return '/' . ltrim($path, '/');
+}
+
+$img_url = asset_url($p['image']);
+$author_photo_url = asset_url($p['author_photo']);
+$video_url = asset_url($p['video_path']);
+$extra_href = !empty($p['extra_link']) ? (strpos($p['extra_link'], 'http') === 0 ? $p['extra_link'] : '/' . ltrim($p['extra_link'], '/')) : '#';
+$link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подписаться';
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="<?php echo htmlspecialchars($p['description'] ?? $p['title'], ENT_QUOTES, 'UTF-8'); ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/swiper-bundle.min.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/choices.min.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/style.css?v=<?php echo $timestamp; ?>" />
-		<title>Main</title>
+		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Lactofilitrum</title>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -23,7 +53,7 @@ $timestamp = time();
 			<div class="container">
 				<div class="mobile_header_top d_flex a_items_center j_content_between">
 					<div class="mobile_header_logo">
-						<a href="#">
+						<a href="/">
 							<img src="frontend/img/logo_header.svg" alt=""/>
 						</a>
 					</div>
@@ -33,10 +63,10 @@ $timestamp = time();
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="#">Подкасты</a></li>
-						<li><a href="#">О Лактофильтруме</a></li>
-						<li><a href="#">Библиотека ремиссии</a></li>
-						<li><a href="#">Получить бонус</a></li>
+						<li><a href="/">Подкасты</a></li>
+						<li><a href="/">О Лактофильтруме</a></li>
+						<li><a href="/">Библиотека ремиссии</a></li>
+						<li><a href="/">Получить бонус</a></li>
 					</ul>
 				</div>
 			</div>
@@ -46,7 +76,7 @@ $timestamp = time();
 				<div class="header_top d_flex j_content_between">
 					<div class="header_top_left">
 						<div class="header_logo">
-							<a href="#">
+							<a href="/">
 								<img src="frontend/img/logo_header.svg" alt=""/>
 							</a>
 						</div>
@@ -59,10 +89,10 @@ $timestamp = time();
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="#">Подкасты</a></li>
-								<li><a href="#">О Лактофильтруме</a></li>
-								<li><a href="#">Библиотека ремиссии</a></li>
-								<li><a href="#">Получить бонус</a></li>
+								<li><a href="/">Подкасты</a></li>
+								<li><a href="/">О Лактофильтруме</a></li>
+								<li><a href="/">Библиотека ремиссии</a></li>
+								<li><a href="/">Получить бонус</a></li>
 							</ul>
 						</div>
 					</div>
@@ -74,39 +104,53 @@ $timestamp = time();
 		</header>
 		<div class="main">
 			<div class="container">
-				<h1 class="single_title">Атопия без паники: как говорить с родителями</h1>
+				<h1 class="single_title"><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?></h1>
 				<div class="single_speaker d_flex a_items_center">
 					<div class="single_speaker_image">
-						<img src="/img/temp/single_speaker_image.jpg" alt=""/>
+						<?php if ($author_photo_url): ?>
+							<img src="<?php echo htmlspecialchars($author_photo_url, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p['author'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"/>
+						<?php else: ?>
+							<img src="frontend/img/temp/single_speaker_image.jpg" alt=""/>
+						<?php endif; ?>
 					</div>
 					<div class="single_speaker_info">
 						<div class="single_speaker_title">Спикер</div>
-						<div class="single_speaker_name">Тамразова Ольга Борисовна</div>
-						<div class="single_speaker_position">профессор</div>
+						<div class="single_speaker_name"><?php echo htmlspecialchars($p['author'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
 					</div>
 				</div>
 				<div class="single_cols d_flex f_wrap">
 					<div class="single_col single_col_left">
 						<div class="single_content">
+							<!-- <?php if (!empty($p['description'])): ?>
+								<p><strong><?php echo nl2br(htmlspecialchars($p['description'], ENT_QUOTES, 'UTF-8')); ?></strong></p>
+							<?php endif; ?> -->
 							<p><strong>Профессор дает практические советы, как общаться с эмоциональными мамами детей-атопиков, как правильно объяснять схему лечения и обеспечить соблюдение рекомендаций</strong></p>
-							<ul>
-								<li>Эмпатия и доверие: как выстроить контакт с родителем ребёнка-атопика</li>
-								<li>Информирование и сопровождение: как обучать и мотивировать родителей</li>
-							</ul>
-							<p>Подпишись и получи чек-лист от гостя</p>
+                            <ul>
+                                <li>Эмпатия и доверие: как выстроить контакт с родителем ребёнка-атопика</li>
+                                <li>Информирование и сопровождение: как обучать и мотивировать родителей</li>
+                            </ul>
+                            <p>Подпишись и получи чек-лист от гостя</p>
 						</div>
 						<div class="single_btns d_flex">
-							<div class="single_btn">
-								<a href="video.mp4" class="btn btn_blue" data-fancybox>Слушать</a>
-							</div>
-							<div class="single_btn">
-								<a href="#" class="btn btn_blue_transparent">Подписаться</a>
-							</div>
+							<?php if ($video_url): ?>
+								<div class="single_btn">
+									<a href="<?php echo htmlspecialchars($video_url, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue" data-fancybox>Слушать</a>
+								</div>
+							<?php endif; ?>
+							<?php if ($extra_href !== '#'): ?>
+								<div class="single_btn">
+									<a href="<?php echo htmlspecialchars($extra_href, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue_transparent"<?php echo $extra_href[0] === 'h' ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo htmlspecialchars($link_text, ENT_QUOTES, 'UTF-8'); ?></a>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 					<div class="single_col single_col_right">
 						<div class="single_image">
-							<img src="frontend/img/temp/single_image.jpg" alt=""/>
+							<?php if ($img_url): ?>
+								<img src="<?php echo htmlspecialchars($img_url, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?>"/>
+							<?php else: ?>
+								<img src="frontend/img/temp/single_image.jpg" alt=""/>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>
@@ -147,7 +191,7 @@ $timestamp = time();
 								<div class="footer_info">АО «Отисифарм»</div>
 								<div class="footer_info">123112, г. Москва, вн.тер.г. <br>муниципальный округ Пресненский, <br>ул. Тестовская, д. 10, помещ. 1/16</div>
 								<div class="footer_info">
-									Телефон: <a href="+74952211800">+7 (495) 221-18-00</a><br>
+									Телефон: <a href="tel:+74952211800">+7 (495) 221-18-00</a><br>
 									Факс: <a href="tel:+74952211802">+7 (495) 221-18-02</a><br>
 									E-mail: <a href="mailto:synapse@otcpharm.ru">synapse@otcpharm.ru</a>
 								</div>
