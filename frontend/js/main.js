@@ -26,6 +26,7 @@ $(document).ready(function() {
 	if($('.podcasts_slider').length != 0) {
 		$('.podcasts_slider').each(function() {
 			var slider = $(this);
+			if (slider.data('podcasts-dynamic')) return; // подкасты подгружаются из API на index
 			var sliderWrapper = slider.closest('.slider_wrapper');
 			var paginationEl = slider.find('.swiper-pagination');
 			

@@ -158,185 +158,14 @@ $timestamp = time();
 						</div>
 					</div>
 				</div>
-				<div class="podcasts_slider swiper" data-aos="fade-up">
+				<div class="podcasts_slider swiper" data-aos="fade-up" data-podcasts-dynamic>
 					<div class="swiper-wrapper">
-						<div class="swiper-slide">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Назначение лекарств и правовые риски</div>
-								<div class="podcasts_item_desc">Медицинский юрист разбирает сложные и дискуссионные юридические вопросы, которые часто возникают в амбулаторной врачебной практике </div>
-								<div class="podcasts_item_preview">
-									<div class="podcasts_preview_image">
-										<img src="frontend/img/temp/podcasts_item_1.jpg" alt=""/>
-									</div>
-								</div>
-								<div class="podcasts_item_profile d_flex a_items_center">
-									<div class="podcasts_profile_image">
-										<img src="frontend/img/temp/register_profile_image.jpg" alt=""/>
-									</div>
-									<div class="podcasts_profile_info">
-										<div class="podcasts_profile_title">Спикер:</div>
-										<div class="podcasts_profile_desc">Медицинский юрист И. О. Печерей </div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Подробнее</a>
-									</div>
-									<div class="podcasts_note">
-										<a href="#">Получить памятку с кратким содержанием выпуска</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Юридический минимум на амбулаторном приеме</div>
-								<div class="podcasts_item_desc">Медицинский юрист разбирает сложные и дискуссионные юридические вопросы, которые часто возникают в амбулаторной врачебной практике</div>
-								<div class="podcasts_item_preview">
-									<div class="podcasts_preview_image">
-										<img src="frontend/img/temp/podcasts_item_2.jpg" alt=""/>
-									</div>
-								</div>
-								<div class="podcasts_item_profile d_flex a_items_center">
-									<div class="podcasts_profile_image">
-										<img src="frontend/img/temp/register_profile_image.jpg" alt=""/>
-									</div>
-									<div class="podcasts_profile_info">
-										<div class="podcasts_profile_title">Спикер:</div>
-										<div class="podcasts_profile_desc">Медицинский юрист И. О. Печерей </div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Подробнее</a>
-									</div>
-									<div class="podcasts_note">
-										<a href="#">Получить памятку с кратким содержанием выпуска</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Атопия без паники: как говорить с родителями</div>
-								<div class="podcasts_item_desc">Профессор дает практические советы, как общаться с эмоциональными мамами детей-атопиков, как правильно объяснять схему лечения и обеспечить соблюдение рекомендаций</div>
-								<div class="podcasts_item_preview">
-									<div class="podcasts_preview_image">
-										<img src="frontend/img/temp/podcasts_item_3.jpg" alt=""/>
-									</div>
-									<div class="podcasts_preview_overlay d_flex f_direction_column j_content_between">
-										<div class="podcasts_preview_overlay__tag"><span>СКОРО</span></div>
-										<div class="podcasts_preview_overlay__title"> Зарегистрироваться и послушать первым</div>
-									</div>
-								</div>
-								<div class="podcasts_item_profile d_flex a_items_center">
-									<div class="podcasts_profile_image">
-										<img src="frontend/img/temp/register_profile_image_2.jpg" alt=""/>
-									</div>
-									<div class="podcasts_profile_info">
-										<div class="podcasts_profile_title">Спикер:</div>
-										<div class="podcasts_profile_desc">профессор — Тамразова Ольга Борисовна</div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Зарегистрироваться</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Кожа и ЖКТ: внутренние причины кожных симптомов</div>
-								<div class="podcasts_item_desc">Эксперт о стратегии комплексного подхода к лечению кожных заболеваний</div>
-								<div class="podcasts_item_preview">
-									<div class="podcasts_preview_image">
-										<img src="frontend/img/temp/podcasts_item_4.jpg" alt=""/>
-									</div>
-								</div>
-								<div class="podcasts_item_profile d_flex a_items_center">
-									<div class="podcasts_profile_image">
-										<img src="frontend/img/temp/register_profile_image_3.jpg" alt=""/>
-									</div>
-									<div class="podcasts_profile_info">
-										<div class="podcasts_profile_title">Спикер:</div>
-										<div class="podcasts_profile_desc">профессор — Мигачева Наталья Бегиевна</div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Подробнее</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide podcasts-slide-large">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Атопия без паники: как говорить с родителями</div>
-								<div class="podcasts_item_desc">Педиатр дает практические советы, как общаться с эмоциональными мамами детей-атопиков, как правильно объяснять схему лечения и обеспечить соблюдение рекомендаций</div>
-								<div class="podcasts_item_images">
-									<div class="row row_podcasts_item_images d_flex f_wrap">
-										<div class="col col-2">
-											<div class="podcasts_item_image">
-												<div class="podcasts_item_image_inside">
-													<img src="frontend/img/temp/podcasts_item_small_1.jpg" alt=""/>
-												</div>
-												<div class="podcasts_item_image_overlay d_flex a_items_end">Выпуск 1</div>
-											</div>
-											<div class="podcasts_item_image_title">Название выпуска</div>
-										</div>
-										<div class="col col-2">
-											<div class="podcasts_item_image">
-												<div class="podcasts_item_image_inside">
-													<img src="frontend/img/temp/podcasts_item_small_2.jpg" alt=""/>
-												</div>
-												<div class="podcasts_item_image_overlay d_flex a_items_end">Выпуск 2</div>
-											</div>
-											<div class="podcasts_item_image_title">Название выпуска</div>
-										</div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Подробнее</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide podcasts-slide-large">
-							<div class="podcasts_slider_item">
-								<div class="podcasts_item_title">Атопия без паники: как говорить с родителями</div>
-								<div class="podcasts_item_desc">Педиатр дает практические советы, как общаться с эмоциональными мамами детей-атопиков, как правильно объяснять схему лечения и обеспечить соблюдение рекомендаций</div>
-								<div class="podcasts_item_images">
-									<div class="row row_podcasts_item_images d_flex f_wrap">
-										<div class="col col-2">
-											<div class="podcasts_item_image">
-												<div class="podcasts_item_image_inside">
-													<img src="frontend/img/temp/podcasts_item_small_1.jpg" alt=""/>
-												</div>
-												<div class="podcasts_item_image_overlay d_flex a_items_end">Выпуск 1</div>
-											</div>
-											<div class="podcasts_item_image_title">Название выпуска</div>
-										</div>
-										<div class="col col-2">
-											<div class="podcasts_item_image">
-												<div class="podcasts_item_image_inside">
-													<img src="frontend/img/temp/podcasts_item_small_2.jpg" alt=""/>
-												</div>
-												<div class="podcasts_item_image_overlay d_flex a_items_end">Выпуск 2</div>
-											</div>
-											<div class="podcasts_item_image_title">Название выпуска</div>
-										</div>
-									</div>
-								</div>
-								<div class="podcasts_bottom d_flex a_items_center">
-									<div class="podcasts_btn">
-										<a href="#" class="btn btn_green">Подробнее</a>
-									</div>
-								</div>
-							</div>
+						<!-- Слайды подкастов подгружаются из API -->
+						<div class="podcasts-slider-placeholder" style="padding: 2rem; text-align: center; color: #666;">
+							Загрузка подкастов…
 						</div>
 					</div>
+					<div class="swiper-pagination"></div>
 				</div>
 			</div>
 		</div>
@@ -1025,5 +854,115 @@ $timestamp = time();
 	<script type="text/javascript" src="frontend/js/aos.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/fancybox.umd.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/main.js?v=<?php echo $timestamp; ?>"></script>
+	<script>
+	(function() {
+		var slider = document.querySelector('.podcasts_slider[data-podcasts-dynamic]');
+		if (!slider) return;
+		var wrapper = slider.querySelector('.swiper-wrapper');
+		var sliderWrapper = slider.closest('.slider_wrapper');
+
+		function url(path) {
+			if (!path) return '#';
+			if (path.indexOf('http') === 0) return path;
+			return (window.location.origin + '/' + path.replace(/^\//, ''));
+		}
+
+		function esc(s) {
+			if (s == null || s === '') return '';
+			var div = document.createElement('div');
+			div.textContent = s;
+			return div.innerHTML;
+		}
+		function escAttr(s) {
+			return esc(s).replace(/"/g, '&quot;');
+		}
+
+		fetch('php/api/podcasts.php')
+			.then(function(r) { return r.json(); })
+			.then(function(data) {
+				wrapper.innerHTML = '';
+				if (!data.success || !data.podcasts || data.podcasts.length === 0) {
+					wrapper.innerHTML = '<div class="swiper-slide" style="padding: 2rem; text-align: center; color: #666;">Нет подкастов</div>';
+				} else {
+					data.podcasts.forEach(function(p) {
+						var imgSrc = p.image ? url(p.image) : '';
+						var authorImgSrc = p.author_photo ? url(p.author_photo) : '';
+						var btnHref = p.button_link ? url(p.button_link) : '#';
+						var noteHref = p.additional_link ? url(p.additional_link) : '#';
+						var slide = document.createElement('div');
+						slide.className = 'swiper-slide';
+						slide.innerHTML =
+							'<div class="podcasts_slider_item">' +
+								'<div class="podcasts_item_title">' + esc(p.title) + '</div>' +
+								'<div class="podcasts_item_desc">' + esc(p.description || '') + '</div>' +
+								'<div class="podcasts_item_preview">' +
+									'<div class="podcasts_preview_image">' +
+										(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
+									'</div>' +
+								'</div>' +
+								'<div class="podcasts_item_profile d_flex a_items_center">' +
+									'<div class="podcasts_profile_image">' +
+										(authorImgSrc ? '<img src="' + escAttr(authorImgSrc) + '" alt="' + escAttr(p.author || '') + '"/>' : '') +
+									'</div>' +
+									'<div class="podcasts_profile_info">' +
+										'<div class="podcasts_profile_title">Спикер:</div>' +
+										'<div class="podcasts_profile_desc">' + esc(p.author || '') + '</div>' +
+									'</div>' +
+								'</div>' +
+								'<div class="podcasts_bottom d_flex a_items_center">' +
+									'<div class="podcasts_btn">' +
+										'<a href="' + escAttr(btnHref) + '" class="btn btn_green">Подробнее</a>' +
+									'</div>' +
+									'<div class="podcasts_note">' +
+										'<a href="' + escAttr(noteHref) + '">Получить памятку с кратким содержанием выпуска</a>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+						wrapper.appendChild(slide);
+					});
+				}
+
+				var paginationEl = slider.querySelector('.swiper-pagination');
+				if (!paginationEl) {
+					paginationEl = document.createElement('div');
+					paginationEl.className = 'swiper-pagination';
+					slider.appendChild(paginationEl);
+				}
+				var prevEl = sliderWrapper ? sliderWrapper.querySelector('.slider_arr_left') : null;
+				var nextEl = sliderWrapper ? sliderWrapper.querySelector('.slider_arr_right') : null;
+				new Swiper(slider, {
+					slidesPerView: 'auto',
+					spaceBetween: 20,
+					navigation: {
+						prevEl: prevEl,
+						nextEl: nextEl
+					},
+					pagination: {
+						el: paginationEl,
+						clickable: true,
+						enabled: window.innerWidth <= 1024
+					},
+					breakpoints: {
+						1025: {
+							pagination: { enabled: false }
+						}
+					},
+					on: {
+						resize: function() {
+							if (window.innerWidth <= 1024) {
+								this.pagination.enable();
+							} else {
+								this.pagination.disable();
+							}
+						}
+					}
+				});
+			})
+			.catch(function(err) {
+				console.error('Ошибка загрузки подкастов:', err);
+				wrapper.innerHTML = '<div class="swiper-slide" style="padding: 2rem; text-align: center; color: #999;">Ошибка загрузки подкастов</div>';
+			});
+	})();
+	</script>
 </body>
 </html>

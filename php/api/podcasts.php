@@ -1,8 +1,9 @@
 <?php
 // API для управления подкастами
-require_once '../auth_check.php';
+// GET — без авторизации (для слайдера на главной); POST, DELETE — только для админов
+require_once __DIR__ . '/../config.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Функция для обработки загруженного изображения
 function uploadImage($file, $folder = null) {
@@ -199,17 +200,21 @@ if (!file_exists($uploadPodcastsVideos)) {
 // Получаем метод запроса
 $method = $_SERVER['REQUEST_METHOD'];
 
+if ($method !== 'GET') {
+    require_once __DIR__ . '/../auth_check.php';
+}
+
 try {
     $conn = connectDB();
 
     switch ($method) {
         case 'GET':
-            // Получить все подкасты
+            // Получить все подкасты (без авторизации)
             $stmt = $conn->prepare("SELECT * FROM podcasts ORDER BY created_at DESC");
             $stmt->execute();
-            $podcasts = $stmt->fetchAll();
+            $podcasts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            echo json_encode(['success' => true, 'podcasts' => $podcasts]);
+            echo json_encode(['success' => true, 'podcasts' => $podcasts], JSON_UNESCAPED_UNICODE);
             break;
 
         case 'POST':
