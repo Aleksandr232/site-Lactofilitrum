@@ -30,6 +30,9 @@ $author_photo_url = asset_url($p['author_photo']);
 $video_url = asset_url($p['video_path']);
 $extra_href = !empty($p['extra_link']) ? (strpos($p['extra_link'], 'http') === 0 ? $p['extra_link'] : '/' . ltrim($p['extra_link'], '/')) : '#';
 $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подписаться';
+
+// Абсолютные пути от корня — иначе на /single/slug стили и скрипты ломаются (404)
+$base = '/';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -37,11 +40,11 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="<?php echo htmlspecialchars($p['description'] ?? $p['title'], ENT_QUOTES, 'UTF-8'); ?>" />
-		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/swiper-bundle.min.css?v=<?php echo $timestamp; ?>" />
-		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/choices.min.css?v=<?php echo $timestamp; ?>" />
-		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
-		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
-		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/style.css?v=<?php echo $timestamp; ?>" />
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/swiper-bundle.min.css?v=<?php echo $timestamp; ?>" />
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/choices.min.css?v=<?php echo $timestamp; ?>" />
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/style.css?v=<?php echo $timestamp; ?>" />
 		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Lactofilitrum</title>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -54,11 +57,11 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 				<div class="mobile_header_top d_flex a_items_center j_content_between">
 					<div class="mobile_header_logo">
 						<a href="/">
-							<img src="frontend/img/logo_header.svg" alt=""/>
+							<img src="<?php echo $base; ?>frontend/img/logo_header.svg" alt=""/>
 						</a>
 					</div>
 					<div class="mobile_header_close">
-						<img src="frontend/img/icon_menu_close.svg" alt=""/>
+						<img src="<?php echo $base; ?>frontend/img/icon_menu_close.svg" alt=""/>
 					</div>
 				</div>
 				<div class="mobile_header_menu">
@@ -77,7 +80,7 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 					<div class="header_top_left">
 						<div class="header_logo">
 							<a href="/">
-								<img src="frontend/img/logo_header.svg" alt=""/>
+								<img src="<?php echo $base; ?>frontend/img/logo_header.svg" alt=""/>
 							</a>
 						</div>
 						<div class="header_tags d_flex a_items_center">
@@ -97,7 +100,7 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 						</div>
 					</div>
 					<div class="menu_btn">
-						<img src="frontend/img/icon_menu_btn.svg" alt=""/>
+						<img src="<?php echo $base; ?>frontend/img/icon_menu_btn.svg" alt=""/>
 					</div>
 				</div>
 			</div>
@@ -110,7 +113,7 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 						<?php if ($author_photo_url): ?>
 							<img src="<?php echo htmlspecialchars($author_photo_url, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p['author'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"/>
 						<?php else: ?>
-							<img src="frontend/img/temp/single_speaker_image.jpg" alt=""/>
+							<img src="<?php echo $base; ?>frontend/img/temp/single_speaker_image.jpg" alt=""/>
 						<?php endif; ?>
 					</div>
 					<div class="single_speaker_info">
@@ -149,7 +152,7 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 							<?php if ($img_url): ?>
 								<img src="<?php echo htmlspecialchars($img_url, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?>"/>
 							<?php else: ?>
-								<img src="frontend/img/temp/single_image.jpg" alt=""/>
+								<img src="<?php echo $base; ?>frontend/img/temp/single_image.jpg" alt=""/>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -159,13 +162,13 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 		<footer id="footer" class="footer">
 			<div class="footer_top">
 				<div class="footer_for_specialist">
-					<img src="frontend/img/svg/footer_specialist.svg" alt=""/>
+					<img src="<?php echo $base; ?>frontend/img/svg/footer_specialist.svg" alt=""/>
 				</div>
 			</div>
 			<div class="footer_bottom">
 				<div class="container container--small">
 					<div class="footer_logo">
-						<img src="frontend/img/svg/footer_logo.svg" alt=""/>
+						<img src="<?php echo $base; ?>frontend/img/svg/footer_logo.svg" alt=""/>
 					</div>
 					<div class="footer_bottom_cols d_flex j_content_between f_wrap">
 						<div class="footer_bottom_left">
@@ -202,13 +205,13 @@ $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подпи
 			</div>
 		</footer>
 	</div>
-	<script type="text/javascript" src="frontend/js/jquery.min.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/swiper-bundle.min.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/choices.min.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/gsap.min.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/ScrollTrigger.min.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/aos.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/fancybox.umd.js?v=<?php echo $timestamp; ?>"></script>
-	<script type="text/javascript" src="frontend/js/main.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/jquery.min.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/swiper-bundle.min.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/choices.min.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/gsap.min.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/ScrollTrigger.min.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/aos.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/fancybox.umd.js?v=<?php echo $timestamp; ?>"></script>
+	<script type="text/javascript" src="<?php echo $base; ?>frontend/js/main.js?v=<?php echo $timestamp; ?>"></script>
 </body>
 </html>
