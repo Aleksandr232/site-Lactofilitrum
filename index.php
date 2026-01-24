@@ -888,7 +888,8 @@ $timestamp = time();
 						var imgSrc = p.image ? url(p.image) : '';
 						var authorImgSrc = p.author_photo ? url(p.author_photo) : '';
 						var btnHref = p.button_link ? url(p.button_link) : '#';
-						var noteHref = p.additional_link ? url(p.additional_link) : '#';
+						var additional_link = p.additional_link;
+						var extra_link = p.extra_link ? url(p.extra_link) : '#';
 						var slide = document.createElement('div');
 						slide.className = 'swiper-slide';
 						slide.innerHTML =
@@ -914,7 +915,7 @@ $timestamp = time();
 										'<a href="' + escAttr(btnHref) + '" class="btn btn_green">Подробнее</a>' +
 									'</div>' +
 									'<div class="podcasts_note">' +
-										'<a href="' + escAttr(noteHref) + '">Получить памятку с кратким содержанием выпуска</a>' +
+										'<a href="' + escAttr(extra_link) + '">' + esc(additional_link || '') + '</a>' +
 									'</div>' +
 								'</div>' +
 							'</div>';
