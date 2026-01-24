@@ -224,6 +224,7 @@ try {
             $author = sanitize($_POST['author'] ?? '');
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
+            $extra_link = sanitize($_POST['extra_link'] ?? '');
 
             if (empty($title)) {
                 echo json_encode(['success' => false, 'message' => 'Название подкаста обязательно']);
@@ -254,11 +255,11 @@ try {
             error_log('Debug info: ' . json_encode($debug_info));
 
             $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link, video_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link, extra_link, video_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $video_path ?: null]);
+            $result = $stmt->execute([$title, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);

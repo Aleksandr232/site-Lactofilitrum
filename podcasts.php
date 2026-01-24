@@ -161,12 +161,16 @@ $timestamp = time();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="podcast-button-link">Кнопка подкаста (ссылка):</label>
+                        <label for="podcast-button-link">Кнопка подкаста (название):</label>
                         <input type="url" id="podcast-button-link" name="button_link">
                     </div>
                     <div class="form-group">
-                        <label for="podcast-additional-link">Доп. ссылка подкаста:</label>
-                        <input type="url" id="podcast-additional-link" name="additional_link">
+                        <label for="podcast-additional-link">Доп. ссылка подкаста (название):</label>
+                        <input type="name" id="podcast-additional-link" name="additional_link">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-extra-link">Доп. ссылка подкаста (ссылка)</label>
+                        <input type="url" id="podcast-extra-link" name="extra_link" placeholder="https://...">
                     </div>
                     <div class="form-group">
                         <label for="podcast-video">Видео подкаста:</label>

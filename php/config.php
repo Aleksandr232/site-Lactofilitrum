@@ -116,6 +116,7 @@ function createTables($pdo) {
                 author_photo VARCHAR(500),
                 button_link VARCHAR(500),
                 additional_link VARCHAR(500),
+                extra_link VARCHAR(500),
                 video_path VARCHAR(500),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -128,6 +129,12 @@ function createTables($pdo) {
         if ($stmt->rowCount() === 0) {
             $pdo->exec("ALTER TABLE podcasts ADD COLUMN video_path VARCHAR(500) DEFAULT NULL AFTER additional_link");
             error_log("Колонка video_path добавлена в podcasts");
+        }
+        // Миграция: добавить extra_link, если колонки ещё нет
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'extra_link'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
+            error_log("Колонка extra_link добавлена в podcasts");
         }
 
         // Создаем индексы для podcasts
@@ -266,6 +273,7 @@ function ensureTablesExist($pdo) {
                         author_photo VARCHAR(500),
                         button_link VARCHAR(500),
                         additional_link VARCHAR(500),
+                        extra_link VARCHAR(500),
                         video_path VARCHAR(500),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -308,6 +316,15 @@ function ensureTablesExist($pdo) {
         }
     } catch (PDOException $e) {
         error_log("Ошибка миграции video_path для podcasts: " . $e->getMessage());
+    }
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'extra_link'");
+        if ($stmt && $stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
+            error_log("Колонка extra_link добавлена в podcasts (миграция ensureTablesExist)");
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка миграции extra_link для podcasts: " . $e->getMessage());
     }
 
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
