@@ -21,9 +21,17 @@ function setupPodcastModal() {
             const form = document.getElementById('podcast-form');
             if (form) {
                 form.reset();
-                // Очищаем значения файловых input
-                document.getElementById('podcast-image').value = '';
-                document.getElementById('podcast-author-photo').value = '';
+                const imgInput = document.getElementById('podcast-image');
+                const authorInput = document.getElementById('podcast-author-photo');
+                const videoInput = document.getElementById('podcast-video');
+                if (imgInput) imgInput.value = '';
+                if (authorInput) authorInput.value = '';
+                if (videoInput) videoInput.value = '';
+                if (window.removeFile) {
+                    if (imgInput) window.removeFile('podcast-image');
+                    if (authorInput) window.removeFile('podcast-author-photo');
+                    if (videoInput) window.removeFile('podcast-video');
+                }
             }
         });
     }
@@ -114,6 +122,7 @@ function savePodcast() {
     if (window.showUploadProgress) {
         window.showUploadProgress('podcast-image', true);
         window.showUploadProgress('podcast-author-photo', true);
+        window.showUploadProgress('podcast-video', true);
     }
 
     // Альтернативный способ: используем FormData из самой формы
@@ -149,6 +158,7 @@ function savePodcast() {
         // Скрываем индикатор загрузки
         showUploadProgress('podcast-image', false);
         showUploadProgress('podcast-author-photo', false);
+        showUploadProgress('podcast-video', false);
 
         if (data.success) {
             alert('Подкаст успешно добавлен');
@@ -162,6 +172,7 @@ function savePodcast() {
             if (window.removeFile) {
                 window.removeFile('podcast-image');
                 window.removeFile('podcast-author-photo');
+                window.removeFile('podcast-video');
             }
             loadPodcasts(); // Перезагружаем список
         } else {
@@ -174,6 +185,7 @@ function savePodcast() {
         if (window.showUploadProgress) {
             window.showUploadProgress('podcast-image', false);
             window.showUploadProgress('podcast-author-photo', false);
+            window.showUploadProgress('podcast-video', false);
         }
         alert('Ошибка сохранения подкаста');
     });

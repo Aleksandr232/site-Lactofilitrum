@@ -168,6 +168,35 @@ $timestamp = time();
                         <label for="podcast-additional-link">Доп. ссылка подкаста:</label>
                         <input type="url" id="podcast-additional-link" name="additional_link">
                     </div>
+                    <div class="form-group">
+                        <label for="podcast-video">Видео подкаста:</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="podcast-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" class="file-upload-input">
+                            <div class="file-upload-label" for="podcast-video">
+                                <div>
+                                    <i class='bx bx-video file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите видео или перетащите сюда</div>
+                                    <div class="file-upload-subtext">MP4, WebM, OGV, MOV до 100MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="podcast-video-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-video')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="podcast-video-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -264,20 +293,27 @@ $timestamp = time();
             const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
-            const progress = wrapper.querySelector('.upload-progress');
 
-            // Проверяем размер файла (10MB)
-            const maxSize = 10 * 1024 * 1024; // 10MB
+            const isVideo = inputId === 'podcast-video';
+            const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB / 10MB
+            const maxSizeLabel = isVideo ? '100MB' : '10MB';
             if (file.size > maxSize) {
-                alert('Файл слишком большой. Максимальный размер: 10MB');
+                alert('Файл слишком большой. Максимальный размер: ' + maxSizeLabel);
                 return;
             }
 
-            // Проверяем тип файла
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-            if (!allowedTypes.includes(file.type)) {
-                alert('Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
-                return;
+            if (isVideo) {
+                const allowedVideo = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+                if (!allowedVideo.includes(file.type)) {
+                    alert('Неверный тип файла. Разрешены: MP4, WebM, OGV, MOV');
+                    return;
+                }
+            } else {
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
+                    return;
+                }
             }
 
             // Показываем превью
@@ -359,6 +395,7 @@ $timestamp = time();
 
             setupFileUpload('podcast-image');
             setupFileUpload('podcast-author-photo');
+            setupFileUpload('podcast-video');
 
             if (typeof loadPodcasts === 'function') {
                 console.log('Calling loadPodcasts');

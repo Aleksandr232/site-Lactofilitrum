@@ -116,11 +116,19 @@ function createTables($pdo) {
                 author_photo VARCHAR(500),
                 button_link VARCHAR(500),
                 additional_link VARCHAR(500),
+                video_path VARCHAR(500),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         ");
         error_log("Таблица podcasts создана");
+
+        // Миграция: добавить video_path, если колонки ещё нет
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'video_path'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN video_path VARCHAR(500) DEFAULT NULL AFTER additional_link");
+            error_log("Колонка video_path добавлена в podcasts");
+        }
 
         // Создаем индексы для podcasts
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_title ON podcasts(title)");
@@ -258,6 +266,7 @@ function ensureTablesExist($pdo) {
                         author_photo VARCHAR(500),
                         button_link VARCHAR(500),
                         additional_link VARCHAR(500),
+                        video_path VARCHAR(500),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )

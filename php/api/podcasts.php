@@ -109,7 +109,7 @@ function uploadImage($file, $folder = null) {
     return '';
 }
 
-// Функция для удаления файла изображения
+// Функция для удаления файла изображения или видео
 function deleteImageFile($filepath) {
     if (!empty($filepath)) {
         // Если путь относительный, преобразуем в полный
@@ -123,9 +123,59 @@ function deleteImageFile($filepath) {
     }
 }
 
+// Функция для загрузки видео подкаста
+function uploadVideo($file, $folder = null) {
+    if ($folder === null) {
+        $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/videos/';
+    }
+    $relativeFolder = 'uploads/podcasts/videos/';
+
+    if (!isset($file) || !is_array($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return '';
+    }
+
+    if (!file_exists($folder)) {
+        if (!@mkdir($folder, 0777, true) && !@mkdir($folder, 0755, true)) {
+            return '';
+        }
+    }
+
+    $fileName = $file['name'];
+    $fileTmpName = $file['tmp_name'];
+    $fileSize = $file['size'];
+    $maxSize = 100 * 1024 * 1024; // 100 MB
+    if ($fileSize > $maxSize) {
+        return '';
+    }
+
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $allowedExtensions = ['mp4', 'webm', 'ogv', 'mov'];
+    if (!in_array($extension, $allowedExtensions)) {
+        return '';
+    }
+
+    $filename = uniqid('podcast_video_', true) . '.' . $extension;
+    $filepath = $folder . $filename;
+
+    if (move_uploaded_file($fileTmpName, $filepath)) {
+        return $relativeFolder . $filename;
+    }
+    if (copy($fileTmpName, $filepath)) {
+        @unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    $content = @file_get_contents($fileTmpName);
+    if ($content !== false && @file_put_contents($filepath, $content) !== false) {
+        @unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    return '';
+}
+
 // Создаем необходимые папки заранее
 $uploadBase = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
 $uploadPodcasts = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/';
+$uploadPodcastsVideos = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/videos/';
 
 error_log('DOCUMENT_ROOT: ' . $_SERVER['DOCUMENT_ROOT']);
 error_log('Upload base path: ' . $uploadBase);
@@ -139,6 +189,11 @@ if (!file_exists($uploadBase)) {
 if (!file_exists($uploadPodcasts)) {
     mkdir($uploadPodcasts, 0777, true);
     error_log('Created podcasts upload folder');
+}
+
+if (!file_exists($uploadPodcastsVideos)) {
+    mkdir($uploadPodcastsVideos, 0777, true);
+    error_log('Created podcasts videos upload folder');
 }
 
 // Получаем метод запроса
@@ -174,36 +229,38 @@ try {
             error_log('FILES received: ' . print_r($_FILES, true));
             error_log('POST data: ' . print_r($_POST, true));
 
-            // Обрабатываем загруженные изображения
+            // Обрабатываем загруженные изображения и видео
             $image_path = uploadImage($_FILES['image'] ?? null);
             $author_photo_path = uploadImage($_FILES['author_photo'] ?? null);
+            $video_path = uploadVideo($_FILES['video'] ?? null);
 
             error_log('Image path result: ' . $image_path);
             error_log('Author photo path result: ' . $author_photo_path);
+            error_log('Video path result: ' . $video_path);
 
-            // Для отладки - возвращаем информацию о загрузке
             $debug_info = [
                 'files_received' => count($_FILES),
                 'image_path' => $image_path,
                 'author_photo_path' => $author_photo_path,
+                'video_path' => $video_path,
                 'upload_folder_exists' => file_exists(__DIR__ . '/../../uploads/podcasts/'),
                 'upload_folder_writable' => is_writable(__DIR__ . '/../../uploads/podcasts/')
             ];
             error_log('Debug info: ' . json_encode($debug_info));
 
             $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO podcasts (title, description, image, author, author_photo, button_link, additional_link, video_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link]);
+            $result = $stmt->execute([$title, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $video_path ?: null]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);
             } else {
-                // Если не удалось сохранить в БД, удаляем загруженные файлы
                 deleteImageFile($image_path);
                 deleteImageFile($author_photo_path);
+                deleteImageFile($video_path);
                 echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении подкаста']);
             }
             break;
@@ -218,14 +275,15 @@ try {
             }
 
             // Сначала получаем данные подкаста для удаления файлов
-            $stmt = $conn->prepare("SELECT image, author_photo FROM podcasts WHERE id = ?");
+            $stmt = $conn->prepare("SELECT image, author_photo, video_path FROM podcasts WHERE id = ?");
             $stmt->execute([$id]);
             $podcast = $stmt->fetch();
 
-            // Удаляем файлы изображений
+            // Удаляем файлы изображений и видео
             if ($podcast) {
                 deleteImageFile($podcast['image']);
                 deleteImageFile($podcast['author_photo']);
+                deleteImageFile($podcast['video_path'] ?? '');
             }
 
             // Удаляем запись из базы данных
