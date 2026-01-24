@@ -299,6 +299,17 @@ function ensureTablesExist($pdo) {
         }
     }
 
+    // Миграция video_path для podcasts: выполняется всегда (таблица уже есть или только создана)
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'video_path'");
+        if ($stmt && $stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN video_path VARCHAR(500) DEFAULT NULL AFTER additional_link");
+            error_log("Колонка video_path добавлена в podcasts (миграция ensureTablesExist)");
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка миграции video_path для podcasts: " . $e->getMessage());
+    }
+
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
     try {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = 'admin'");
