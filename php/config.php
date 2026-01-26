@@ -112,6 +112,7 @@ function createTables($pdo) {
                 title VARCHAR(255) NOT NULL,
                 slug VARCHAR(255) DEFAULT NULL,
                 description TEXT,
+                podcasts_text TEXT,
                 image VARCHAR(500),
                 author VARCHAR(255),
                 author_photo VARCHAR(500),
@@ -143,6 +144,12 @@ function createTables($pdo) {
             $pdo->exec("ALTER TABLE podcasts ADD COLUMN slug VARCHAR(255) DEFAULT NULL AFTER title");
             $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
             error_log("Колонка slug добавлена в podcasts");
+        }
+        // Миграция: добавить podcasts_text, если колонки ещё нет
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'podcasts_text'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE podcasts ADD COLUMN podcasts_text TEXT DEFAULT NULL AFTER description");
+            error_log("Колонка podcasts_text добавлена в podcasts");
         }
 
         // Создаем индексы для podcasts
@@ -280,6 +287,7 @@ function ensureTablesExist($pdo) {
                         title VARCHAR(255) NOT NULL,
                         slug VARCHAR(255) DEFAULT NULL,
                         description TEXT,
+                        podcasts_text TEXT,
                         image VARCHAR(500),
                         author VARCHAR(255),
                         author_photo VARCHAR(500),

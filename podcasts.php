@@ -18,6 +18,7 @@ $timestamp = time();
     <title>Подкасты - Lactofilitrum</title>
     <link rel="stylesheet" href="css/admin.css?v=<?php echo $timestamp; ?>">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
 </head>
 <body>
     <div class="admin-container">
@@ -97,6 +98,10 @@ $timestamp = time();
                     <div class="form-group">
                         <label for="podcast-description">Описание подкаста:</label>
                         <textarea id="podcast-description" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-text">Текст подкаста (HTML):</label>
+                        <textarea id="podcast-text" name="podcasts_text" rows="10"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="podcast-image">Картинка подкаста:</label>
@@ -383,11 +388,43 @@ $timestamp = time();
         }
 
 
+        // Инициализация TinyMCE редактора
+        function initTinyMCE() {
+            if (typeof tinymce !== 'undefined') {
+                tinymce.init({
+                    selector: '#podcast-text',
+                    language: 'ru',
+                    height: 400,
+                    menubar: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | formatselect | ' +
+                        'bold italic backcolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help | code',
+                    content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
+                    setup: function(editor) {
+                        editor.on('init', function() {
+                            console.log('TinyMCE initialized');
+                        });
+                    }
+                });
+            } else {
+                console.error('TinyMCE not loaded');
+            }
+        }
+
         // Специфичный код для страницы подкастов
         function initPodcastsPage() {
             console.log('initPodcastsPage called');
             console.log('setupPodcastModal available:', typeof setupPodcastModal);
             console.log('loadPodcasts available:', typeof loadPodcasts);
+
+            // Инициализация TinyMCE
+            initTinyMCE();
 
             // Инициализация только для подкастов
             if (typeof setupPodcastModal === 'function') {

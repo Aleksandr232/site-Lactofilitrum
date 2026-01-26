@@ -234,6 +234,10 @@ try {
             // Создать новый подкаст
             $title = sanitize($_POST['title'] ?? '');
             $description = sanitize($_POST['description'] ?? '');
+            // Для HTML контента используем более мягкую очистку, сохраняя HTML теги
+            $podcasts_text = !empty($_POST['podcasts_text']) ? $_POST['podcasts_text'] : '';
+            // Очищаем от потенциально опасных тегов, но сохраняем безопасные HTML теги
+            $podcasts_text = strip_tags($podcasts_text, '<p><br><strong><b><em><i><u><ul><ol><li><h1><h2><h3><h4><h5><h6><a><img><div><span><blockquote><pre><code>');
             $author = sanitize($_POST['author'] ?? '');
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
@@ -279,11 +283,11 @@ try {
             }
 
             $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, slug, description, image, author, author_photo, button_link, additional_link, extra_link, video_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $slug, $description, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
+            $result = $stmt->execute([$title, $slug, $description, $podcasts_text ?: null, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);

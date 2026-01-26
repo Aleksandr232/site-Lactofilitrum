@@ -32,6 +32,13 @@ function setupPodcastModal() {
                     if (authorInput) window.removeFile('podcast-author-photo');
                     if (videoInput) window.removeFile('podcast-video');
                 }
+                // Очищаем TinyMCE редактор
+                if (typeof tinymce !== 'undefined') {
+                    const editor = tinymce.get('podcast-text');
+                    if (editor) {
+                        editor.setContent('');
+                    }
+                }
             }
         });
     }
@@ -125,6 +132,14 @@ function savePodcast() {
         window.showUploadProgress('podcast-video', true);
     }
 
+    // Сохраняем содержимое TinyMCE в textarea перед отправкой
+    if (typeof tinymce !== 'undefined') {
+        const editor = tinymce.get('podcast-text');
+        if (editor) {
+            editor.save(); // Сохраняет содержимое редактора в textarea
+        }
+    }
+
     // Альтернативный способ: используем FormData из самой формы
     const form = document.getElementById('podcast-form');
     const formData = new FormData(form);
@@ -173,6 +188,13 @@ function savePodcast() {
                 window.removeFile('podcast-image');
                 window.removeFile('podcast-author-photo');
                 window.removeFile('podcast-video');
+            }
+            // Очищаем TinyMCE редактор
+            if (typeof tinymce !== 'undefined') {
+                const editor = tinymce.get('podcast-text');
+                if (editor) {
+                    editor.setContent('');
+                }
             }
             loadPodcasts(); // Перезагружаем список
         } else {
