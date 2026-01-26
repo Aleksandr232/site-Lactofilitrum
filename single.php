@@ -53,7 +53,6 @@ $base = '/';
 				overflow-y: auto;
 				max-height: 600px;
 				padding: 1rem;
-				border: 1px solid #e0e0e0;
 				border-radius: 4px;
 				word-wrap: break-word;
 				overflow-wrap: break-word;
