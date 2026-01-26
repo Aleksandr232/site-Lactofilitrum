@@ -235,9 +235,13 @@ try {
             $title = sanitize($_POST['title'] ?? '');
             $description = sanitize($_POST['description'] ?? '');
             // Для HTML контента используем более мягкую очистку, сохраняя HTML теги
-            $podcasts_text = !empty($_POST['podcasts_text']) ? $_POST['podcasts_text'] : '';
+            $podcasts_text = isset($_POST['podcasts_text']) ? $_POST['podcasts_text'] : '';
             // Очищаем от потенциально опасных тегов, но сохраняем безопасные HTML теги
-            $podcasts_text = strip_tags($podcasts_text, '<p><br><strong><b><em><i><u><ul><ol><li><h1><h2><h3><h4><h5><h6><a><img><div><span><blockquote><pre><code>');
+            // Разрешаем больше тегов для полноценного HTML контента
+            $allowed_tags = '<p><br><br/><strong><b><em><i><u><ul><ol><li><h1><h2><h3><h4><h5><h6><a><img><div><span><blockquote><pre><code><table><tr><td><th><tbody><thead><tfoot>';
+            $podcasts_text = strip_tags($podcasts_text, $allowed_tags);
+            // Убираем только лишние пробелы, но сохраняем содержимое
+            $podcasts_text = trim($podcasts_text);
             $author = sanitize($_POST['author'] ?? '');
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
@@ -251,6 +255,7 @@ try {
             // Логируем полученные файлы для отладки
             error_log('FILES received: ' . print_r($_FILES, true));
             error_log('POST data: ' . print_r($_POST, true));
+            error_log('podcasts_text received: ' . (isset($_POST['podcasts_text']) ? 'YES, length: ' . strlen($_POST['podcasts_text']) : 'NO'));
 
             // Обрабатываем загруженные изображения и видео
             $image_path = uploadImage($_FILES['image'] ?? null);
@@ -282,12 +287,18 @@ try {
                 $n++;
             }
 
+            // Логируем значение podcasts_text перед сохранением
+            error_log('podcasts_text before save: ' . (empty($podcasts_text) ? 'EMPTY' : 'length: ' . strlen($podcasts_text)));
+            
             $stmt = $conn->prepare("
                 INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $slug, $description, $podcasts_text ?: null, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
+            $podcasts_text_value = !empty($podcasts_text) ? $podcasts_text : null;
+            error_log('podcasts_text_value to save: ' . ($podcasts_text_value === null ? 'NULL' : 'length: ' . strlen($podcasts_text_value)));
+            
+            $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);

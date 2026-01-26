@@ -133,16 +133,48 @@ function savePodcast() {
     }
 
     // Сохраняем содержимое TinyMCE в textarea перед отправкой
+    let podcastsTextContent = '';
     if (typeof tinymce !== 'undefined') {
         const editor = tinymce.get('podcast-text');
         if (editor) {
-            editor.save(); // Сохраняет содержимое редактора в textarea
+            // Получаем содержимое напрямую из редактора
+            podcastsTextContent = editor.getContent();
+            console.log('TinyMCE content length:', podcastsTextContent.length);
+            console.log('TinyMCE content preview:', podcastsTextContent.substring(0, 200));
+            
+            // Сохраняем содержимое редактора в textarea (синхронизация)
+            editor.save();
+            
+            // Также обновляем textarea напрямую на случай, если save() не сработал
+            const textarea = document.getElementById('podcast-text');
+            if (textarea) {
+                textarea.value = podcastsTextContent;
+                console.log('Textarea updated directly');
+            }
+        } else {
+            console.warn('TinyMCE editor not found for podcast-text');
+            // Если редактор не найден, берем значение из textarea
+            const textarea = document.getElementById('podcast-text');
+            if (textarea) {
+                podcastsTextContent = textarea.value;
+            }
+        }
+    } else {
+        console.warn('TinyMCE not loaded');
+        // Если TinyMCE не загружен, берем значение из textarea
+        const textarea = document.getElementById('podcast-text');
+        if (textarea) {
+            podcastsTextContent = textarea.value;
         }
     }
 
     // Альтернативный способ: используем FormData из самой формы
     const form = document.getElementById('podcast-form');
     const formData = new FormData(form);
+    
+    // Явно устанавливаем значение podcasts_text в FormData
+    formData.set('podcasts_text', podcastsTextContent);
+    console.log('podcasts_text set in FormData, length:', podcastsTextContent.length);
 
     console.log('Form element found:', !!form);
     console.log('Form has enctype:', form.getAttribute('enctype'));
