@@ -236,12 +236,17 @@ try {
             $description = sanitize($_POST['description'] ?? '');
             // Для HTML контента используем более мягкую очистку, сохраняя HTML теги
             $podcasts_text = isset($_POST['podcasts_text']) ? $_POST['podcasts_text'] : '';
+            error_log('podcasts_text raw from POST: ' . (empty($podcasts_text) ? 'EMPTY' : 'length: ' . strlen($podcasts_text) . ', content: ' . substr($podcasts_text, 0, 100)));
+            
             // Очищаем от потенциально опасных тегов, но сохраняем безопасные HTML теги
             // Разрешаем больше тегов для полноценного HTML контента
             $allowed_tags = '<p><br><br/><strong><b><em><i><u><ul><ol><li><h1><h2><h3><h4><h5><h6><a><img><div><span><blockquote><pre><code><table><tr><td><th><tbody><thead><tfoot>';
-            $podcasts_text = strip_tags($podcasts_text, $allowed_tags);
-            // Убираем только лишние пробелы, но сохраняем содержимое
-            $podcasts_text = trim($podcasts_text);
+            if (!empty($podcasts_text)) {
+                $podcasts_text = strip_tags($podcasts_text, $allowed_tags);
+                // Убираем только лишние пробелы, но сохраняем содержимое
+                $podcasts_text = trim($podcasts_text);
+            }
+            error_log('podcasts_text after processing: ' . (empty($podcasts_text) ? 'EMPTY' : 'length: ' . strlen($podcasts_text)));
             $author = sanitize($_POST['author'] ?? '');
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
@@ -295,10 +300,30 @@ try {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
-            $podcasts_text_value = !empty($podcasts_text) ? $podcasts_text : null;
-            error_log('podcasts_text_value to save: ' . ($podcasts_text_value === null ? 'NULL' : 'length: ' . strlen($podcasts_text_value)));
+            // Используем пустую строку вместо null, если текст есть (даже если он пустой после обработки)
+            $podcasts_text_value = isset($_POST['podcasts_text']) && $_POST['podcasts_text'] !== '' ? $podcasts_text : null;
+            error_log('podcasts_text_value to save: ' . ($podcasts_text_value === null ? 'NULL' : 'length: ' . strlen($podcasts_text_value) . ', preview: ' . substr($podcasts_text_value, 0, 100)));
+            
+            // Проверяем, что поле существует в таблице
+            try {
+                $checkField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'podcasts_text'");
+                if ($checkField->rowCount() === 0) {
+                    error_log('WARNING: Field podcasts_text does not exist in table podcasts!');
+                    // Пытаемся добавить поле
+                    $conn->exec("ALTER TABLE podcasts ADD COLUMN podcasts_text TEXT DEFAULT NULL AFTER description");
+                    error_log('Field podcasts_text added to table');
+                }
+            } catch (PDOException $e) {
+                error_log('Error checking podcasts_text field: ' . $e->getMessage());
+            }
             
             $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
+            
+            if ($result) {
+                error_log('Podcast saved successfully. podcasts_text was: ' . ($podcasts_text_value === null ? 'NULL' : 'saved with length ' . strlen($podcasts_text_value)));
+            } else {
+                error_log('Error executing INSERT statement');
+            }
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);

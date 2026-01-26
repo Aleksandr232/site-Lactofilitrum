@@ -391,6 +391,12 @@ $timestamp = time();
         // Инициализация TinyMCE редактора
         function initTinyMCE() {
             if (typeof tinymce !== 'undefined') {
+                // Удаляем предыдущий экземпляр, если он существует
+                const existingEditor = tinymce.get('podcast-text');
+                if (existingEditor) {
+                    tinymce.remove('#podcast-text');
+                }
+                
                 tinymce.init({
                     selector: '#podcast-text',
                     language: 'ru',
@@ -408,12 +414,16 @@ $timestamp = time();
                     content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
                     setup: function(editor) {
                         editor.on('init', function() {
-                            console.log('TinyMCE initialized');
+                            console.log('TinyMCE initialized successfully for podcast-text');
+                        });
+                        editor.on('change', function() {
+                            // Автоматически сохраняем содержимое в textarea при изменении
+                            editor.save();
                         });
                     }
                 });
             } else {
-                console.error('TinyMCE not loaded');
+                console.error('TinyMCE not loaded - check CDN connection');
             }
         }
 

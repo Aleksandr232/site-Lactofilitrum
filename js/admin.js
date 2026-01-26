@@ -134,29 +134,36 @@ function savePodcast() {
 
     // Сохраняем содержимое TinyMCE в textarea перед отправкой
     let podcastsTextContent = '';
+    
+    // Сначала пытаемся получить содержимое из TinyMCE
     if (typeof tinymce !== 'undefined') {
-        const editor = tinymce.get('podcast-text');
-        if (editor) {
-            // Получаем содержимое напрямую из редактора
-            podcastsTextContent = editor.getContent();
-            console.log('TinyMCE content length:', podcastsTextContent.length);
-            console.log('TinyMCE content preview:', podcastsTextContent.substring(0, 200));
-            
-            // Сохраняем содержимое редактора в textarea (синхронизация)
-            editor.save();
-            
-            // Также обновляем textarea напрямую на случай, если save() не сработал
-            const textarea = document.getElementById('podcast-text');
-            if (textarea) {
-                textarea.value = podcastsTextContent;
-                console.log('Textarea updated directly');
+        try {
+            const editor = tinymce.get('podcast-text');
+            if (editor && !editor.isHidden()) {
+                // Получаем содержимое напрямую из редактора
+                podcastsTextContent = editor.getContent();
+                console.log('TinyMCE content retrieved, length:', podcastsTextContent.length);
+                console.log('TinyMCE content preview:', podcastsTextContent.substring(0, 200));
+                
+                // Сохраняем содержимое редактора в textarea (синхронизация)
+                editor.save();
+                console.log('TinyMCE content saved to textarea');
+            } else {
+                console.warn('TinyMCE editor not found or hidden for podcast-text');
+                // Если редактор не найден, берем значение из textarea
+                const textarea = document.getElementById('podcast-text');
+                if (textarea) {
+                    podcastsTextContent = textarea.value;
+                    console.log('Content taken from textarea (editor not available), length:', podcastsTextContent.length);
+                }
             }
-        } else {
-            console.warn('TinyMCE editor not found for podcast-text');
-            // Если редактор не найден, берем значение из textarea
+        } catch (e) {
+            console.error('Error getting TinyMCE content:', e);
+            // В случае ошибки берем значение из textarea
             const textarea = document.getElementById('podcast-text');
             if (textarea) {
                 podcastsTextContent = textarea.value;
+                console.log('Content taken from textarea (error occurred), length:', podcastsTextContent.length);
             }
         }
     } else {
@@ -165,7 +172,15 @@ function savePodcast() {
         const textarea = document.getElementById('podcast-text');
         if (textarea) {
             podcastsTextContent = textarea.value;
+            console.log('Content taken from textarea (TinyMCE not loaded), length:', podcastsTextContent.length);
         }
+    }
+    
+    // Также обновляем textarea напрямую на случай, если save() не сработал
+    const textarea = document.getElementById('podcast-text');
+    if (textarea && podcastsTextContent !== textarea.value) {
+        textarea.value = podcastsTextContent;
+        console.log('Textarea updated directly with content, length:', podcastsTextContent.length);
     }
 
     // Альтернативный способ: используем FormData из самой формы
