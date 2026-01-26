@@ -45,6 +45,32 @@ $base = '/';
 		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="<?php echo $base; ?>frontend/css/style.css?v=<?php echo $timestamp; ?>" />
+		<style>
+			.single_content {
+				max-width: 100%;
+				width: 100%;
+				overflow-x: auto;
+				overflow-y: auto;
+				max-height: 600px;
+				padding: 1rem;
+				border: 1px solid #e0e0e0;
+				border-radius: 4px;
+				word-wrap: break-word;
+				overflow-wrap: break-word;
+			}
+			.single_content * {
+				max-width: 100%;
+			}
+			.single_content img {
+				max-width: 100%;
+				height: auto;
+			}
+			.single_content table {
+				max-width: 100%;
+				display: block;
+				overflow-x: auto;
+			}
+		</style>
 		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Lactofilitrum</title>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
