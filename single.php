@@ -133,8 +133,10 @@ $base = '/';
                                 <li>Информирование и сопровождение: как обучать и мотивировать родителей</li>
                             </ul>
                             <p>Подпишись и получи чек-лист от гостя</p> -->
-							<?php if(!empty($p['podcasts_text'])): ?>
-								<?php echo nl2br(htmlspecialchars($p['podcasts_text'], ENT_QUOTES, 'UTF-8')); ?>]; ?>
+							<?php if (!empty($p['podcasts_text'])): ?>
+								<?php echo $p['podcasts_text']; ?>
+							<?php else: ?>
+								<p>Текст не загружен...</p>
 							<?php endif; ?>
 						</div>
 						<div class="single_btns d_flex">
