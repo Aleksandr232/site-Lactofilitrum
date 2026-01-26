@@ -327,58 +327,66 @@ function ensureTablesExist($pdo) {
         }
     }
 
-    // Миграция video_path для podcasts: выполняется всегда (таблица уже есть или только создана)
+    // Миграции для таблицы podcasts: выполняется всегда (таблица уже есть или только создана)
+    // Проверяем существование таблицы podcasts перед выполнением миграций
     try {
-        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'video_path'");
-        if ($stmt && $stmt->rowCount() === 0) {
-            $pdo->exec("ALTER TABLE podcasts ADD COLUMN video_path VARCHAR(500) DEFAULT NULL AFTER additional_link");
-            error_log("Колонка video_path добавлена в podcasts (миграция ensureTablesExist)");
-        }
-    } catch (PDOException $e) {
-        error_log("Ошибка миграции video_path для podcasts: " . $e->getMessage());
-    }
-    try {
-        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'extra_link'");
-        if ($stmt && $stmt->rowCount() === 0) {
-            $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
-            error_log("Колонка extra_link добавлена в podcasts (миграция ensureTablesExist)");
-        }
-    } catch (PDOException $e) {
-        error_log("Ошибка миграции extra_link для podcasts: " . $e->getMessage());
-    }
-    try {
-        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'slug'");
-        if ($stmt && $stmt->rowCount() === 0) {
-            $pdo->exec("ALTER TABLE podcasts ADD COLUMN slug VARCHAR(255) DEFAULT NULL AFTER title");
-            try {
-                $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
-            } catch (PDOException $e) { /* индекс уже есть */ }
-            error_log("Колонка slug добавлена в podcasts (миграция ensureTablesExist)");
-        }
-        // Обратная заливка slug для старых записей (где slug IS NULL или пустой)
-        $stmt = $pdo->query("SELECT id, title FROM podcasts WHERE slug IS NULL OR slug = ''");
-        if ($stmt) {
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($rows as $row) {
-                $baseSlug = slugify($row['title']);
-                $slug = $baseSlug;
-                $n = 2;
-                while (true) {
-                    $chk = $pdo->prepare("SELECT id FROM podcasts WHERE slug = ? AND id != ? LIMIT 1");
-                    $chk->execute([$slug, (int) $row['id']]);
-                    if (!$chk->fetch()) break;
-                    $slug = $baseSlug . '-' . $n;
-                    $n++;
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'podcasts'");
+        if ($tableCheck && $tableCheck->rowCount() > 0) {
+            // Миграция video_path
+            $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'video_path'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN video_path VARCHAR(500) DEFAULT NULL AFTER additional_link");
+                error_log("Колонка video_path добавлена в podcasts (миграция ensureTablesExist)");
+            }
+            
+            // Миграция extra_link
+            $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'extra_link'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
+                error_log("Колонка extra_link добавлена в podcasts (миграция ensureTablesExist)");
+            }
+            
+            // Миграция slug
+            $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'slug'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN slug VARCHAR(255) DEFAULT NULL AFTER title");
+                try {
+                    $pdo->exec("CREATE UNIQUE INDEX idx_podcasts_slug ON podcasts(slug)");
+                } catch (PDOException $e) { /* индекс уже есть */ }
+                error_log("Колонка slug добавлена в podcasts (миграция ensureTablesExist)");
+            }
+            // Обратная заливка slug для старых записей (где slug IS NULL или пустой)
+            $stmt = $pdo->query("SELECT id, title FROM podcasts WHERE slug IS NULL OR slug = ''");
+            if ($stmt) {
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($rows as $row) {
+                    $baseSlug = slugify($row['title']);
+                    $slug = $baseSlug;
+                    $n = 2;
+                    while (true) {
+                        $chk = $pdo->prepare("SELECT id FROM podcasts WHERE slug = ? AND id != ? LIMIT 1");
+                        $chk->execute([$slug, (int) $row['id']]);
+                        if (!$chk->fetch()) break;
+                        $slug = $baseSlug . '-' . $n;
+                        $n++;
+                    }
+                    $up = $pdo->prepare("UPDATE podcasts SET slug = ? WHERE id = ?");
+                    $up->execute([$slug, (int) $row['id']]);
                 }
-                $up = $pdo->prepare("UPDATE podcasts SET slug = ? WHERE id = ?");
-                $up->execute([$slug, (int) $row['id']]);
+                if (count($rows) > 0) {
+                    error_log("Обратная заливка slug: обновлено " . count($rows) . " подкастов");
+                }
             }
-            if (count($rows) > 0) {
-                error_log("Обратная заливка slug: обновлено " . count($rows) . " подкастов");
+            
+            // Миграция podcasts_text - выполняется автоматически при каждом подключении
+            $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'podcasts_text'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN podcasts_text TEXT DEFAULT NULL AFTER description");
+                error_log("Колонка podcasts_text добавлена в podcasts (миграция ensureTablesExist)");
             }
         }
     } catch (PDOException $e) {
-        error_log("Ошибка миграции slug для podcasts: " . $e->getMessage());
+        error_log("Ошибка миграции для podcasts: " . $e->getMessage());
     }
 
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
