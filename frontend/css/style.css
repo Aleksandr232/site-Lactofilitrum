@@ -261,6 +261,7 @@ body {
     background-image: url(../img/bg_ftbk.png);
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
     padding-top: 243px;
     height: 815px;
 }
