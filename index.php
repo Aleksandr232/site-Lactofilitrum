@@ -716,59 +716,60 @@ $timestamp = time();
 							<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
 						</div> -->
 						<div class="register_form">
-							<form>
+							<form id="form-register">
 								<div class="form_fields">
+									<div class="form_message" style="display:none; margin-bottom:1rem; padding:0.75rem; border-radius:4px;"></div>
 									<div class="row row_form_fields d_flex f_wrap">
 										<div class="col col-1">
 											<div class="form_field form_field__input">
-												<input type="text" placeholder="Фамилия"/>
+												<input type="text" name="surname" placeholder="Фамилия"/>
 											</div>
 										</div>
 										<div class="col col-2">
 											<div class="form_field form_field__input">
-												<input type="text" placeholder="Имя"/>
+												<input type="text" name="name" placeholder="Имя"/>
 											</div>
 										</div>
 										<div class="col col-2">
 											<div class="form_field form_field__input">
-												<input type="text" placeholder="Отчество"/>
+												<input type="text" name="patronymic" placeholder="Отчество"/>
 											</div>
 										</div>
 										<div class="col col-1">
 											<div class="form_field form_field__select">
-												<select placeholder="Специальность">
+												<select name="specialty" placeholder="Специальность">
 													<option value="">Специальность</option>
-													<option>Вариант 1</option>
-													<option>Вариант 2</option>
-													<option>Вариант 3</option>
-													<option>Вариант 4</option>
-													<option>Вариант 5</option>
+													<option value="Вариант 1">Вариант 1</option>
+													<option value="Вариант 2">Вариант 2</option>
+													<option value="Вариант 3">Вариант 3</option>
+													<option value="Вариант 4">Вариант 4</option>
+													<option value="Вариант 5">Вариант 5</option>
 												</select>
 											</div>
 										</div>
 										<div class="col col-2">
 											<div class="form_field form_field__input">
-												<input type="tel" placeholder="Телефон"/>
+												<input type="tel" name="phone" placeholder="Телефон"/>
 											</div>
 										</div>
 										<div class="col col-2">
 											<div class="form_field form_field__input">
-												<input type="email" placeholder="Email"/>
+												<input type="email" name="email" placeholder="Email"/>
 											</div>
 										</div>
 										<div class="col col-1">
 											<div class="form_field form_field__input">
-												<input type="text" placeholder="Город"/>
+												<input type="text" name="city" placeholder="Город"/>
 											</div>
 										</div>
 										<div class="col col-1">
 											<div class="form_field form_field__checkboxes">
 												<label class="form_field_checkbox">
-													<input type="checkbox"/>
+													<input type="checkbox" name="consent_personal" value="1"/>
 													<span>Согласен(а) на обработку <a href="#">персональных данных</a></span>
 												</label>
 												<label class="form_field_checkbox">
-													<input type="checkbox"/>
+													<input type="checkbox" name="consent_ads" value="1"/>
 													<span>Согласен(а) на получение <a href="#">рекламной информации</a></span>
 												</label>
 											</div>

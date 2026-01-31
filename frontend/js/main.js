@@ -162,6 +162,58 @@ $(document).ready(function() {
 		});
 	}
 
+	// Обработчик формы регистрации (POST на php/api/clients.php)
+	$('#form-register').on('submit', function(e) {
+		e.preventDefault();
+		var $form = $(this);
+		var $btn = $form.find('button[type="submit"]');
+		var $msg = $form.find('.form_message');
+
+		var data = {
+			surname: $form.find('[name="surname"]').val().trim(),
+			name: $form.find('[name="name"]').val().trim(),
+			patronymic: $form.find('[name="patronymic"]').val().trim(),
+			specialty: $form.find('[name="specialty"]').val().trim(),
+			phone: $form.find('[name="phone"]').val().trim(),
+			email: $form.find('[name="email"]').val().trim(),
+			city: $form.find('[name="city"]').val().trim(),
+			consent_personal: $form.find('[name="consent_personal"]').is(':checked'),
+			consent_ads: $form.find('[name="consent_ads"]').is(':checked')
+		};
+
+		$msg.hide().removeClass('form_message--success form_message--error');
+		$btn.prop('disabled', true);
+
+		$.ajax({
+			url: 'php/api/clients.php',
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(data),
+			success: function(res) {
+				if (res.success) {
+					$msg.addClass('form_message--success').css('background', '#d4edda').css('color', '#155724').html(res.message || 'Регистрация успешно завершена').show();
+					$form[0].reset();
+					if (typeof Choices !== 'undefined') {
+						$form.find('.form_field__select select').each(function() {
+							var choices = Choices.getInstance(this);
+							if (choices) choices.setChoiceByValue('');
+						});
+					}
+				} else {
+					$msg.addClass('form_message--error').css('background', '#f8d7da').css('color', '#721c24').html(res.message || 'Произошла ошибка').show();
+				}
+			},
+			error: function(xhr) {
+				var res = {};
+				try { res = xhr.responseJSON || JSON.parse(xhr.responseText || '{}'); } catch (e) {}
+				$msg.addClass('form_message--error').css('background', '#f8d7da').css('color', '#721c24').html(res.message || 'Ошибка отправки. Попробуйте позже.').show();
+			},
+			complete: function() {
+				$btn.prop('disabled', false);
+			}
+		});
+	});
+
 	if($('.scheme_basic_image').length != 0) {
 		$('.scheme_basic_image').on('mouseenter', function() {
 			$(this).closest('.scheme_item').addClass('active');
