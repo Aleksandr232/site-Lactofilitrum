@@ -177,6 +177,28 @@ function createTables($pdo) {
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_remission_title ON remission_library(title)");
         error_log("Индексы для remission_library созданы");
 
+        // Создаем таблицу clients (клиенты регистрации)
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS clients (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                surname VARCHAR(100) NOT NULL,
+                name VARCHAR(100) NOT NULL,
+                patronymic VARCHAR(100) DEFAULT NULL,
+                specialty VARCHAR(255) DEFAULT NULL,
+                phone VARCHAR(50) DEFAULT NULL,
+                email VARCHAR(255) NOT NULL,
+                city VARCHAR(255) DEFAULT NULL,
+                consent_personal TINYINT(1) DEFAULT 0,
+                consent_ads TINYINT(1) DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
+        error_log("Таблица clients создана");
+
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_clients_email ON clients(email)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_clients_created ON clients(created_at)");
+        error_log("Индексы для clients созданы");
+
         error_log("Все таблицы базы данных созданы успешно");
     } catch (PDOException $e) {
         error_log("Ошибка при создании таблиц: " . $e->getMessage());
@@ -220,7 +242,7 @@ function createDefaultAdmin($pdo) {
 
 // Функция для проверки существования таблиц
 function ensureTablesExist($pdo) {
-    $requiredTables = ['users', 'login_logs', 'podcasts', 'remission_library'];
+    $requiredTables = ['users', 'login_logs', 'podcasts', 'remission_library', 'clients'];
     $missingTables = [];
 
     // Проверяем какие таблицы отсутствуют
@@ -323,6 +345,31 @@ function ensureTablesExist($pdo) {
                 error_log("Таблица remission_library создана");
             } catch (PDOException $e) {
                 error_log("Ошибка создания таблицы remission_library: " . $e->getMessage());
+            }
+        }
+
+        if (in_array('clients', $missingTables)) {
+            try {
+                $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS clients (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        surname VARCHAR(100) NOT NULL,
+                        name VARCHAR(100) NOT NULL,
+                        patronymic VARCHAR(100) DEFAULT NULL,
+                        specialty VARCHAR(255) DEFAULT NULL,
+                        phone VARCHAR(50) DEFAULT NULL,
+                        email VARCHAR(255) NOT NULL,
+                        city VARCHAR(255) DEFAULT NULL,
+                        consent_personal TINYINT(1) DEFAULT 0,
+                        consent_ads TINYINT(1) DEFAULT 0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                ");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_clients_email ON clients(email)");
+                $pdo->exec("CREATE INDEX IF NOT EXISTS idx_clients_created ON clients(created_at)");
+                error_log("Таблица clients создана");
+            } catch (PDOException $e) {
+                error_log("Ошибка создания таблицы clients: " . $e->getMessage());
             }
         }
     }
