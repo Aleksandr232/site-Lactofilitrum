@@ -711,9 +711,79 @@ $timestamp = time();
 						</div>
 					</div>
 					<div class="register_right">
-						<div class="register_form register_form_widget">
+						<!-- <div class="register_form register_form_widget">
 							
 							<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
+						</div> -->
+						<div class="register_form">
+							<form>
+								<div class="form_fields">
+									<div class="row row_form_fields d_flex f_wrap">
+										<div class="col col-1">
+											<div class="form_field form_field__input">
+												<input type="text" placeholder="Фамилия"/>
+											</div>
+										</div>
+										<div class="col col-2">
+											<div class="form_field form_field__input">
+												<input type="text" placeholder="Имя"/>
+											</div>
+										</div>
+										<div class="col col-2">
+											<div class="form_field form_field__input">
+												<input type="text" placeholder="Отчество"/>
+											</div>
+										</div>
+										<div class="col col-1">
+											<div class="form_field form_field__select">
+												<select placeholder="Специальность">
+													<option value="">Специальность</option>
+													<option>Вариант 1</option>
+													<option>Вариант 2</option>
+													<option>Вариант 3</option>
+													<option>Вариант 4</option>
+													<option>Вариант 5</option>
+												</select>
+											</div>
+										</div>
+										<div class="col col-2">
+											<div class="form_field form_field__input">
+												<input type="tel" placeholder="Телефон"/>
+											</div>
+										</div>
+										<div class="col col-2">
+											<div class="form_field form_field__input">
+												<input type="email" placeholder="Email"/>
+											</div>
+										</div>
+										<div class="col col-1">
+											<div class="form_field form_field__input">
+												<input type="text" placeholder="Город"/>
+											</div>
+										</div>
+										<div class="col col-1">
+											<div class="form_field form_field__checkboxes">
+												<label class="form_field_checkbox">
+													<input type="checkbox"/>
+													<span>Согласен(а) на обработку <a href="#">персональных данных</a></span>
+												</label>
+												<label class="form_field_checkbox">
+													<input type="checkbox"/>
+													<span>Согласен(а) на получение <a href="#">рекламной информации</a></span>
+												</label>
+											</div>
+										</div>
+										<div class="col col-1">
+											<div class="form_field form_field__submit d_flex a_items_center">
+												<div class="form_field_submit">
+													<button type="submit" class="btn btn_green">Зарегистрироваться</button>
+												</div>
+												<div class="form_field_privacy">Нажимая на кнопку «Зарегистрироваться», я подтверждаю, что являюсь специалистом здравоохранения.</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
