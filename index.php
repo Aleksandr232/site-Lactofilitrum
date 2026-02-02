@@ -786,9 +786,11 @@ try {
 					</div>
 				</div>
 			</div>
+			<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
 		</footer>
 	</div>
-	<script src="https://pxl.synapseonline.ru/form/js/embed_v1.js"></script>
+	
+	<script src=https://pxl.synapseonline.ru/form/js/embed_v1.js></script>
 	<script type="text/javascript" src="frontend/js/jquery.min.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/swiper-bundle.min.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/choices.min.js?v=<?php echo $timestamp; ?>"></script>
