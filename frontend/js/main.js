@@ -6,9 +6,7 @@ $(document).ready(function() {
 		if(href && href !== "#") {
 			var $target = $(href);
 			if($target.length) {
-				$page.animate({
-					scrollTop: $target.offset().top - $('.header').outerHeight() - 30
-				}, 1000);
+				$page.scrollTop($target.offset().top - $('.header').outerHeight() - 30);
 				$('.mobile_header_wrapper').removeClass('active');
 				return false;
 			}

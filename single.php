@@ -91,9 +91,9 @@ $base = '/';
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="/">Подкасты</a></li>
+						<li><a href="/#podcasts">Подкасты</a></li>
 						<li><a href="/">О Лактофильтруме</a></li>
-						<li><a href="/">Библиотека ремиссии</a></li>
+						<li><a href="/#library-remission">Библиотека ремиссии</a></li>
 						<li><a href="/">Получить бонус</a></li>
 					</ul>
 				</div>
@@ -117,9 +117,9 @@ $base = '/';
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="/">Подкасты</a></li>
+								<li><a href="/#podcasts">Подкасты</a></li>
 								<li><a href="/">О Лактофильтруме</a></li>
-								<li><a href="/">Библиотека ремиссии</a></li>
+								<li><a href="/#library-remission">Библиотека ремиссии</a></li>
 								<li><a href="/">Получить бонус</a></li>
 							</ul>
 						</div>
