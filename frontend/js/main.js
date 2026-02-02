@@ -341,12 +341,7 @@ $(document).ready(function() {
 					}
 				});
 			
-				tl.to(".about_items", {
-					y: -200,
-					opacity: 0,
-					duration: 1
-				})
-				.to(".about_bg_image", {
+				tl.to(".about_bg_image", {
 					opacity: 1,
 					duration: 1
 				}, "-=0.5")
