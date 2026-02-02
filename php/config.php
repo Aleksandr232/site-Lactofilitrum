@@ -2,10 +2,17 @@
 // Конфигурационный файл для подключения к базе данных
 
 // Настройки базы данных
+// тестовый 
+// define('DB_HOST', 'localhost');
+// define('DB_NAME', 'cz19567_lacto');
+// define('DB_USER', 'cz19567_lacto');
+// define('DB_PASS', 'AhLiNBc6');
+
+//боевой
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'cz19567_lacto');
-define('DB_USER', 'cz19567_lacto');
-define('DB_PASS', 'AhLiNBc6');
+define('DB_NAME', 'lactocontent');
+define('DB_USER', 'lactocontent_usr');
+define('DB_PASS', 'rX3eW5dI4g');
 
 // Настройки сайта
 define('SITE_NAME', 'Lactofilitrum');
