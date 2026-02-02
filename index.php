@@ -1,10 +1,16 @@
 <?php
-// Генерируем timestamp для предотвращения кеширования
 $timestamp = time();
-?>
-<?php
-// Генерируем timestamp для предотвращения кеширования
-$timestamp = time();
+require_once 'php/config.php';
+initializeDatabase();
+$remissionItems = [];
+try {
+	$conn = connectDB();
+	$stmt = $conn->prepare("SELECT id, title, description, image, pdf_path FROM remission_library ORDER BY created_at DESC");
+	$stmt->execute();
+	$remissionItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+	error_log("Ошибка загрузки remission: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -574,6 +580,44 @@ $timestamp = time();
 				</div>
 				<div class="library_slider swiper" data-aos="fade-up">
 					<div class="swiper-wrapper">
+						<?php
+						$placeholderImages = [
+							'frontend/img/temp/library_slider_item_1.jpg',
+							'frontend/img/temp/library_slider_item_2.jpg',
+							'frontend/img/temp/library_slider_item_3.jpg',
+							'frontend/img/temp/library_slider_item_4.jpg'
+						];
+						if (!empty($remissionItems)):
+							foreach ($remissionItems as $i => $item):
+								$imgSrc = !empty($item['image']) ? '/' . ltrim($item['image'], '/') : $placeholderImages[$i % 4];
+								$pdfUrl = !empty($item['pdf_path']) ? '/' . ltrim($item['pdf_path'], '/') : '';
+								$titleEsc = htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8');
+						?>
+						<div class="swiper-slide">
+							<div class="library_slider_item">
+								<div class="library_slider_item_image">
+									<img src="<?php echo htmlspecialchars($imgSrc); ?>" alt="<?php echo $titleEsc; ?>">
+								</div>
+								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
+									<div class="library_slider_item_title">
+										<?php if ($pdfUrl): ?>
+										<a href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank" rel="noopener"><?php echo $titleEsc; ?></a>
+										<?php else: ?>
+										<span><?php echo $titleEsc; ?></span>
+										<?php endif; ?>
+									</div>
+									<?php if ($pdfUrl): ?>
+									<div class="library_slider_item_btn">
+										<a href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank" rel="noopener" class="btn btn_blue">Читать</a>
+									</div>
+									<?php endif; ?>
+								</div>
+							</div>
+						</div>
+						<?php
+							endforeach;
+						else:
+						?>
 						<div class="swiper-slide">
 							<div class="library_slider_item">
 								<div class="library_slider_item_image">
@@ -581,119 +625,12 @@ $timestamp = time();
 								</div>
 								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
 									<div class="library_slider_item_title">
-										<a href="#">Элиминацинное диетическое питание</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
+										<span>Материалы скоро появятся</span>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_2.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Атопический дерматит (АтД): как взять заболевание под контроль</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_3.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Лечение аллергодерматозов у взрослых</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_4.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Атопический дерматит: в фокусе - эндотоксиновая агрессия</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_1.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Элиминацинное диетическое питание</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_2.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Атопический дерматит (АтД): как взять заболевание под контроль</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_3.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Лечение аллергодерматозов у взрослых</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="library_slider_item">
-								<div class="library_slider_item_image">
-									<img src="frontend/img/temp/library_slider_item_4.jpg" alt="">
-								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
-									<div class="library_slider_item_title">
-										<a href="#">Атопический дерматит: в фокусе - эндотоксиновая агрессия</a>
-									</div>
-									<div class="library_slider_item_btn">
-										<a href="#" class="btn btn_blue">Читать</a>
-									</div>
-								</div>
-							</div>
-						</div>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>
