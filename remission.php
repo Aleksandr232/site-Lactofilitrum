@@ -66,13 +66,14 @@ $timestamp = time();
                                 <th>Картинка</th>
                                 <th>Название</th>
                                 <th>Описание</th>
+                                <th>PDF</th>
                                 <th>Дата создания</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="6">Загрузка элементов...</td>
+                                <td colspan="7">Загрузка элементов...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -123,6 +124,35 @@ $timestamp = time();
                             </div>
                         </div>
                         <div class="upload-progress" id="remission-image-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="remission-pdf">PDF файл:</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="remission-pdf" name="pdf" accept="application/pdf" class="file-upload-input">
+                            <div class="file-upload-label" for="remission-pdf">
+                                <div>
+                                    <i class='bx bx-file-blank file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите PDF или перетащите сюда</div>
+                                    <div class="file-upload-subtext">PDF до 20MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="remission-pdf-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('remission-pdf')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="remission-pdf-progress">
                             <div class="loading-spinner"></div>
                             <span class="loading-text">Загрузка файла...</span>
                         </div>
@@ -206,8 +236,10 @@ $timestamp = time();
                     const form = document.getElementById('remission-form');
                     if (form) {
                         form.reset();
-                        // Очищаем значения файловых input
                         document.getElementById('remission-image').value = '';
+                        document.getElementById('remission-pdf').value = '';
+                        removeFile('remission-image');
+                        removeFile('remission-pdf');
                     }
                 });
             }
@@ -269,12 +301,18 @@ $timestamp = time();
                                 `<img src="${imageUrl}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
                                 '<span style="color: #7f8c8d;">Нет картинки</span>';
 
+                            const pdfUrl = item.pdf_path ? (item.pdf_path.startsWith('http') ? item.pdf_path : window.location.origin + '/' + item.pdf_path) : null;
+                            const pdfHtml = pdfUrl ?
+                                `<a href="${pdfUrl}" target="_blank" rel="noopener" class="btn-secondary" style="padding: 4px 8px; font-size: 12px;"><i class='bx bx-download'></i> PDF</a>` :
+                                '<span style="color: #7f8c8d;">Нет PDF</span>';
+
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${item.id}</td>
                                 <td>${imageHtml}</td>
                                 <td>${item.title}</td>
                                 <td>${item.description || '-'}</td>
+                                <td>${pdfHtml}</td>
                                 <td>${new Date(item.created_at).toLocaleDateString('ru-RU')}</td>
                                 <td>
                                     <button class="btn-danger" onclick="deleteRemission(${item.id})">Удалить</button>
@@ -283,22 +321,21 @@ $timestamp = time();
                             tableBody.appendChild(row);
                         });
                     } else {
-                        tableBody.innerHTML = '<tr><td colspan="6">Нет элементов</td></tr>';
+                        tableBody.innerHTML = '<tr><td colspan="7">Нет элементов</td></tr>';
                     }
                 })
                 .catch(error => {
                     console.error('Ошибка загрузки элементов remission:', error);
-                    tableBody.innerHTML = '<tr><td colspan="6" style="color: red;">Ошибка загрузки</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="7" style="color: red;">Ошибка загрузки</td></tr>';
                 });
         }
 
         function saveRemission() {
             console.log('saveRemission called');
 
-            // Показываем индикатор загрузки
             showUploadProgress('remission-image', true);
+            showUploadProgress('remission-pdf', true);
 
-            // Альтернативный способ: используем FormData из самой формы
             const form = document.getElementById('remission-form');
             const formData = new FormData(form);
 
@@ -317,8 +354,8 @@ $timestamp = time();
             .then(data => {
                 console.log('Save response:', data);
 
-                // Скрываем индикатор загрузки
                 showUploadProgress('remission-image', false);
+                showUploadProgress('remission-pdf', false);
 
                 if (data.success) {
                     alert('Элемент успешно добавлен');
@@ -329,17 +366,17 @@ $timestamp = time();
                     if (form) {
                         form.reset();
                     }
-                    // Очищаем превью файлов
                     removeFile('remission-image');
-                    loadRemission(); // Перезагружаем список
+                    removeFile('remission-pdf');
+                    loadRemission();
                 } else {
                     alert('Ошибка: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Ошибка сохранения элемента remission:', error);
-                // Скрываем индикатор загрузки
                 showUploadProgress('remission-image', false);
+                showUploadProgress('remission-pdf', false);
                 alert('Ошибка сохранения элемента');
             });
         }
@@ -508,9 +545,9 @@ $timestamp = time();
                 removeFile: typeof removeFile
             });
 
-            // Инициализация remission
             setupRemissionModal();
             setupFileUpload('remission-image');
+            setupFileUpload('remission-pdf');
             loadRemission();
 
             // Установка имени пользователя

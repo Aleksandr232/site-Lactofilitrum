@@ -111,6 +111,11 @@ function uploadImage($file, $folder = null) {
 
 // Функция для удаления файла изображения
 function deleteImageFile($filepath) {
+    deleteFile($filepath);
+}
+
+// Функция для удаления любого файла
+function deleteFile($filepath) {
     if (!empty($filepath)) {
         // Если путь относительный, преобразуем в полный
         if (strpos($filepath, 'uploads/') === 0) {
@@ -121,6 +126,62 @@ function deleteImageFile($filepath) {
             unlink($filepath);
         }
     }
+}
+
+// Функция для обработки загруженного PDF
+function uploadPdf($file, $folder = null) {
+    if ($folder === null) {
+        $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/remission/';
+    }
+
+    $relativeFolder = 'uploads/remission/';
+
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return '';
+    }
+
+    if (!file_exists($folder)) {
+        mkdir($folder, 0777, true);
+    }
+
+    $fileName = $file['name'];
+    $fileTmpName = $file['tmp_name'];
+    $fileSize = $file['size'];
+
+    // Максимум 20MB для PDF
+    if ($fileSize > 20 * 1024 * 1024) {
+        return '';
+    }
+
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    if ($extension !== 'pdf') {
+        return '';
+    }
+
+    // Проверяем MIME-тип
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $fileTmpName);
+    finfo_close($finfo);
+    if ($mimeType !== 'application/pdf') {
+        return '';
+    }
+
+    $filename = uniqid('remission_pdf_', true) . '.pdf';
+    $filepath = $folder . $filename;
+
+    if (move_uploaded_file($fileTmpName, $filepath)) {
+        return $relativeFolder . $filename;
+    }
+    if (copy($fileTmpName, $filepath)) {
+        unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    $fileContent = file_get_contents($fileTmpName);
+    if ($fileContent !== false && file_put_contents($filepath, $fileContent) !== false) {
+        unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    return '';
 }
 
 // Создаем необходимые папки заранее
@@ -173,30 +234,21 @@ try {
 
             // Обрабатываем загруженное изображение
             $image_path = uploadImage($_FILES['image'] ?? null);
-
-            error_log('Image path result: ' . $image_path);
-
-            // Для отладки - возвращаем информацию о загрузке
-            $debug_info = [
-                'files_received' => count($_FILES),
-                'image_path' => $image_path,
-                'upload_folder_exists' => file_exists(__DIR__ . '/../../uploads/remission/'),
-                'upload_folder_writable' => is_writable(__DIR__ . '/../../uploads/remission/')
-            ];
-            error_log('Debug info: ' . json_encode($debug_info));
+            // Обрабатываем загруженный PDF
+            $pdf_path = uploadPdf($_FILES['pdf'] ?? null);
 
             $stmt = $conn->prepare("
-                INSERT INTO remission_library (title, description, image)
-                VALUES (?, ?, ?)
+                INSERT INTO remission_library (title, description, image, pdf_path)
+                VALUES (?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $description, $image_path]);
+            $result = $stmt->execute([$title, $description, $image_path, $pdf_path]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Элемент успешно добавлен']);
             } else {
-                // Если не удалось сохранить в БД, удаляем загруженный файл
                 deleteImageFile($image_path);
+                deleteFile($pdf_path);
                 echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении элемента']);
             }
             break;
@@ -210,14 +262,14 @@ try {
                 exit;
             }
 
-            // Сначала получаем данные элемента для удаления файла
-            $stmt = $conn->prepare("SELECT image FROM remission_library WHERE id = ?");
+            // Сначала получаем данные элемента для удаления файлов
+            $stmt = $conn->prepare("SELECT image, pdf_path FROM remission_library WHERE id = ?");
             $stmt->execute([$id]);
             $item = $stmt->fetch();
 
-            // Удаляем файл изображения
             if ($item) {
                 deleteImageFile($item['image']);
+                deleteFile($item['pdf_path'] ?? '');
             }
 
             // Удаляем запись из базы данных

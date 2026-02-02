@@ -167,11 +167,19 @@ function createTables($pdo) {
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 image VARCHAR(500),
+                pdf_path VARCHAR(500),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         ");
         error_log("Таблица remission_library создана");
+
+        // Миграция: добавить pdf_path, если колонки ещё нет
+        $stmt = $pdo->query("SHOW COLUMNS FROM remission_library LIKE 'pdf_path'");
+        if ($stmt->rowCount() === 0) {
+            $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(500) DEFAULT NULL AFTER image");
+            error_log("Колонка pdf_path добавлена в remission_library");
+        }
 
         // Создаем индексы для remission_library
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_remission_title ON remission_library(title)");
@@ -337,6 +345,7 @@ function ensureTablesExist($pdo) {
                         title VARCHAR(255) NOT NULL,
                         description TEXT,
                         image VARCHAR(500),
+                        pdf_path VARCHAR(500),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
@@ -434,6 +443,20 @@ function ensureTablesExist($pdo) {
         }
     } catch (PDOException $e) {
         error_log("Ошибка миграции для podcasts: " . $e->getMessage());
+    }
+
+    // Миграции для таблицы remission_library
+    try {
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'remission_library'");
+        if ($tableCheck && $tableCheck->rowCount() > 0) {
+            $stmt = $pdo->query("SHOW COLUMNS FROM remission_library LIKE 'pdf_path'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(500) DEFAULT NULL AFTER image");
+                error_log("Колонка pdf_path добавлена в remission_library (миграция ensureTablesExist)");
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Ошибка миграции для remission_library: " . $e->getMessage());
     }
 
     // Всегда проверяем администратора, независимо от того, были ли созданы таблицы
