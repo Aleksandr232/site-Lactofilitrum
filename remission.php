@@ -451,17 +451,22 @@ $timestamp = time();
 
             console.log('Wrapper elements:', { wrapper: !!wrapper, label: !!label, preview: !!preview, progress: !!progress });
 
-            // Проверяем размер файла (10MB)
-            const maxSize = 10 * 1024 * 1024; // 10MB
+            const isPdf = inputId === 'remission-pdf';
+            const maxSize = isPdf ? 20 * 1024 * 1024 : 10 * 1024 * 1024;
+            const maxSizeText = isPdf ? '20MB' : '10MB';
             if (file.size > maxSize) {
-                alert('Файл слишком большой. Максимальный размер: 10MB');
+                alert('Файл слишком большой. Максимальный размер: ' + maxSizeText);
                 return;
             }
 
-            // Проверяем тип файла
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-            if (!allowedTypes.includes(file.type)) {
-                alert('Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
+            const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            const allowedPdfTypes = ['application/pdf'];
+            const allowedTypes = isPdf ? allowedPdfTypes : allowedImageTypes;
+            const ext = (file.name || '').split('.').pop().toLowerCase();
+            const isValidPdf = isPdf && (file.type === 'application/pdf' || ext === 'pdf');
+            const isValidImage = !isPdf && allowedImageTypes.includes(file.type);
+            if (!isValidPdf && !isValidImage) {
+                alert(isPdf ? 'Неверный тип файла. Разрешён только PDF' : 'Неверный тип файла. Разрешены только изображения: JPEG, PNG, GIF');
                 return;
             }
 
