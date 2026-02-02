@@ -43,9 +43,9 @@ try {
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="#">Подкасты</a></li>
+						<li><a href="#podcasts">Подкасты</a></li>
 						<li><a href="#">О Лактофильтруме</a></li>
-						<li><a href="#">Библиотека ремиссии</a></li>
+						<li><a href="#library-remission">Библиотека ремиссии</a></li>
 						<li><a href="#">Получить бонус</a></li>
 					</ul>
 				</div>
@@ -69,9 +69,9 @@ try {
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="#">Подкасты</a></li>
+								<li><a href="#podcasts">Подкасты</a></li>
 								<li><a href="#">О Лактофильтруме</a></li>
-								<li><a href="#">Библиотека ремиссии</a></li>
+								<li><a href="#library-remission">Библиотека ремиссии</a></li>
 								<li><a href="#">Получить бонус</a></li>
 							</ul>
 						</div>
@@ -141,7 +141,7 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="podcasts slider_wrapper">
+		<div id="podcasts" class="podcasts slider_wrapper">
 			<div class="container">
 				<div class="title_head d_flex a_items_end j_content_between" data-aos="fade-up">
 					<div class="title_head_left">
@@ -554,7 +554,7 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="library slider_wrapper bg_linear">
+		<div id="library-remission" class="library slider_wrapper bg_linear">
 			<div class="container">
 				<div class="title_head d_flex a_items_end j_content_between" data-aos="fade-up">
 					<div class="title_head_left">

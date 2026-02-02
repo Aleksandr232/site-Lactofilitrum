@@ -2,11 +2,16 @@ $(document).ready(function() {
 	
 	var $page = $('html, body');
 	$('a[href*="#"]:not(.open_modal)').on('click', function() {
-		if($(this).attr("href") != "#") {
-			$page.animate({
-				scrollTop: $($.attr(this, 'href')).offset().top - $('.header').outerHeight() - 30
-			}, 1000);
-			return false;
+		var href = $(this).attr("href");
+		if(href && href !== "#") {
+			var $target = $(href);
+			if($target.length) {
+				$page.animate({
+					scrollTop: $target.offset().top - $('.header').outerHeight() - 30
+				}, 1000);
+				$('.mobile_header_wrapper').removeClass('active');
+				return false;
+			}
 		}
 	});
 
