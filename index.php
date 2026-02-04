@@ -648,11 +648,8 @@ try {
 						</div>
 					</div>
 					<div class="register_right">
-						<!-- <div class="register_form register_form_widget">
-							
-							<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
-						</div> -->
-						<div class="register_form">
+						<!-- кастомная форма  -->
+						<!-- <div class="register_form">
 							<form id="form-register">
 								<div class="form_fields">
 									<div class="form_message" style="display:none; margin-bottom:1rem; padding:0.75rem; border-radius:4px;"></div>
@@ -722,7 +719,9 @@ try {
 									</div>
 								</div>
 							</form>
-						</div>
+						</div> -->
+						<!-- форма виджет  -->
+						<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
 					</div>
 				</div>
 			</div>
