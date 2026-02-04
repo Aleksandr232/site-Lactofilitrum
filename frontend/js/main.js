@@ -229,7 +229,7 @@ $(document).ready(function() {
 
 	if ($('.mission').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1025px)": function() {
+			"(min-width: 1201px)": function() {
 				gsap.set('.mission_col_left', {
 					y: -200,
 					opacity: 0
@@ -305,6 +305,11 @@ $(document).ready(function() {
 
 				.to({}, { duration: 0.1 });
 			},
+			"(min-width: 1025px) and (max-width: 1200px)": function() {
+				gsap.set('.mission_col_left, .mission_col_right', { clearProps: "all" });
+				gsap.set('.mission', { clearProps: "all" });
+				gsap.set('.mission_circle, .mission_circle_image_1, .mission_circle_image_2, .mission_circle_inside', { clearProps: "all" });
+			},
 			"(max-width: 1024px)": function() {
 				gsap.set('.mission_col_left, .mission_col_right', {
 					clearProps: "all"
@@ -315,7 +320,7 @@ $(document).ready(function() {
 	
 	if ($('.about').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1171px)": function() {
+			"(min-width: 1201px)": function() {
 				gsap.set('.about_col_left, .about_col_right', {
 					y: 150,
 					opacity: 0
@@ -423,8 +428,13 @@ $(document).ready(function() {
 					});
 				}
 			},
-			"(max-width: 1170px)": function() {
-				gsap.set('.about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
+			"(min-width: 1025px) and (max-width: 1200px)": function() {
+				gsap.set('.about_items, .about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2, .about_image_product', {
+					clearProps: "all"
+				});
+			},
+			"(max-width: 1024px)": function() {
+				gsap.set('.about_items, .about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
 					clearProps: "all"
 				});
 			}
