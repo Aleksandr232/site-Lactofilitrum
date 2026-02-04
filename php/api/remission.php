@@ -148,8 +148,8 @@ function uploadPdf($file, $folder = null) {
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
 
-    // Максимум 20MB для PDF
-    if ($fileSize > 20 * 1024 * 1024) {
+    // Максимум 50MB для PDF
+    if ($fileSize > 50 * 1024 * 1024) {
         return '';
     }
 
