@@ -12,7 +12,11 @@ require_once 'php/auth_check.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админка - Lactofilitrum</title>
+    <link rel="icon" type="image/x-icon" href="<?php echo $base; ?>frontend/img/favicon/favicon.ico?v=<?php echo $timestamp; ?>" />
+		<link rel="icon" type="image/png" sizes="32x32" href="<?php echo $base; ?>frontend/img/favicon/favicon-32x32.png?v=<?php echo $timestamp; ?>" />
+		<link rel="icon" type="image/png" sizes="16x16" href="<?php echo $base; ?>frontend/img/favicon/favicon-16x16.png?v=<?php echo $timestamp; ?>" />
+		<link rel="apple-touch-icon" href="<?php echo $base; ?>frontend/img/favicon/apple-touch-icon.png?v=<?php echo $timestamp; ?>" />
+    <title>Админка - Нетоксичный контент</title>
     <link rel="stylesheet" href="css/admin.css?v=<?php echo $timestamp; ?>">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
