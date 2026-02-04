@@ -173,10 +173,60 @@ function uploadVideo($file, $folder = null) {
     return '';
 }
 
+// Функция для загрузки аудио подкаста
+function uploadAudio($file, $folder = null) {
+    if ($folder === null) {
+        $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/audio/';
+    }
+    $relativeFolder = 'uploads/podcasts/audio/';
+
+    if (!isset($file) || !is_array($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return '';
+    }
+
+    if (!file_exists($folder)) {
+        if (!@mkdir($folder, 0777, true) && !@mkdir($folder, 0755, true)) {
+            return '';
+        }
+    }
+
+    $fileName = $file['name'];
+    $fileTmpName = $file['tmp_name'];
+    $fileSize = $file['size'];
+    $maxSize = 100 * 1024 * 1024; // 100 MB
+    if ($fileSize > $maxSize) {
+        return '';
+    }
+
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $allowedExtensions = ['mp3', 'wav', 'ogg', 'm4a', 'aac'];
+    if (!in_array($extension, $allowedExtensions)) {
+        return '';
+    }
+
+    $filename = uniqid('podcast_audio_', true) . '.' . $extension;
+    $filepath = $folder . $filename;
+
+    if (move_uploaded_file($fileTmpName, $filepath)) {
+        return $relativeFolder . $filename;
+    }
+    if (copy($fileTmpName, $filepath)) {
+        @unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    $content = @file_get_contents($fileTmpName);
+    if ($content !== false && @file_put_contents($filepath, $content) !== false) {
+        @unlink($fileTmpName);
+        return $relativeFolder . $filename;
+    }
+    return '';
+}
+
 // Создаем необходимые папки заранее
 $uploadBase = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
 $uploadPodcasts = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/';
 $uploadPodcastsVideos = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/videos/';
+$uploadPodcastsAudio = $_SERVER['DOCUMENT_ROOT'] . '/uploads/podcasts/audio/';
 
 error_log('DOCUMENT_ROOT: ' . $_SERVER['DOCUMENT_ROOT']);
 error_log('Upload base path: ' . $uploadBase);
@@ -195,6 +245,11 @@ if (!file_exists($uploadPodcasts)) {
 if (!file_exists($uploadPodcastsVideos)) {
     mkdir($uploadPodcastsVideos, 0777, true);
     error_log('Created podcasts videos upload folder');
+}
+
+if (!file_exists($uploadPodcastsAudio)) {
+    mkdir($uploadPodcastsAudio, 0777, true);
+    error_log('Created podcasts audio upload folder');
 }
 
 // Получаем метод запроса
@@ -262,14 +317,16 @@ try {
             error_log('POST data: ' . print_r($_POST, true));
             error_log('podcasts_text received: ' . (isset($_POST['podcasts_text']) ? 'YES, length: ' . strlen($_POST['podcasts_text']) : 'NO'));
 
-            // Обрабатываем загруженные изображения и видео
+            // Обрабатываем загруженные изображения, видео и аудио
             $image_path = uploadImage($_FILES['image'] ?? null);
             $author_photo_path = uploadImage($_FILES['author_photo'] ?? null);
             $video_path = uploadVideo($_FILES['video'] ?? null);
+            $audio_path = uploadAudio($_FILES['audio'] ?? null);
 
             error_log('Image path result: ' . $image_path);
             error_log('Author photo path result: ' . $author_photo_path);
             error_log('Video path result: ' . $video_path);
+            error_log('Audio path result: ' . $audio_path);
 
             $debug_info = [
                 'files_received' => count($_FILES),
@@ -295,9 +352,22 @@ try {
             // Логируем значение podcasts_text перед сохранением
             error_log('podcasts_text before save: ' . (empty($podcasts_text) ? 'EMPTY' : 'length: ' . strlen($podcasts_text)));
             
+            // Проверяем, что поле audio_path существует в таблице
+            try {
+                $checkAudioField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'audio_path'");
+                if ($checkAudioField->rowCount() === 0) {
+                    error_log('WARNING: Field audio_path does not exist in table podcasts!');
+                    // Пытаемся добавить поле
+                    $conn->exec("ALTER TABLE podcasts ADD COLUMN audio_path VARCHAR(500) DEFAULT NULL AFTER video_path");
+                    error_log('Field audio_path added to table');
+                }
+            } catch (PDOException $e) {
+                error_log('Error checking audio_path field: ' . $e->getMessage());
+            }
+            
             $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             // Используем пустую строку вместо null, если текст есть (даже если он пустой после обработки)
@@ -317,7 +387,7 @@ try {
                 error_log('Error checking podcasts_text field: ' . $e->getMessage());
             }
             
-            $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null]);
+            $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null]);
             
             if ($result) {
                 error_log('Podcast saved successfully. podcasts_text was: ' . ($podcasts_text_value === null ? 'NULL' : 'saved with length ' . strlen($podcasts_text_value)));
@@ -331,6 +401,7 @@ try {
                 deleteImageFile($image_path);
                 deleteImageFile($author_photo_path);
                 deleteImageFile($video_path);
+                deleteImageFile($audio_path);
                 echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении подкаста']);
             }
             break;
@@ -345,15 +416,16 @@ try {
             }
 
             // Сначала получаем данные подкаста для удаления файлов
-            $stmt = $conn->prepare("SELECT image, author_photo, video_path FROM podcasts WHERE id = ?");
+            $stmt = $conn->prepare("SELECT image, author_photo, video_path, audio_path FROM podcasts WHERE id = ?");
             $stmt->execute([$id]);
             $podcast = $stmt->fetch();
 
-            // Удаляем файлы изображений и видео
+            // Удаляем файлы изображений, видео и аудио
             if ($podcast) {
                 deleteImageFile($podcast['image']);
                 deleteImageFile($podcast['author_photo']);
                 deleteImageFile($podcast['video_path'] ?? '');
+                deleteImageFile($podcast['audio_path'] ?? '');
             }
 
             // Удаляем запись из базы данных

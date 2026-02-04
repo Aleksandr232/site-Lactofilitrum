@@ -24,13 +24,16 @@ function setupPodcastModal() {
                 const imgInput = document.getElementById('podcast-image');
                 const authorInput = document.getElementById('podcast-author-photo');
                 const videoInput = document.getElementById('podcast-video');
+                const audioInput = document.getElementById('podcast-audio');
                 if (imgInput) imgInput.value = '';
                 if (authorInput) authorInput.value = '';
                 if (videoInput) videoInput.value = '';
+                if (audioInput) audioInput.value = '';
                 if (window.removeFile) {
                     if (imgInput) window.removeFile('podcast-image');
                     if (authorInput) window.removeFile('podcast-author-photo');
                     if (videoInput) window.removeFile('podcast-video');
+                    if (audioInput) window.removeFile('podcast-audio');
                 }
                 // Очищаем TinyMCE редактор
                 if (typeof tinymce !== 'undefined') {
@@ -130,6 +133,7 @@ function savePodcast() {
         window.showUploadProgress('podcast-image', true);
         window.showUploadProgress('podcast-author-photo', true);
         window.showUploadProgress('podcast-video', true);
+        window.showUploadProgress('podcast-audio', true);
     }
 
     // Сохраняем содержимое TinyMCE в textarea перед отправкой
@@ -221,6 +225,7 @@ function savePodcast() {
         showUploadProgress('podcast-image', false);
         showUploadProgress('podcast-author-photo', false);
         showUploadProgress('podcast-video', false);
+        showUploadProgress('podcast-audio', false);
 
         if (data.success) {
             alert('Подкаст успешно добавлен');
@@ -235,6 +240,7 @@ function savePodcast() {
                 window.removeFile('podcast-image');
                 window.removeFile('podcast-author-photo');
                 window.removeFile('podcast-video');
+                window.removeFile('podcast-audio');
             }
             // Очищаем TinyMCE редактор
             if (typeof tinymce !== 'undefined') {
@@ -255,6 +261,7 @@ function savePodcast() {
             window.showUploadProgress('podcast-image', false);
             window.showUploadProgress('podcast-author-photo', false);
             window.showUploadProgress('podcast-video', false);
+            window.showUploadProgress('podcast-audio', false);
         }
         alert('Ошибка сохранения подкаста');
     });

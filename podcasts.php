@@ -182,7 +182,7 @@ $timestamp = time();
                         <input type="url" id="podcast-extra-link" name="extra_link" placeholder="https://...">
                     </div>
                     <div class="form-group">
-                        <label for="podcast-video">Видео подкаста:</label>
+                        <label for="podcast-video">Видео подкаста (опционально):</label>
                         <div class="file-upload-wrapper">
                             <input type="file" id="podcast-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" class="file-upload-input">
                             <div class="file-upload-label" for="podcast-video">
@@ -206,6 +206,35 @@ $timestamp = time();
                             </div>
                         </div>
                         <div class="upload-progress" id="podcast-video-progress">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Загрузка файла...</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-audio">Аудио подкаста (опционально, вместо видео):</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="podcast-audio" name="audio" accept="audio/mp3,audio/wav,audio/ogg,audio/m4a,audio/aac" class="file-upload-input">
+                            <div class="file-upload-label" for="podcast-audio">
+                                <div>
+                                    <i class='bx bx-music file-upload-icon'></i>
+                                    <div class="file-upload-text">Выберите аудио или перетащите сюда</div>
+                                    <div class="file-upload-subtext">MP3, WAV, OGG, M4A, AAC до 100MB</div>
+                                </div>
+                            </div>
+                            <div class="file-upload-preview" id="podcast-audio-preview">
+                                <div class="file-preview-info">
+                                    <i class='bx bx-file file-preview-icon'></i>
+                                    <div class="file-preview-details">
+                                        <div class="file-preview-name"></div>
+                                        <div class="file-preview-size"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-audio')">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="podcast-audio-progress">
                             <div class="loading-spinner"></div>
                             <span class="loading-text">Загрузка файла...</span>
                         </div>
@@ -308,17 +337,42 @@ $timestamp = time();
             const preview = wrapper.querySelector('.file-upload-preview');
 
             const isVideo = inputId === 'podcast-video';
-            const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB / 10MB
-            const maxSizeLabel = isVideo ? '100MB' : '10MB';
+            const isAudio = inputId === 'podcast-audio';
+            const maxSize = (isVideo || isAudio) ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB / 10MB
+            const maxSizeLabel = (isVideo || isAudio) ? '100MB' : '10MB';
             if (file.size > maxSize) {
                 alert('Файл слишком большой. Максимальный размер: ' + maxSizeLabel);
                 return;
             }
 
+            // Проверка: если выбрано видео, очищаем аудио и наоборот
             if (isVideo) {
+                const audioInput = document.getElementById('podcast-audio');
+                if (audioInput && audioInput.files.length > 0) {
+                    if (confirm('Вы уже выбрали аудио файл. Заменить на видео?')) {
+                        removeFile('podcast-audio');
+                    } else {
+                        return; // Отменяем выбор видео
+                    }
+                }
                 const allowedVideo = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
                 if (!allowedVideo.includes(file.type)) {
                     alert('Неверный тип файла. Разрешены: MP4, WebM, OGV, MOV');
+                    return;
+                }
+            } else if (isAudio) {
+                const videoInput = document.getElementById('podcast-video');
+                if (videoInput && videoInput.files.length > 0) {
+                    if (confirm('Вы уже выбрали видео файл. Заменить на аудио?')) {
+                        removeFile('podcast-video');
+                    } else {
+                        return; // Отменяем выбор аудио
+                    }
+                }
+                const allowedAudio = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'audio/mpeg'];
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!allowedAudio.includes(file.type) && !['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(ext)) {
+                    alert('Неверный тип файла. Разрешены: MP3, WAV, OGG, M4A, AAC');
                     return;
                 }
             } else {
@@ -451,6 +505,7 @@ $timestamp = time();
             setupFileUpload('podcast-image');
             setupFileUpload('podcast-author-photo');
             setupFileUpload('podcast-video');
+            setupFileUpload('podcast-audio');
 
             if (typeof loadPodcasts === 'function') {
                 console.log('Calling loadPodcasts');
