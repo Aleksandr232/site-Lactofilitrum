@@ -326,6 +326,45 @@ body {
     font-size: 0.9rem;
 }
 
+.file-upload-current {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 2px solid #27ae60;
+    border-radius: 6px;
+    background-color: #e8f8f5;
+    margin-top: 0.5rem;
+}
+
+.file-upload-current.show {
+    display: flex !important;
+}
+
+.file-current-label {
+    color: #27ae60;
+    font-weight: 500;
+}
+
+.file-current-name {
+    color: #2c3e50;
+    flex: 1;
+}
+
+.file-current-replace {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.file-current-replace:hover {
+    background: #2980b9;
+}
+
 .file-upload-preview {
     display: none !important;
     align-items: center;

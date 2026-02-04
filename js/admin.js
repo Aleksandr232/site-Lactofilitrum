@@ -16,7 +16,9 @@ function setupPodcastModal() {
     // Открытие модального окна
     if (addBtn) {
         addBtn.addEventListener('click', () => {
-            console.log('Add button clicked for modal');
+            document.getElementById('podcast-modal-title').textContent = 'Добавить подкаст';
+            const editIdInput = document.getElementById('podcast-edit-id');
+            if (editIdInput) editIdInput.value = '';
             modal.style.display = 'block';
             const form = document.getElementById('podcast-form');
             if (form) {
@@ -35,12 +37,9 @@ function setupPodcastModal() {
                     if (videoInput) window.removeFile('podcast-video');
                     if (audioInput) window.removeFile('podcast-audio');
                 }
-                // Очищаем TinyMCE редактор
                 if (typeof tinymce !== 'undefined') {
                     const editor = tinymce.get('podcast-text');
-                    if (editor) {
-                        editor.setContent('');
-                    }
+                    if (editor) editor.setContent('');
                 }
             }
         });
@@ -65,6 +64,82 @@ function setupPodcastModal() {
             modal.style.display = 'none';
         }
     });
+}
+
+function openEditPodcastModal(podcast) {
+    const modal = document.getElementById('podcast-modal');
+    const form = document.getElementById('podcast-form');
+    const modalTitle = document.getElementById('podcast-modal-title');
+    if (!modal || !form || !modalTitle) return;
+
+    modalTitle.textContent = 'Редактировать подкаст';
+
+    const editIdInput = document.getElementById('podcast-edit-id');
+    if (editIdInput) editIdInput.value = podcast.id;
+
+    document.getElementById('podcast-title').value = podcast.title || '';
+    document.getElementById('podcast-description').value = podcast.description || '';
+    document.getElementById('podcast-author').value = podcast.author || '';
+    document.getElementById('podcast-button-link').value = podcast.button_link || '';
+    document.getElementById('podcast-additional-link').value = podcast.additional_link || '';
+    document.getElementById('podcast-extra-link').value = podcast.extra_link || '';
+
+    if (typeof tinymce !== 'undefined') {
+        const editor = tinymce.get('podcast-text');
+        if (editor) editor.setContent(podcast.podcasts_text || '');
+    } else {
+        const textarea = document.getElementById('podcast-text');
+        if (textarea) textarea.value = podcast.podcasts_text || '';
+    }
+
+    function showCurrentFile(inputId, filepath) {
+        if (!filepath) return;
+        const name = filepath.split('/').pop();
+        const current = document.getElementById(inputId + '-current');
+        const label = document.getElementById(inputId).closest('.file-upload-wrapper').querySelector('.file-upload-label');
+        const preview = document.getElementById(inputId + '-preview');
+        if (current && name) {
+            current.querySelector('.file-current-name').textContent = name;
+            current.classList.add('show');
+            label.style.display = 'none';
+            if (preview) preview.classList.remove('show');
+        }
+    }
+
+    ['podcast-image', 'podcast-author-photo', 'podcast-video', 'podcast-audio'].forEach(id => {
+        const input = document.getElementById(id);
+        const wrapper = input.closest('.file-upload-wrapper');
+        const label = wrapper.querySelector('.file-upload-label');
+        const preview = wrapper.querySelector('.file-upload-preview');
+        const current = document.getElementById(id + '-current');
+        input.value = '';
+        preview.classList.remove('show');
+        if (current) current.classList.remove('show');
+        label.style.display = 'flex';
+    });
+
+    showCurrentFile('podcast-image', podcast.image);
+    showCurrentFile('podcast-author-photo', podcast.author_photo);
+    showCurrentFile('podcast-video', podcast.video_path);
+    showCurrentFile('podcast-audio', podcast.audio_path);
+
+    modal.style.display = 'block';
+}
+
+function editPodcast(podcastId) {
+    fetch('php/api/podcasts.php?id=' + podcastId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.podcast) {
+                openEditPodcastModal(data.podcast);
+            } else {
+                alert('Ошибка загрузки подкаста');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Ошибка загрузки подкаста');
+        });
 }
 
 function loadPodcasts() {
@@ -107,6 +182,7 @@ function loadPodcasts() {
                         <td>${authorHtml}</td>
                         <td>${new Date(podcast.created_at).toLocaleDateString('ru-RU')}</td>
                         <td>
+                            <button class="btn-secondary" onclick="editPodcast(${podcast.id})" style="margin-right:6px;">Изменить</button>
                             <button class="btn-danger" onclick="deletePodcast(${podcast.id})">Удалить</button>
                         </td>
                     `;
@@ -187,12 +263,13 @@ function savePodcast() {
         console.log('Textarea updated directly with content, length:', podcastsTextContent.length);
     }
 
-    // Альтернативный способ: используем FormData из самой формы
     const form = document.getElementById('podcast-form');
     const formData = new FormData(form);
-    
-    // Явно устанавливаем значение podcasts_text в FormData
     formData.set('podcasts_text', podcastsTextContent);
+
+    const editId = document.getElementById('podcast-edit-id');
+    const isEdit = editId && editId.value;
+    if (isEdit) formData.set('id', editId.value);
     console.log('podcasts_text set in FormData, length:', podcastsTextContent.length);
 
     console.log('Form element found:', !!form);
@@ -228,28 +305,23 @@ function savePodcast() {
         showUploadProgress('podcast-audio', false);
 
         if (data.success) {
-            alert('Подкаст успешно добавлен');
+            alert(isEdit ? 'Подкаст успешно обновлён' : 'Подкаст успешно добавлен');
             const modal = document.getElementById('podcast-modal');
             if (modal) modal.style.display = 'none';
-            // Очищаем всю форму
-            if (form) {
-                form.reset();
-            }
-            // Очищаем превью файлов
+            if (form) form.reset();
+            const editIdEl = document.getElementById('podcast-edit-id');
+            if (editIdEl) editIdEl.value = '';
             if (window.removeFile) {
                 window.removeFile('podcast-image');
                 window.removeFile('podcast-author-photo');
                 window.removeFile('podcast-video');
                 window.removeFile('podcast-audio');
             }
-            // Очищаем TinyMCE редактор
             if (typeof tinymce !== 'undefined') {
                 const editor = tinymce.get('podcast-text');
-                if (editor) {
-                    editor.setContent('');
-                }
+                if (editor) editor.setContent('');
             }
-            loadPodcasts(); // Перезагружаем список
+            loadPodcasts();
         } else {
             alert('Ошибка: ' + data.message);
         }

@@ -90,11 +90,12 @@ $timestamp = time();
     <div id="podcast-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить подкаст</h2>
+                <h2 id="podcast-modal-title">Добавить подкаст</h2>
                 <span class="modal-close">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="podcast-form" enctype="multipart/form-data">
+                    <input type="hidden" id="podcast-edit-id" name="id" value="">
                     <div class="form-group">
                         <label for="podcast-title">Название подкаста:</label>
                         <input type="text" id="podcast-title" name="title" required>
@@ -118,6 +119,11 @@ $timestamp = time();
                                     <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
                                 </div>
                             </div>
+                            <div class="file-upload-current" id="podcast-image-current" style="display:none;">
+                                <span class="file-current-label">Загружено:</span>
+                                <span class="file-current-name"></span>
+                                <button type="button" class="file-current-replace" onclick="removeFile('podcast-image')">Заменить</button>
+                            </div>
                             <div class="file-upload-preview" id="podcast-image-preview">
                                 <div class="file-preview-info">
                                     <i class='bx bx-file file-preview-icon'></i>
@@ -126,7 +132,7 @@ $timestamp = time();
                                         <div class="file-preview-size"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="file-preview-remove" onclick="console.log('Remove button clicked'); removeFile('podcast-image')">
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-image')">
                                     <i class='bx bx-x'></i>
                                 </button>
                             </div>
@@ -151,6 +157,11 @@ $timestamp = time();
                                     <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
                                 </div>
                             </div>
+                            <div class="file-upload-current" id="podcast-author-photo-current" style="display:none;">
+                                <span class="file-current-label">Загружено:</span>
+                                <span class="file-current-name"></span>
+                                <button type="button" class="file-current-replace" onclick="removeFile('podcast-author-photo')">Заменить</button>
+                            </div>
                             <div class="file-upload-preview" id="podcast-author-photo-preview">
                                 <div class="file-preview-info">
                                     <i class='bx bx-file file-preview-icon'></i>
@@ -159,7 +170,7 @@ $timestamp = time();
                                         <div class="file-preview-size"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="file-preview-remove" onclick="console.log('Remove button clicked'); removeFile('podcast-author-photo')">
+                                <button type="button" class="file-preview-remove" onclick="removeFile('podcast-author-photo')">
                                     <i class='bx bx-x'></i>
                                 </button>
                             </div>
@@ -192,6 +203,11 @@ $timestamp = time();
                                     <div class="file-upload-subtext">MP4, WebM, OGV, MOV до 100MB</div>
                                 </div>
                             </div>
+                            <div class="file-upload-current" id="podcast-video-current" style="display:none;">
+                                <span class="file-current-label">Загружено:</span>
+                                <span class="file-current-name"></span>
+                                <button type="button" class="file-current-replace" onclick="removeFile('podcast-video')">Заменить</button>
+                            </div>
                             <div class="file-upload-preview" id="podcast-video-preview">
                                 <div class="file-preview-info">
                                     <i class='bx bx-file file-preview-icon'></i>
@@ -220,6 +236,11 @@ $timestamp = time();
                                     <div class="file-upload-text">Выберите аудио или перетащите сюда</div>
                                     <div class="file-upload-subtext">MP3, WAV, OGG, M4A, AAC до 100MB</div>
                                 </div>
+                            </div>
+                            <div class="file-upload-current" id="podcast-audio-current" style="display:none;">
+                                <span class="file-current-label">Загружено:</span>
+                                <span class="file-current-name"></span>
+                                <button type="button" class="file-current-replace" onclick="removeFile('podcast-audio')">Заменить</button>
                             </div>
                             <div class="file-upload-preview" id="podcast-audio-preview">
                                 <div class="file-preview-info">
@@ -271,26 +292,16 @@ $timestamp = time();
         };
 
         window.removeFile = function(inputId) {
-            console.log('Removing file for:', inputId);
             const input = document.getElementById(inputId);
             const wrapper = input.closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
             const preview = wrapper.querySelector('.file-upload-preview');
+            const current = document.getElementById(inputId + '-current');
 
-            console.log('Elements found:', {
-                input: !!input,
-                wrapper: !!wrapper,
-                label: !!label,
-                preview: !!preview
-            });
-
-            // Очищаем input
             input.value = '';
-
-            // Скрываем превью, показываем label
             preview.classList.remove('show');
+            if (current) current.classList.remove('show');
             label.style.display = 'flex';
-            console.log('File removed successfully');
         };
     </script>
     <script src="js/admin.js?v=20241210"></script>
@@ -386,36 +397,16 @@ $timestamp = time();
             // Показываем превью
             const previewName = preview.querySelector('.file-preview-name');
             const previewSize = preview.querySelector('.file-preview-size');
+            const current = document.getElementById(inputId + '-current');
 
             previewName.textContent = file.name;
             previewSize.textContent = formatFileSize(file.size);
 
             label.style.display = 'none';
+            if (current) current.classList.remove('show');
             preview.classList.add('show');
         }
 
-        function removeFile(inputId) {
-            console.log('Removing file for:', inputId);
-            const input = document.getElementById(inputId);
-            const wrapper = input.closest('.file-upload-wrapper');
-            const label = wrapper.querySelector('.file-upload-label');
-            const preview = wrapper.querySelector('.file-upload-preview');
-
-            console.log('Elements found:', {
-                input: !!input,
-                wrapper: !!wrapper,
-                label: !!label,
-                preview: !!preview
-            });
-
-            // Очищаем input
-            input.value = '';
-
-            // Скрываем превью, показываем label
-            preview.classList.remove('show');
-            label.style.display = 'flex';
-            console.log('File removed successfully');
-        }
 
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';

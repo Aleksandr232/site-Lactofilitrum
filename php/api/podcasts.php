@@ -265,7 +265,19 @@ try {
     switch ($method) {
         case 'GET':
             $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
-            if ($slug !== '') {
+            $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+            if ($id > 0) {
+                // Один подкаст по id (для редактирования)
+                $stmt = $conn->prepare("SELECT * FROM podcasts WHERE id = ? LIMIT 1");
+                $stmt->execute([$id]);
+                $podcast = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($podcast) {
+                    echo json_encode(['success' => true, 'podcast' => $podcast], JSON_UNESCAPED_UNICODE);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(['success' => false, 'message' => 'Подкаст не найден'], JSON_UNESCAPED_UNICODE);
+                }
+            } elseif ($slug !== '') {
                 // Один подкаст по slug (для single.php)
                 $stmt = $conn->prepare("SELECT * FROM podcasts WHERE slug = ? LIMIT 1");
                 $stmt->execute([$slug]);
@@ -286,7 +298,9 @@ try {
             break;
 
         case 'POST':
-            // Создать новый подкаст
+            $editId = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+            $isUpdate = $editId > 0;
+
             $title = sanitize($_POST['title'] ?? '');
             $description = sanitize($_POST['description'] ?? '');
             // Для HTML контента используем более мягкую очистку, сохраняя HTML теги
@@ -312,97 +326,98 @@ try {
                 exit;
             }
 
-            // Логируем полученные файлы для отладки
-            error_log('FILES received: ' . print_r($_FILES, true));
-            error_log('POST data: ' . print_r($_POST, true));
-            error_log('podcasts_text received: ' . (isset($_POST['podcasts_text']) ? 'YES, length: ' . strlen($_POST['podcasts_text']) : 'NO'));
+            $oldImage = '';
+            $oldAuthorPhoto = '';
+            $oldVideo = '';
+            $oldAudio = '';
+            if ($isUpdate) {
+                $stmt = $conn->prepare("SELECT image, author_photo, video_path, audio_path FROM podcasts WHERE id = ?");
+                $stmt->execute([$editId]);
+                $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($existing) {
+                    $oldImage = $existing['image'] ?? '';
+                    $oldAuthorPhoto = $existing['author_photo'] ?? '';
+                    $oldVideo = $existing['video_path'] ?? '';
+                    $oldAudio = $existing['audio_path'] ?? '';
+                }
+            }
 
-            // Обрабатываем загруженные изображения, видео и аудио
-            $image_path = uploadImage($_FILES['image'] ?? null);
-            $author_photo_path = uploadImage($_FILES['author_photo'] ?? null);
-            $video_path = uploadVideo($_FILES['video'] ?? null);
-            $audio_path = uploadAudio($_FILES['audio'] ?? null);
+            // Загрузка файлов: при обновлении — новый файл или оставляем старый
+            $newImg = uploadImage($_FILES['image'] ?? null);
+            $newAuth = uploadImage($_FILES['author_photo'] ?? null);
+            $newVid = uploadVideo($_FILES['video'] ?? null);
+            $newAud = uploadAudio($_FILES['audio'] ?? null);
 
-            error_log('Image path result: ' . $image_path);
-            error_log('Author photo path result: ' . $author_photo_path);
-            error_log('Video path result: ' . $video_path);
-            error_log('Audio path result: ' . $audio_path);
-
-            $debug_info = [
-                'files_received' => count($_FILES),
-                'image_path' => $image_path,
-                'author_photo_path' => $author_photo_path,
-                'video_path' => $video_path,
-                'upload_folder_exists' => file_exists(__DIR__ . '/../../uploads/podcasts/'),
-                'upload_folder_writable' => is_writable(__DIR__ . '/../../uploads/podcasts/')
-            ];
-            error_log('Debug info: ' . json_encode($debug_info));
+            if ($isUpdate) {
+                $image_path = $newImg ?: $oldImage;
+                $author_photo_path = $newAuth ?: $oldAuthorPhoto;
+                $video_path = $newVid ?: $oldVideo;
+                $audio_path = $newAud ?: $oldAudio;
+                if ($newImg && $oldImage) deleteImageFile($oldImage);
+                if ($newAuth && $oldAuthorPhoto) deleteImageFile($oldAuthorPhoto);
+                if ($newVid && $oldVideo) deleteImageFile($oldVideo);
+                if ($newAud && $oldAudio) deleteImageFile($oldAudio);
+            } else {
+                $image_path = $newImg;
+                $author_photo_path = $newAuth;
+                $video_path = $newVid;
+                $audio_path = $newAud;
+            }
 
             $baseSlug = slugify($title);
             $slug = $baseSlug;
-            $n = 2;
-            while (true) {
-                $stmt = $conn->prepare("SELECT id FROM podcasts WHERE slug = ? LIMIT 1");
-                $stmt->execute([$slug]);
-                if (!$stmt->fetch()) break;
-                $slug = $baseSlug . '-' . $n;
-                $n++;
-            }
-
-            // Логируем значение podcasts_text перед сохранением
-            error_log('podcasts_text before save: ' . (empty($podcasts_text) ? 'EMPTY' : 'length: ' . strlen($podcasts_text)));
-            
-            // Проверяем, что поле audio_path существует в таблице
-            try {
-                $checkAudioField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'audio_path'");
-                if ($checkAudioField->rowCount() === 0) {
-                    error_log('WARNING: Field audio_path does not exist in table podcasts!');
-                    // Пытаемся добавить поле
-                    $conn->exec("ALTER TABLE podcasts ADD COLUMN audio_path VARCHAR(500) DEFAULT NULL AFTER video_path");
-                    error_log('Field audio_path added to table');
+            if (!$isUpdate) {
+                $n = 2;
+                while (true) {
+                    $stmt = $conn->prepare("SELECT id FROM podcasts WHERE slug = ? LIMIT 1");
+                    $stmt->execute([$slug]);
+                    if (!$stmt->fetch()) break;
+                    $slug = $baseSlug . '-' . $n;
+                    $n++;
                 }
-            } catch (PDOException $e) {
-                error_log('Error checking audio_path field: ' . $e->getMessage());
+            } else {
+                $stmt = $conn->prepare("SELECT slug FROM podcasts WHERE id = ?");
+                $stmt->execute([$editId]);
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $slug = $row ? $row['slug'] : $baseSlug;
             }
-            
-            $stmt = $conn->prepare("
-                INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
 
-            // Используем пустую строку вместо null, если текст есть (даже если он пустой после обработки)
             $podcasts_text_value = isset($_POST['podcasts_text']) && $_POST['podcasts_text'] !== '' ? $podcasts_text : null;
-            error_log('podcasts_text_value to save: ' . ($podcasts_text_value === null ? 'NULL' : 'length: ' . strlen($podcasts_text_value) . ', preview: ' . substr($podcasts_text_value, 0, 100)));
-            
-            // Проверяем, что поле существует в таблице
-            try {
-                $checkField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'podcasts_text'");
-                if ($checkField->rowCount() === 0) {
-                    error_log('WARNING: Field podcasts_text does not exist in table podcasts!');
-                    // Пытаемся добавить поле
-                    $conn->exec("ALTER TABLE podcasts ADD COLUMN podcasts_text TEXT DEFAULT NULL AFTER description");
-                    error_log('Field podcasts_text added to table');
-                }
-            } catch (PDOException $e) {
-                error_log('Error checking podcasts_text field: ' . $e->getMessage());
-            }
-            
-            $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null]);
-            
-            if ($result) {
-                error_log('Podcast saved successfully. podcasts_text was: ' . ($podcasts_text_value === null ? 'NULL' : 'saved with length ' . strlen($podcasts_text_value)));
-            } else {
-                error_log('Error executing INSERT statement');
-            }
 
-            if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);
+            if ($isUpdate) {
+                $stmt = $conn->prepare("
+                    UPDATE podcasts SET title=?, description=?, podcasts_text=?, image=?, author=?, author_photo=?,
+                    button_link=?, additional_link=?, extra_link=?, video_path=?, audio_path=? WHERE id=?
+                ");
+                $result = $stmt->execute([$title, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $editId]);
+                if ($result) {
+                    echo json_encode(['success' => true, 'message' => 'Подкаст успешно обновлён']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Ошибка при обновлении подкаста']);
+                }
             } else {
-                deleteImageFile($image_path);
-                deleteImageFile($author_photo_path);
-                deleteImageFile($video_path);
-                deleteImageFile($audio_path);
-                echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении подкаста']);
+                try {
+                    $checkAudioField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'audio_path'");
+                    if ($checkAudioField->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN audio_path VARCHAR(500) DEFAULT NULL AFTER video_path");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking audio_path: ' . $e->getMessage());
+                }
+                $stmt = $conn->prepare("
+                    INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null]);
+                if ($result) {
+                    echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);
+                } else {
+                    deleteImageFile($image_path);
+                    deleteImageFile($author_photo_path);
+                    deleteImageFile($video_path);
+                    deleteImageFile($audio_path);
+                    echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении подкаста']);
+                }
             }
             break;
 
