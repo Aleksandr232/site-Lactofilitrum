@@ -22,7 +22,8 @@ try {
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/style.css?v=<?php echo $timestamp; ?>" />
-		<title>Main</title>
+		<title>Нетоксичный контент</title>
+		<meta name="description" content="Только самое полезное для практикующего врача без «шлаков и токсинов»" />
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
