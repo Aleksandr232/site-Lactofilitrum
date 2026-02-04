@@ -97,7 +97,7 @@ try {
 							<p>Проект «очищает контент от шлаков и токсинов, оставляя только полезное, улучшая работу критического мышления».</p>
 						</div>
 						<div class="ftbk_btn" data-aos="fade-up">
-							<a href="#" class="btn btn_green btn_small">Подписаться</a>
+							<a href="#register" class="btn btn_green btn_small">Подписаться</a>
 						</div>
 					</div>
 					<div class="ftbk_box" data-aos="fade-up">
@@ -640,7 +640,7 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="register">
+		<div id="register" class="register">
 			<div class="container">
 				<div class="register_bk d_flex f_wrap" data-aos="fade-up">
 					<div class="register_left">
