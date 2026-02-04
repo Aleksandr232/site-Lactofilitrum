@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	var $page = $('html, body');
-	$('a[href*="#"]:not(.open_modal)').on('click', function() {
+	$('a[href*="#"]:not(.open_modal):not([data-fancybox])').on('click', function() {
 		var href = $(this).attr("href");
 		if(href && href !== "#") {
 			var $target = $(href);
@@ -24,7 +24,36 @@ $(document).ready(function() {
 		offset: -50
 	});
 
-	Fancybox.bind("[data-fancybox]", {});
+	Fancybox.bind("[data-fancybox]", {
+		Zoomable: false,
+		Carousel: {
+			Toolbar: {
+				display: {
+					left: ["counter"],
+					middle: [],
+					right: ["close"]
+				}
+			}
+		},
+		on: {
+			done: function(fancybox, slide) {
+				var container = fancybox.$container || document.querySelector('.fancybox__container');
+				if (container) {
+					var audio = container.querySelector('audio');
+					if (audio) audio.play();
+					var video = container.querySelector('video.f-html5video');
+					if (video) video.setAttribute('controlsList', 'nodownload nofullscreen');
+				}
+			},
+			close: function(fancybox) {
+				var container = fancybox.$container || document.querySelector('.fancybox__container');
+				if (container) {
+					var audio = container.querySelector('audio');
+					if (audio) { audio.pause(); audio.currentTime = 0; }
+				}
+			}
+		}
+	});
 
 	if($('.podcasts_slider').length != 0) {
 		$('.podcasts_slider').each(function() {

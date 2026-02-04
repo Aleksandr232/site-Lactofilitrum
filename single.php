@@ -27,7 +27,8 @@ function asset_url($path) {
 
 $img_url = asset_url($p['image']);
 $author_photo_url = asset_url($p['author_photo']);
-$video_url = asset_url($p['video_path']);
+$video_url = asset_url($p['video_path'] ?? '');
+$audio_url = asset_url($p['audio_path'] ?? '');
 $extra_href = !empty($p['extra_link']) ? (strpos($p['extra_link'], 'http') === 0 ? $p['extra_link'] : '/' . ltrim($p['extra_link'], '/')) : '#';
 $link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подписаться';
 
@@ -73,8 +74,26 @@ $base = '/';
 				display: block;
 				overflow-x: auto;
 			}
+			/* Модалка аудио — как у видео: тёмный фон, те же размеры (960×540) */
+			.fancybox__slide.has-html .f-html:has(.single_audio_modal_content) {
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				min-height: 1px;
+				max-width: 960px;
+				max-height: 540px;
+				background: rgba(0, 0, 0, .9);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.single_audio_modal_content { padding: 0; width: 100%; height: 100%; box-sizing: border-box; }
+			.single_audio_modal_inner { width: 100%; height: 100%; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; min-height: 0; }
+			.single_audio_modal_image { flex: 1; min-height: 0; overflow: hidden; display: flex; align-items: stretch; }
+			.single_audio_modal_image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+			.single_audio_modal_player { width: 100%; flex-shrink: 0; padding: 0.75rem 1rem; background: rgba(0, 0, 0, .7); }
 		</style>
-		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Lactofilitrum</title>
+		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Нетоксичный контент</title>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -171,7 +190,24 @@ $base = '/';
 						<div class="single_btns d_flex">
 							<?php if ($video_url): ?>
 								<div class="single_btn">
-									<a href="<?php echo htmlspecialchars($video_url, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue" data-fancybox>Слушать</a>
+									<a href="<?php echo htmlspecialchars($video_url, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue" data-fancybox data-fancybox-type="video">Смотреть</a>
+								</div>
+							<?php endif; ?>
+							<?php if ($audio_url): ?>
+								<div class="single_btn">
+									<a href="#single-audio-modal" class="btn btn_blue" data-fancybox data-src="#single-audio-modal" data-width="960" data-height="540">Слушать</a>
+								</div>
+								<div id="single-audio-modal" class="single_audio_modal_content" style="display:none;">
+									<div class="single_audio_modal_inner">
+										<div class="single_audio_modal_image">
+											<?php if ($img_url): ?>
+												<img src="<?php echo htmlspecialchars($img_url, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?>"/>
+											<?php else: ?>
+												<img src="<?php echo $base; ?>frontend/img/temp/single_image.jpg" alt=""/>
+											<?php endif; ?>
+										</div>
+										<audio class="single_audio_modal_player" controls src="<?php echo htmlspecialchars($audio_url, ENT_QUOTES, 'UTF-8'); ?>">Ваш браузер не поддерживает воспроизведение аудио.</audio>
+									</div>
 								</div>
 							<?php endif; ?>
 							<?php if ($extra_href !== '#'): ?>
