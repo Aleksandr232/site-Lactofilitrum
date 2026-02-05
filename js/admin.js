@@ -83,6 +83,8 @@ function openEditPodcastModal(podcast) {
     document.getElementById('podcast-button-link').value = podcast.button_link || '';
     document.getElementById('podcast-additional-link').value = podcast.additional_link || '';
     document.getElementById('podcast-extra-link').value = podcast.extra_link || '';
+    const timeSelect = document.getElementById('podcast-time-podcast');
+    if (timeSelect) timeSelect.value = podcast.time_podcast || '';
 
     if (typeof tinymce !== 'undefined') {
         const editor = tinymce.get('podcast-text');

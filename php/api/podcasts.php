@@ -320,6 +320,9 @@ try {
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
             $extra_link = sanitize($_POST['extra_link'] ?? '');
+            // time_podcast: пусто = null, иначе допустимое значение (например "СКОРО")
+            $time_podcast_raw = trim($_POST['time_podcast'] ?? '');
+            $time_podcast = ($time_podcast_raw === 'СКОРО') ? 'СКОРО' : null;
 
             if (empty($title)) {
                 echo json_encode(['success' => false, 'message' => 'Название подкаста обязательно']);
@@ -385,11 +388,19 @@ try {
             $podcasts_text_value = isset($_POST['podcasts_text']) && $_POST['podcasts_text'] !== '' ? $podcasts_text : null;
 
             if ($isUpdate) {
+                try {
+                    $checkTimeField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'time_podcast'");
+                    if ($checkTimeField->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN time_podcast VARCHAR(50) DEFAULT NULL");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking time_podcast: ' . $e->getMessage());
+                }
                 $stmt = $conn->prepare("
                     UPDATE podcasts SET title=?, description=?, podcasts_text=?, image=?, author=?, author_photo=?,
-                    button_link=?, additional_link=?, extra_link=?, video_path=?, audio_path=? WHERE id=?
+                    button_link=?, additional_link=?, extra_link=?, video_path=?, audio_path=?, time_podcast=? WHERE id=?
                 ");
-                $result = $stmt->execute([$title, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $editId]);
+                $result = $stmt->execute([$title, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast, $editId]);
                 if ($result) {
                     echo json_encode(['success' => true, 'message' => 'Подкаст успешно обновлён']);
                 } else {
@@ -404,11 +415,19 @@ try {
                 } catch (PDOException $e) {
                     error_log('Error checking audio_path: ' . $e->getMessage());
                 }
+                try {
+                    $checkTimeField = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'time_podcast'");
+                    if ($checkTimeField->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN time_podcast VARCHAR(50) DEFAULT NULL");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking time_podcast: ' . $e->getMessage());
+                }
                 $stmt = $conn->prepare("
-                    INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path, time_podcast)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
-                $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null]);
+                $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast]);
                 if ($result) {
                     echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);
                 } else {

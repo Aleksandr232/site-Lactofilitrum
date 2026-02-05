@@ -193,6 +193,13 @@ $timestamp = time();
                         <input type="url" id="podcast-extra-link" name="extra_link" placeholder="https://...">
                     </div>
                     <div class="form-group">
+                        <label for="podcast-time-podcast">Время подкаста:</label>
+                        <select id="podcast-time-podcast" name="time_podcast">
+                            <option value="">Не выбрано</option>
+                            <option value="СКОРО">СКОРО</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="podcast-video">Видео подкаста (опционально):</label>
                         <div class="file-upload-wrapper">
                             <input type="file" id="podcast-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" class="file-upload-input">

@@ -908,22 +908,28 @@ try {
 					data.podcasts.forEach(function(p) {
 						var imgSrc = p.image ? url(p.image) : '';
 						var authorImgSrc = p.author_photo ? url(p.author_photo) : '';
-						var btnText = (p.button_link && p.button_link.trim()) ? p.button_link : 'Подробнее';
-						var linkText = (p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Получить памятку с кратким содержанием выпуска';
+						var isSoon = (p.time_podcast === 'СКОРО');
+						var btnText = isSoon ? 'Зарегистрироваться' : ((p.button_link && p.button_link.trim()) ? p.button_link : 'Подробнее');
+						var linkText = isSoon ? '' : ((p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Получить памятку с кратким содержанием выпуска');
 						var linkHref = (p.extra_link && p.extra_link.trim()) ? url(p.extra_link) : '#library-remission';
 						var slug = (p.slug && p.slug.trim()) ? p.slug : '';
-						var btnHref = slug ? '/single/' + escAttr(slug) : '#';
+						var btnHref = isSoon ? '#register' : (slug ? '/single/' + escAttr(slug) : '#');
+						var previewHtml = '<div class="podcasts_item_preview">' +
+							'<div class="podcasts_preview_image' + (isSoon ? ' podcasts_preview_image--soon' : '') + '">' +
+								(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
+							'</div>' +
+							(isSoon ? '<div class="podcasts_preview_overlay">' +
+								'<div class="podcasts_preview_overlay__tag"><span>СКОРО</span></div>' +
+								'<div class="podcasts_preview_overlay__title">Зарегистрироваться и послушать первым</div>' +
+							'</div>' : '') +
+							'</div>';
 						var slide = document.createElement('div');
 						slide.className = 'swiper-slide';
 						slide.innerHTML =
 							'<div class="podcasts_slider_item">' +
 								'<div class="podcasts_item_title">' + esc(p.title) + '</div>' +
 								'<div class="podcasts_item_desc">' + esc(p.description || '') + '</div>' +
-								'<div class="podcasts_item_preview">' +
-									'<div class="podcasts_preview_image">' +
-										(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
-									'</div>' +
-								'</div>' +
+								previewHtml +
 								'<div class="podcasts_item_profile d_flex a_items_center">' +
 									'<div class="podcasts_profile_image">' +
 										(authorImgSrc ? '<img src="' + escAttr(authorImgSrc) + '" alt="' + escAttr(p.author || '') + '"/>' : '') +
@@ -937,9 +943,9 @@ try {
 									'<div class="podcasts_btn">' +
 										'<a href="' + btnHref + '" class="btn btn_green">' + esc(btnText) + '</a>' +
 									'</div>' +
-									'<div class="podcasts_note">' +
+									(isSoon ? '' : ('<div class="podcasts_note">' +
 										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +
-									'</div>' +
+									'</div>')) +
 								'</div>' +
 							'</div>';
 						wrapper.appendChild(slide);

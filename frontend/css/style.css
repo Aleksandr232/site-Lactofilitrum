@@ -479,6 +479,7 @@ body {
     height: 259px;
 }
 .podcasts_preview_image {
+    position: relative;
     height: 100%;
     width: 100%;
 }
@@ -487,14 +488,34 @@ body {
     height: 100%;
     width: 100%;
 }
+/* Затемнение картинки для подкаста «СКОРО» (по макету Figma) */
+.podcasts_preview_image--soon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(28, 35, 38, 0.3);
+    border-radius: 10px;
+    pointer-events: none;
+}
 .podcasts_preview_overlay {
-    background: linear-gradient(180deg,rgba(28, 35, 38, 0.3) 0%, rgba(27, 27, 27, 1) 100%);
+    background: transparent;
     padding: 16px 20px 18px;
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px;
+    pointer-events: none;
+}
+.podcasts_preview_overlay__tag {
+    flex-shrink: 0;
 }
 .podcasts_preview_overlay__tag span {
     background: rgba(255, 255, 255, 0.8);
