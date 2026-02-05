@@ -838,7 +838,7 @@ try {
 						var authorImgSrc = p.author_photo ? url(p.author_photo) : '';
 						var btnText = (p.button_link && p.button_link.trim()) ? p.button_link : 'Подробнее';
 						var linkText = (p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Получить памятку с кратким содержанием выпуска';
-						var linkHref = p.extra_link ? url(p.extra_link) : '#';
+						var linkHref = (p.extra_link && p.extra_link.trim()) ? url(p.extra_link) : '#library-remission';
 						var slug = (p.slug && p.slug.trim()) ? p.slug : '';
 						var btnHref = slug ? '/single/' + escAttr(slug) : '#';
 						var slide = document.createElement('div');
