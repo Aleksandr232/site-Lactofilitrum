@@ -725,8 +725,8 @@ try {
 								</div>
 							</form>
 						</div> -->
-						<!-- форма виджет  -->
-						<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
+						<!-- форма виджет: через прокси, чтобы ответ открывался в iframe и показывался наш попап -->
+						<iframe src="php/form_proxy.php?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&amp;iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
 					</div>
 				</div>
 			</div>
@@ -792,9 +792,81 @@ try {
 			</div>
 			<!-- <iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe> -->
 		</footer>
+
+		<!-- Попап «Спасибо за регистрацию» (по макету Figma) -->
+		<div id="register-thankyou-popup" class="register_popup_overlay" aria-hidden="true">
+			<div class="register_popup">
+				<button type="button" class="register_popup_close" aria-label="Закрыть">&times;</button>
+				<h2 class="register_popup_title">Спасибо за регистрацию!</h2>
+				<p class="register_popup_text">Памятка И. О. Печерея в течение нескольких минут придет Вам на почту.</p>
+				<p class="register_popup_text register_popup_text--sms">Пожалуйста, не забудьте перейти по ссылке в смс, чтобы подтвердить регистрацию.</p>
+				<button type="button" class="register_popup_btn btn btn_green">Закрыть</button>
+			</div>
+		</div>
 	</div>
 	
 	<script src=https://pxl.synapseonline.ru/form/js/embed_v1.js></script>
+	<script>
+	(function() {
+		var popup = document.getElementById('register-thankyou-popup');
+		if (!popup) return;
+		var openPopup = function() {
+			popup.classList.add('is_open');
+			popup.setAttribute('aria-hidden', 'false');
+		};
+		var closePopup = function() {
+			popup.classList.remove('is_open');
+			popup.setAttribute('aria-hidden', 'true');
+		};
+		popup.querySelector('.register_popup_close').addEventListener('click', closePopup);
+		popup.querySelector('.register_popup_btn').addEventListener('click', closePopup);
+		popup.addEventListener('click', function(e) {
+			if (e.target === popup) closePopup();
+		});
+		window.addEventListener('message', function(e) {
+			if (e.data && (e.data.type === 'ak-form-success' || e.data.formSuccess === true || (e.data.event && e.data.event === 'form_success'))) {
+				openPopup();
+			}
+		});
+		// Если форма в iframe открывает страницу «спасибо» внутри iframe — показываем попап при второй загрузке iframe
+		var formIframe = document.querySelector('.ak-form');
+		if (formIframe) {
+			var iframeLoadCount = 0;
+			var firstLoadTime = 0;
+			formIframe.addEventListener('load', function() {
+				iframeLoadCount++;
+				if (iframeLoadCount === 1) {
+					firstLoadTime = Date.now();
+					return;
+				}
+				// Вторая загрузка не раньше чем через 1.5 сек (реальная отправка формы), чтобы не сработать на двойной загрузке
+				if (Date.now() - firstLoadTime > 1500) {
+					openPopup();
+				}
+			});
+		}
+		function checkSuccessUrl() {
+			var params = new URLSearchParams(window.location.search);
+			var hash = window.location.hash || '';
+			var isSuccess = params.get('register') === 'success' || hash === '#register-success' || hash.indexOf('register-success') !== -1;
+			if (isSuccess) {
+				openPopup();
+				var cleanUrl = window.location.pathname;
+				if (params.get('register') === 'success') {
+					params.delete('register');
+					cleanUrl += (params.toString() ? '?' + params.toString() : '');
+				} else {
+					cleanUrl += window.location.search || '';
+				}
+				cleanUrl += (hash && hash !== '#register-success' ? hash : '');
+				history.replaceState('', document.title, cleanUrl);
+			}
+		}
+		checkSuccessUrl();
+		document.addEventListener('DOMContentLoaded', checkSuccessUrl);
+		window.openRegisterThankYouPopup = openPopup;
+	})();
+	</script>
 	<script type="text/javascript" src="frontend/js/jquery.min.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/swiper-bundle.min.js?v=<?php echo $timestamp; ?>"></script>
 	<script type="text/javascript" src="frontend/js/choices.min.js?v=<?php echo $timestamp; ?>"></script>
