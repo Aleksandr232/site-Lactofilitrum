@@ -142,7 +142,7 @@ try {
 					</div>
 				</div>
 				<div class="mission_btn">
-					<a href="#" class="btn btn_green btn_small">Смотреть</a>
+					<a href="#podcasts" class="btn btn_green btn_small">Смотреть</a>
 				</div>
 			</div>
 		</div>
