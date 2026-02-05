@@ -74,24 +74,58 @@ $base = '/';
 				display: block;
 				overflow-x: auto;
 			}
-			/* Модалка аудио — как у видео: тёмный фон, те же размеры (960×540) */
+			/* Модалка аудио — те же размеры и стиль, что и у видео (960×540, 16:9, тёмный фон) */
 			.fancybox__slide.has-html .f-html:has(.single_audio_modal_content) {
 				padding: 0;
 				width: 100%;
 				height: 100%;
 				min-height: 1px;
-				max-width: 960px;
-				max-height: 540px;
-				background: rgba(0, 0, 0, .9);
+				max-width: var(--f-video-width, 960px);
+				max-height: var(--f-video-height, 540px);
+				aspect-ratio: 16 / 9;
+				background: var(--f-video-bg, rgba(0, 0, 0, .9));
+				overflow: visible;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 			}
-			.single_audio_modal_content { padding: 0; width: 100%; height: 100%; box-sizing: border-box; }
-			.single_audio_modal_inner { width: 100%; height: 100%; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; min-height: 0; }
-			.single_audio_modal_image { flex: 1; min-height: 0; overflow: hidden; display: flex; align-items: stretch; }
-			.single_audio_modal_image img { width: 100%; height: 100%; display: block; object-fit: cover; }
-			.single_audio_modal_player { width: 100%; flex-shrink: 0; padding: 0.75rem 1rem; background: rgba(0, 0, 0, .7); }
+			.single_audio_modal_content {
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				max-width: 960px;
+				max-height: 540px;
+				aspect-ratio: 16 / 9;
+				box-sizing: border-box;
+			}
+			.single_audio_modal_inner {
+				width: 100%;
+				height: 100%;
+				padding: 0;
+				box-sizing: border-box;
+				display: flex;
+				flex-direction: column;
+				min-height: 0;
+			}
+			.single_audio_modal_image {
+				flex: 1;
+				min-height: 0;
+				overflow: hidden;
+				display: flex;
+				align-items: stretch;
+			}
+			.single_audio_modal_image img {
+				width: 100%;
+				height: 100%;
+				display: block;
+				object-fit: cover;
+			}
+			.single_audio_modal_player {
+				width: 100%;
+				flex-shrink: 0;
+				padding: 0.75rem 1rem;
+				background: rgba(0, 0, 0, .7);
+			}
 		</style>
 		<title><?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?> — Нетоксичный контент</title>
 		<!--[if IE]>
