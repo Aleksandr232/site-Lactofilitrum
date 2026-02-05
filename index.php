@@ -104,7 +104,7 @@ try {
 						<div class="ftbk_box_inside">
 							<div class="ftbk_box_title">Подробнее <br>о Лактофильтруме</div>
 							<div class="ftbk_box_btn">
-								<a href="#" class="btn btn_green btn_small">Смотреть</a>
+								<span class="btn btn_green btn_small btn_disabled">Смотреть</span>
 							</div>
 							<div class="ftbk_box_image">
 								<img src="frontend/img/temp/ftbk_box_image.png" alt=""/>
