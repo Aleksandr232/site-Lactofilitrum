@@ -213,6 +213,37 @@ body {
     background-color: #7f8c8d;
 }
 
+/* Компактные кнопки действий в таблице */
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.table-actions .btn-edit {
+    background: transparent;
+    color: #1878bc;
+    border: 1px solid #1878bc;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.table-actions .btn-edit:hover {
+    background-color: #1878bc;
+    color: #fff;
+}
+
+.table-actions .btn-danger--sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: 6px;
+}
+
 .btn-danger {
     background-color: #e74c3c;
     color: white;

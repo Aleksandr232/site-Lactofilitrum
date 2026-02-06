@@ -184,8 +184,10 @@ function loadPodcasts() {
                         <td>${authorHtml}</td>
                         <td>${new Date(podcast.created_at).toLocaleDateString('ru-RU')}</td>
                         <td>
-                            <button class="btn-secondary" onclick="editPodcast(${podcast.id})" style="margin-right:6px;">Изменить</button>
-                            <button class="btn-danger" onclick="deletePodcast(${podcast.id})">Удалить</button>
+                            <div class="table-actions">
+                                <button type="button" class="btn-edit" onclick="editPodcast(${podcast.id})">Изменить</button>
+                                <button type="button" class="btn-danger btn-danger--sm" onclick="deletePodcast(${podcast.id})">Удалить</button>
+                            </div>
                         </td>
                     `;
                     tableBody.appendChild(row);
