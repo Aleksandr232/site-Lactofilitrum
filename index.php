@@ -765,16 +765,16 @@ try {
 						<div class="footer_bottom_right d_flex">
 							<div class="footer_menu footer_menu_1">
 								<ul>
-									<li><a href="#">Синапс</a></li>
-									<li><a href="#">Важно о мозге</a></li>
+									<li><a href="https://synapseonline.ru/">Синапс</a></li>
+									<li><a href="https://важноомозге.рф/">Важно о мозге</a></li>
 								</ul>
 							</div>
 							<div class="footer_menu footer_menu_2">
 								<ul>
-									<li><a href="#">О компании</a></li>
-									<li><a href="#">Препараты</a></li>
-									<li><a href="#">Безопасность препаратов</a></li>
-									<li><a href="#">Контакты</a></li>
+									<li><a href="https://otcpharm.ru/">О компании</a></li>
+									<li><a href="https://otcpharm.ru/medicaments/">Препараты</a></li>
+									<li><a href="https://otcpharm.ru/safety/">Безопасность препаратов</a></li>
+									<li><a href="https://otcpharm.ru/contacts/">Контакты</a></li>
 								</ul>
 							</div>
 							<div class="footer_infos">
