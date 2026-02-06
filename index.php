@@ -51,7 +51,7 @@ try {
 						<li><a href="#podcasts">Подкасты</a></li>
 						<li><a href="#">О Лактофильтруме</a></li>
 						<li><a href="#library-remission">Библиотека ремиссии</a></li>
-						<li><a href="#">Получить бонус</a></li>
+						<li><a href="#register">Получить бонус</a></li>
 					</ul>
 				</div>
 			</div>
@@ -77,7 +77,7 @@ try {
 								<li><a href="#podcasts">Подкасты</a></li>
 								<li><a href="#">О Лактофильтруме</a></li>
 								<li><a href="#library-remission">Библиотека ремиссии</a></li>
-								<li><a href="#">Получить бонус</a></li>
+								<li><a href="#register">Получить бонус</a></li>
 							</ul>
 						</div>
 					</div>
