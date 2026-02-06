@@ -6,7 +6,9 @@ $(document).ready(function() {
 		if(href && href !== "#") {
 			var $target = $(href);
 			if($target.length) {
-				$page.scrollTop($target.offset().top - $('.header').outerHeight() - 30);
+				$page.animate({
+					scrollTop: $target.offset().top - $('.header').outerHeight() - 30
+				}, 1000);
 				$('.mobile_header_wrapper').removeClass('active');
 				return false;
 			}
@@ -25,31 +27,27 @@ $(document).ready(function() {
 	});
 
 	Fancybox.bind("[data-fancybox]", {
-		Zoomable: false,
-		Carousel: {
-			Toolbar: {
-				display: {
-					left: ["counter"],
-					middle: [],
-					right: ["close"]
-				}
-			}
-		},
 		on: {
 			done: function(fancybox, slide) {
-				var container = fancybox.$container || document.querySelector('.fancybox__container');
-				if (container) {
-					var audio = container.querySelector('audio');
-					if (audio) audio.play();
-					var video = container.querySelector('video.f-html5video');
+				var run = function() {
+					var container = fancybox.$container || document.querySelector('.fancybox__container');
+					var el = container || document.body;
+					var audio = el.querySelector('audio');
+					if (audio) {
+						audio.play().catch(function() {});
+					}
+					var video = el.querySelector('video');
 					if (video) video.setAttribute('controlsList', 'nodownload nofullscreen');
-				}
+				};
+				setTimeout(run, 0);
 			},
 			close: function(fancybox) {
 				var container = fancybox.$container || document.querySelector('.fancybox__container');
 				if (container) {
 					var audio = container.querySelector('audio');
 					if (audio) { audio.pause(); audio.currentTime = 0; }
+					var video = container.querySelector('video');
+					if (video) { video.pause(); video.currentTime = 0; }
 				}
 			}
 		}
@@ -58,7 +56,6 @@ $(document).ready(function() {
 	if($('.podcasts_slider').length != 0) {
 		$('.podcasts_slider').each(function() {
 			var slider = $(this);
-			if (slider.data('podcasts-dynamic')) return; // подкасты подгружаются из API на index
 			var sliderWrapper = slider.closest('.slider_wrapper');
 			var paginationEl = slider.find('.swiper-pagination');
 			
@@ -194,58 +191,6 @@ $(document).ready(function() {
 		});
 	}
 
-	// Обработчик формы регистрации (POST на php/api/clients.php)
-	$('#form-register').on('submit', function(e) {
-		e.preventDefault();
-		var $form = $(this);
-		var $btn = $form.find('button[type="submit"]');
-		var $msg = $form.find('.form_message');
-
-		var data = {
-			surname: $form.find('[name="surname"]').val().trim(),
-			name: $form.find('[name="name"]').val().trim(),
-			patronymic: $form.find('[name="patronymic"]').val().trim(),
-			specialty: $form.find('[name="specialty"]').val().trim(),
-			phone: $form.find('[name="phone"]').val().trim(),
-			email: $form.find('[name="email"]').val().trim(),
-			city: $form.find('[name="city"]').val().trim(),
-			consent_personal: $form.find('[name="consent_personal"]').is(':checked'),
-			consent_ads: $form.find('[name="consent_ads"]').is(':checked')
-		};
-
-		$msg.hide().removeClass('form_message--success form_message--error');
-		$btn.prop('disabled', true);
-
-		$.ajax({
-			url: 'php/api/clients.php',
-			method: 'POST',
-			contentType: 'application/json',
-			data: JSON.stringify(data),
-			success: function(res) {
-				if (res.success) {
-					$msg.addClass('form_message--success').css('background', '#d4edda').css('color', '#155724').html(res.message || 'Регистрация успешно завершена').show();
-					$form[0].reset();
-					if (typeof Choices !== 'undefined') {
-						$form.find('.form_field__select select').each(function() {
-							var choices = Choices.getInstance(this);
-							if (choices) choices.setChoiceByValue('');
-						});
-					}
-				} else {
-					$msg.addClass('form_message--error').css('background', '#f8d7da').css('color', '#721c24').html(res.message || 'Произошла ошибка').show();
-				}
-			},
-			error: function(xhr) {
-				var res = {};
-				try { res = xhr.responseJSON || JSON.parse(xhr.responseText || '{}'); } catch (e) {}
-				$msg.addClass('form_message--error').css('background', '#f8d7da').css('color', '#721c24').html(res.message || 'Ошибка отправки. Попробуйте позже.').show();
-			},
-			complete: function() {
-				$btn.prop('disabled', false);
-			}
-		});
-	});
-
 	if($('.scheme_basic_image').length != 0) {
 		$('.scheme_basic_image').on('mouseenter', function() {
 			$(this).closest('.scheme_item').addClass('active');
@@ -258,14 +203,14 @@ $(document).ready(function() {
 
 	if ($('.mission').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1201px)": function() {
+			"(min-width: 1025px)": function() {
 				gsap.set('.mission_col_left', {
 					y: -200,
-					opacity: 0
+					opacity: 1
 				});
 				gsap.set('.mission_col_right', {
 					y: 200,
-					opacity: 0
+					opacity: 1
 				});
 				
 				const rotationAngle = -45;
@@ -294,14 +239,14 @@ $(document).ready(function() {
 					ease: "none"
 				}, 0)
 				.to(".mission_col_left", {
-					y: 0,
+					y: 200,
 					opacity: 1,
 					ease: "none",
 					duration: 1
 				}, 0)
 				
 				.to(".mission_col_right", {
-					y: 0,
+					y: -200,
 					opacity: 1,
 					ease: "none",
 					duration: 1
@@ -334,11 +279,6 @@ $(document).ready(function() {
 
 				.to({}, { duration: 0.1 });
 			},
-			"(min-width: 1025px) and (max-width: 1200px)": function() {
-				gsap.set('.mission_col_left, .mission_col_right', { clearProps: "all" });
-				gsap.set('.mission', { clearProps: "all" });
-				gsap.set('.mission_circle, .mission_circle_image_1, .mission_circle_image_2, .mission_circle_inside', { clearProps: "all" });
-			},
 			"(max-width: 1024px)": function() {
 				gsap.set('.mission_col_left, .mission_col_right', {
 					clearProps: "all"
@@ -349,7 +289,7 @@ $(document).ready(function() {
 	
 	if ($('.about').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1201px)": function() {
+			"(min-width: 1171px)": function() {
 				gsap.set('.about_col_left, .about_col_right', {
 					y: 150,
 					opacity: 0
@@ -457,13 +397,8 @@ $(document).ready(function() {
 					});
 				}
 			},
-			"(min-width: 1025px) and (max-width: 1200px)": function() {
-				gsap.set('.about_items, .about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2, .about_image_product', {
-					clearProps: "all"
-				});
-			},
-			"(max-width: 1024px)": function() {
-				gsap.set('.about_items, .about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
+			"(max-width: 1170px)": function() {
+				gsap.set('.about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
 					clearProps: "all"
 				});
 			}
