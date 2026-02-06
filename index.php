@@ -765,16 +765,16 @@ try {
 						<div class="footer_bottom_right d_flex">
 							<div class="footer_menu footer_menu_1">
 								<ul>
-									<li><a href="https://synapseonline.ru/">Синапс</a></li>
-									<li><a href="https://важноомозге.рф/">Важно о мозге</a></li>
+									<li><a href="https://synapseonline.ru/" target="_blank" rel="noopener noreferrer">Синапс</a></li>
+									<li><a href="https://важноомозге.рф/" target="_blank" rel="noopener noreferrer">Важно о мозге</a></li>
 								</ul>
 							</div>
 							<div class="footer_menu footer_menu_2">
 								<ul>
-									<li><a href="https://otcpharm.ru/">О компании</a></li>
-									<li><a href="https://otcpharm.ru/medicaments/">Препараты</a></li>
-									<li><a href="https://otcpharm.ru/safety/">Безопасность препаратов</a></li>
-									<li><a href="https://otcpharm.ru/contacts/">Контакты</a></li>
+									<li><a href="https://otcpharm.ru/" target="_blank" rel="noopener noreferrer">О компании</a></li>
+									<li><a href="https://otcpharm.ru/medicaments/" target="_blank" rel="noopener noreferrer">Препараты</a></li>
+									<li><a href="https://otcpharm.ru/safety/" target="_blank" rel="noopener noreferrer">Безопасность препаратов</a></li>
+									<li><a href="https://otcpharm.ru/contacts/" target="_blank" rel="noopener noreferrer">Контакты</a></li>
 								</ul>
 							</div>
 							<div class="footer_infos">
