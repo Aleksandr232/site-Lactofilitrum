@@ -2003,7 +2003,7 @@ body {
 }
 
 /* До 1200px анимация about отключена — колонки всегда видимы, раскладка в ряд */
-@media screen and (max-width: 1200px) {
+/* @media screen and (max-width: 1200px) {
     .about_col_left,
     .about_col_right {
         opacity: 1 !important;
@@ -2044,7 +2044,7 @@ body {
     .about_col_right .about_col_title {
         text-align: right;
     }
-}
+} */
 
 @media screen and (max-width: 1170px) {
     .about {
@@ -2052,6 +2052,46 @@ body {
     }
     .about_bg_image {
         opacity: 1;
+    }
+    .about_cols {
+        margin-top: 20px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        gap: 20px;
+    }
+    .about_col {
+        width: 50% !important;
+    }
+    .about_col_left,
+    .about_col_right {
+        position: relative;
+        left: auto;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        opacity: 1;
+    }
+    .about_col_title {
+        margin-bottom: 20px !important;
+        width: 100% !Important;
+    }
+    .about_col_title:before {
+        display: none;
+    }
+    .about_col_box {
+        padding: 20px;
+        height: calc(100% - 46px);
+        width: 100%;
+        margin: 0 auto;
+        max-width: 420px;
+    }
+    .about_col_right .about_col_title {
+        text-align: right;
+    }
+    .mission {
+        padding: 40px 0;
     }
 }
 
