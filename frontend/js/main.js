@@ -289,7 +289,7 @@ $(document).ready(function() {
 	
 	if ($('.about').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1171px)": function() {
+			"(min-width: 1170px)": function() {
 				gsap.set('.about_col_left, .about_col_right', {
 					y: 150,
 					opacity: 0
@@ -397,7 +397,7 @@ $(document).ready(function() {
 					});
 				}
 			},
-			"(max-width: 1170px)": function() {
+			"(max-width: 1169px)": function() {
 				gsap.set('.about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
 					clearProps: "all"
 				});
