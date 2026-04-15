@@ -493,6 +493,9 @@ body {
 .podcasts_preview_overlay {
     background: linear-gradient(180deg,rgba(28, 35, 38, 0.3) 0%, rgba(27, 27, 27, 1) 100%);
     padding: 16px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     position: absolute;
     left: 0;
     top: 0;
@@ -2489,7 +2492,8 @@ body {
         padding: 6px 10px 3px;
     }
     .podcasts_preview_overlay__title {
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 120%;
     }
     .podcasts_slider .podcasts-slide-large {
         width: 300px;
