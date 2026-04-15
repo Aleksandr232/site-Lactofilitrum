@@ -290,7 +290,7 @@ try {
                 }
             } else {
                 // Все подкасты (для слайдера)
-                $stmt = $conn->prepare("SELECT * FROM podcasts ORDER BY created_at DESC");
+                $stmt = $conn->prepare("SELECT * FROM podcasts ORDER BY id ASC");
                 $stmt->execute();
                 $podcasts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode(['success' => true, 'podcasts' => $podcasts], JSON_UNESCAPED_UNICODE);

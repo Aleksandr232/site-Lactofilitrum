@@ -433,9 +433,13 @@ body {
     margin-top: 40px;
     overflow: visible;
 }
+.podcasts_slider .swiper-wrapper {
+    align-items: stretch;
+}
 .podcasts_slider .swiper-slide {
     max-width: 518px;
     height: auto;
+    display: flex;
 }
 .podcasts_slider .podcasts-slide-large {
     max-width: 670px;
@@ -446,6 +450,9 @@ body {
     border-radius: 20px;
     padding: 40px;
     height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .podcasts_slider .podcasts-slide-large .podcasts_slider_item {
     background: #ecf7fb;
@@ -549,7 +556,8 @@ body {
     margin-top: 4px;
 }
 .podcasts_bottom {
-    margin-top: 27px;
+    margin-top: auto;
+    padding-top: 27px;
 }
 .podcasts_note {
     font-family: "Museo Sans Cyrl 500", sans-serif;
@@ -2114,9 +2122,12 @@ body {
         width: calc(50% - 115px / 2);
     }
     .about_bg_wrapper {
-        left: 50%;
+        left: 0;
         right: 0;
-        transform: translateX(-49%);
+        transform: none;
+        width: 100%;
+        max-width: 1681px;
+        margin: 0 auto;
     }
     .scheme_items {
         max-width: 1024px;

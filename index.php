@@ -992,6 +992,24 @@ try {
 		function escAttr(s) {
 			return esc(s).replace(/"/g, '&quot;');
 		}
+		function equalizePodcastCardRows() {
+			if (!wrapper) return;
+			var titleEls = wrapper.querySelectorAll('.podcasts_item_title');
+			var descEls = wrapper.querySelectorAll('.podcasts_item_desc');
+			if (!titleEls.length || !descEls.length) return;
+
+			titleEls.forEach(function(el) { el.style.minHeight = ''; });
+			descEls.forEach(function(el) { el.style.minHeight = ''; });
+
+			var maxTitle = 0;
+			var maxDesc = 0;
+
+			titleEls.forEach(function(el) { maxTitle = Math.max(maxTitle, el.offsetHeight); });
+			descEls.forEach(function(el) { maxDesc = Math.max(maxDesc, el.offsetHeight); });
+
+			titleEls.forEach(function(el) { el.style.minHeight = maxTitle + 'px'; });
+			descEls.forEach(function(el) { el.style.minHeight = maxDesc + 'px'; });
+		}
 
 		fetch('php/api/podcasts.php')
 			.then(function(r) { return r.json(); })
@@ -1073,6 +1091,7 @@ try {
 							'</div>';
 						wrapper.appendChild(slide);
 					});
+					equalizePodcastCardRows();
 				}
 
 				var paginationEl = slider.querySelector('.swiper-pagination');
@@ -1083,7 +1102,13 @@ try {
 				}
 				var prevEl = sliderWrapper ? sliderWrapper.querySelector('.slider_arr_left') : null;
 				var nextEl = sliderWrapper ? sliderWrapper.querySelector('.slider_arr_right') : null;
+				if (slider.swiper) {
+					slider.swiper.destroy(true, true);
+				}
 				new Swiper(slider, {
+					initialSlide: 0,
+					centeredSlides: false,
+					slidesOffsetBefore: 0,
 					slidesPerView: 'auto',
 					spaceBetween: 20,
 					navigation: {
@@ -1107,9 +1132,11 @@ try {
 							} else {
 								this.pagination.disable();
 							}
+							equalizePodcastCardRows();
 						}
 					}
 				});
+				window.addEventListener('resize', equalizePodcastCardRows);
 			})
 			.catch(function(err) {
 				console.error('Ошибка загрузки подкастов:', err);
