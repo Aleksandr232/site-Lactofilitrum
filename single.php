@@ -148,10 +148,10 @@ $base = '/';
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="/#podcasts">Подкасты</a></li>
-						<li><a href="/">О Лактофильтруме</a></li>
-						<li><a href="/#library-remission">Библиотека ремиссии</a></li>
-						<li><a href="/#register">Получить бонус</a></li>
+						<li><a href="#podcasts">Подкасты</a></li>
+						<li><a href="#healing">Оси «кишечник-кожа»</a></li>
+						<li><a href="#library-remission">Библиотека ремиссии</a></li>
+						<li><a href="#register">Получить бонус</a></li>
 					</ul>
 				</div>
 			</div>
@@ -174,10 +174,10 @@ $base = '/';
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="/#podcasts">Подкасты</a></li>
-								<li><a href="/">О Лактофильтруме</a></li>
-								<li><a href="/#library-remission">Библиотека ремиссии</a></li>
-								<li><a href="/#register">Получить бонус</a></li>
+								<li><a href="#podcasts">Подкасты</a></li>
+								<li><a href="#healing">Оси «кишечник-кожа»</a></li>
+								<li><a href="#library-remission">Библиотека ремиссии</a></li>
+								<li><a href="#register">Получить бонус</a></li>
 							</ul>
 						</div>
 					</div>

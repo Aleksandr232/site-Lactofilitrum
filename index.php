@@ -26,6 +26,60 @@ try {
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/aos.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/fancybox.css?v=<?php echo $timestamp; ?>" />
 		<link type="text/css" media="all" rel="stylesheet" href="frontend/css/style.css?v=<?php echo $timestamp; ?>" />
+		<style>
+			/* Аудио-модалка в карточке подкаста (как на single) */
+			.fancybox__slide.has-html .f-html:has(.single_audio_modal_content) {
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				min-height: 1px;
+				max-width: var(--f-video-width, 960px);
+				max-height: var(--f-video-height, 540px);
+				aspect-ratio: 16 / 9;
+				background: var(--f-video-bg, rgba(0, 0, 0, .9));
+				overflow: visible;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.single_audio_modal_content {
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				max-width: 960px;
+				max-height: 540px;
+				aspect-ratio: 16 / 9;
+				box-sizing: border-box;
+			}
+			.single_audio_modal_inner {
+				width: 100%;
+				height: 100%;
+				padding: 0;
+				box-sizing: border-box;
+				display: flex;
+				flex-direction: column;
+				min-height: 0;
+			}
+			.single_audio_modal_image {
+				flex: 1;
+				min-height: 0;
+				overflow: hidden;
+				display: flex;
+				align-items: stretch;
+			}
+			.single_audio_modal_image img {
+				width: 100%;
+				height: 100%;
+				display: block;
+				object-fit: cover;
+			}
+			.single_audio_modal_player {
+				width: 100%;
+				flex-shrink: 0;
+				padding: 0.75rem 1rem;
+				background: rgba(0, 0, 0, .7);
+			}
+		</style>
 		<title>Нетоксичный контент</title>
 		<meta name="description" content="Только самое полезное для практикующего врача без «шлаков и токсинов»" />
 		<!--[if IE]>
@@ -48,10 +102,10 @@ try {
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="#">Подкасты</a></li>
+						<li><a href="#podcasts">Подкасты</a></li>
 						<li><a href="#healing">Ось «кишечник-кожа»</a></li>
-						<li><a href="#">Библиотека ремиссии</a></li>
-						<li><a href="#">Получить бонус</a></li>
+						<li><a href="#library-remission">Библиотека ремиссии</a></li>
+						<li><a href="#register">Получить бонус</a></li>
 					</ul>
 				</div>
 			</div>
@@ -74,10 +128,10 @@ try {
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="#">Подкасты</a></li>
-								<li><a href="#healing">Ось «кишечник-кожа»</a></li>
-								<li><a href="#">Библиотека ремиссии</a></li>
-								<li><a href="#">Получить бонус</a></li>
+								<li><a href="#podcasts">Подкасты</a></li>
+								<li><a href="#healing">Оси «кишечник-кожа»</a></li>
+								<li><a href="#library-remission">Библиотека ремиссии</a></li>
+								<li><a href="#register">Получить бонус</a></li>
 							</ul>
 						</div>
 					</div>
@@ -946,15 +1000,32 @@ try {
 				if (!data.success || !data.podcasts || data.podcasts.length === 0) {
 					wrapper.innerHTML = '<div class="swiper-slide" style="padding: 2rem; text-align: center; color: #666;">Нет подкастов</div>';
 				} else {
-					data.podcasts.forEach(function(p) {
+					data.podcasts.forEach(function(p, i) {
 						var imgSrc = p.image ? url(p.image) : '';
 						var authorImgSrc = p.author_photo ? url(p.author_photo) : '';
+						var audioSrc = (p.audio_path && p.audio_path.trim()) ? url(p.audio_path) : '';
+						var videoSrc = (p.video_path && p.video_path.trim()) ? url(p.video_path) : '';
 						var isSoon = (p.time_podcast === 'СКОРО');
-						var btnText = isSoon ? 'Зарегистрироваться' : ((p.button_link && p.button_link.trim()) ? p.button_link : 'Подробнее');
-						var linkText = isSoon ? '' : ((p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Получить памятку с кратким содержанием выпуска');
+						var btnText = isSoon ? 'Зарегистрироваться' : ((p.button_link && p.button_link.trim()) ? p.button_link : 'Слушать');
+						var linkText = isSoon ? '' : ((p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Памятка');
 						var linkHref = (p.extra_link && p.extra_link.trim()) ? url(p.extra_link) : '#library-remission';
 						var slug = (p.slug && p.slug.trim()) ? p.slug : '';
-						var btnHref = isSoon ? '#register' : (slug ? '/single/' + escAttr(slug) : '#');
+						var audioModalId = 'podcast-audio-modal-' + (p.id ? String(p.id) : String(i));
+						var btnHref = '#';
+						var btnExtraAttrs = '';
+						var btnClass = 'btn btn_green';
+						if (isSoon) {
+							btnHref = '#register';
+						} else if (audioSrc) {
+							btnHref = '#' + audioModalId;
+							btnClass += ' open_modal';
+							btnExtraAttrs = ' data-fancybox data-src="#' + escAttr(audioModalId) + '" data-width="960" data-height="540"';
+						} else if (videoSrc) {
+							btnHref = videoSrc;
+							btnExtraAttrs = ' data-fancybox data-fancybox-type="video"';
+						} else if (slug) {
+							btnHref = '/single/' + escAttr(slug);
+						}
 						var previewHtml = '<div class="podcasts_item_preview">' +
 							'<div class="podcasts_preview_image' + (isSoon ? ' podcasts_preview_image--soon' : '') + '">' +
 								(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
@@ -982,13 +1053,23 @@ try {
 								'</div>' +
 								'<div class="podcasts_bottom d_flex a_items_center">' +
 									'<div class="podcasts_btn">' +
-										'<a href="' + btnHref + '" class="btn btn_green">' + esc(btnText) + '</a>' +
+										'<a href="' + btnHref + '" class="' + btnClass + '"' + btnExtraAttrs + '>' + esc(btnText) + '</a>' +
 									'</div>' +
 									(isSoon ? '' : ('<div class="podcasts_note">' +
 										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +
 									'</div>')) +
 								'</div>' +
 								(isSoon ? '' : '<div class="podcasts_bottom_remark">Информация для специалистов здравоохранения. Материал носит справочный характер и является личным мнением спикера. Информация актуальна на март 2025 г.</div>') +
+								((!isSoon && audioSrc) ? (
+									'<div id="' + escAttr(audioModalId) + '" class="single_audio_modal_content" style="display:none;">' +
+										'<div class="single_audio_modal_inner">' +
+											'<div class="single_audio_modal_image">' +
+												(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
+											'</div>' +
+											'<audio class="single_audio_modal_player" controls src="' + escAttr(audioSrc) + '">Ваш браузер не поддерживает воспроизведение аудио.</audio>' +
+										'</div>' +
+									'</div>'
+								) : '') +
 							'</div>';
 						wrapper.appendChild(slide);
 					});

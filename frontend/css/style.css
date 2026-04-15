@@ -557,7 +557,8 @@ body {
     font-size: 20px;
     line-height: 120%;
     color: #74b200;
-    margin-left: 20px;
+    margin-left: auto;
+    text-align: right;
 }
 .podcasts_note a {
     color: inherit;
