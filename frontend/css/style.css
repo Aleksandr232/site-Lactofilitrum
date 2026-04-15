@@ -2789,23 +2789,49 @@ body {
     }
     .about {
         padding: 40px 0;
+        overflow: hidden;
+    }
+    .about_bg_wrapper {
+        top: 125px;
+        left: 10px;
+        right: auto;
+        width: 100px;
+        height: 320px;
+        margin: 0;
+        text-align: left;
+        z-index: 1;
+        background: url(../img/mob_lacto.png) no-repeat left top;
+        background-size: contain;
+        min-height: 320px;
+    }
+    .about_bg_images {
+        display: none;
+    }
+    .about_bg_circle {
+        display: none;
+    }
+    .about_bg_image {
+        opacity: 1;
     }
     .about_items {
-        margin-top: 500px;
+        margin-top: 28px;
+        padding-left: 124px;
+        position: relative;
+        z-index: 2;
     }
     .row.row_about_items .col {
         width: 100%;
     }
     .about_item {
         border-radius: 12px;
-        max-width: 420px;
-        margin: 0 auto;
-        padding: 20px 14px;
+        max-width: 340px;
+        margin: 0 0 0 auto;
+        padding: 16px 12px;
     }
     .about_item_icon {
         margin: 0 auto;
-        height: 52px;
-        width: 52px;
+        height: 44px;
+        width: 44px;
     }
     .about_item_title {
         font-size: 14px;
@@ -2817,11 +2843,30 @@ body {
         -webkit-flex-direction: column;
         -ms-flex-direction: column;
         flex-direction: column;
-        max-width: 420px;
-        margin: 40px auto 0;
+        max-width: none;
+        margin: 24px 0 0;
+        padding-left: 124px;
+        position: relative;
+        z-index: 2;
+    }
+    .about_cols:before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 0;
+        width: 100px;
+        height: 320px;
+        background: url(../img/mob_lacto.png) no-repeat left top;
+        background-size: contain;
+        z-index: 1;
+        pointer-events: none;
     }
     .about_col {
         width: 100% !important;
+        max-width: 340px;
+        margin-left: auto;
+        position: relative;
+        z-index: 2;
     }
     .about_col_right .about_col_title {
         text-align: left;
@@ -2831,6 +2876,11 @@ body {
     }
     .about_col_box {
         padding: 20px 18px;
+        width: 100%;
+    }
+    .about_col_box--new {
+        width: 100%;
+        padding: 16px;
     }
     .about_col_item {
         font-size: 14px;
