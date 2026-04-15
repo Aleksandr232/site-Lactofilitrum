@@ -1,22 +1,21 @@
 $(document).ready(function() {
 	
 	var $page = $('html, body');
-	$('a[href*="#"]:not(.open_modal):not([data-fancybox])').on('click', function() {
-		var href = $(this).attr("href");
-		if(href && href !== "#") {
-			var $target = $(href);
-			if($target.length) {
-				$page.animate({
-					scrollTop: $target.offset().top - $('.header').outerHeight() - 30
-				}, 1000);
-				$('.mobile_header_wrapper').removeClass('active');
-				return false;
-			}
+	$('a[href*="#"]:not(.open_modal)').on('click', function() {
+		if($(this).attr("href") != "#") {
+			$page.animate({
+				scrollTop: $($.attr(this, 'href')).offset().top - $('.header').outerHeight() - 30
+			}, 1000);
+			return false;
 		}
 	});
 
 	$('.menu_btn, .mobile_header_close').on('click', function(e) {
 		e.preventDefault();
+		$('.mobile_header_wrapper').toggleClass('active');
+	});
+
+	$('.mobile_header_menu ul li a').on('click', function(e) {
 		$('.mobile_header_wrapper').toggleClass('active');
 	});
 	
@@ -26,32 +25,7 @@ $(document).ready(function() {
 		offset: -50
 	});
 
-	Fancybox.bind("[data-fancybox]", {
-		on: {
-			done: function(fancybox, slide) {
-				var run = function() {
-					var container = fancybox.$container || document.querySelector('.fancybox__container');
-					var el = container || document.body;
-					var audio = el.querySelector('audio');
-					if (audio) {
-						audio.play().catch(function() {});
-					}
-					var video = el.querySelector('video');
-					if (video) video.setAttribute('controlsList', 'nodownload nofullscreen');
-				};
-				setTimeout(run, 0);
-			},
-			close: function(fancybox) {
-				var container = fancybox.$container || document.querySelector('.fancybox__container');
-				if (container) {
-					var audio = container.querySelector('audio');
-					if (audio) { audio.pause(); audio.currentTime = 0; }
-					var video = container.querySelector('video');
-					if (video) { video.pause(); video.currentTime = 0; }
-				}
-			}
-		}
-	});
+	Fancybox.bind("[data-fancybox]", {});
 
 	if($('.podcasts_slider').length != 0) {
 		$('.podcasts_slider').each(function() {
@@ -201,7 +175,7 @@ $(document).ready(function() {
 		});
 	}
 
-	if ($('.mission').length != 0) {
+	if ($('.mission:not(.mission--animation_disabled)').length != 0) {
 		ScrollTrigger.matchMedia({
 			"(min-width: 1025px)": function() {
 				gsap.set('.mission_col_left', {
@@ -289,7 +263,7 @@ $(document).ready(function() {
 	
 	if ($('.about').length != 0) {
 		ScrollTrigger.matchMedia({
-			"(min-width: 1170px)": function() {
+			"(min-width: 1171px)": function() {
 				gsap.set('.about_col_left, .about_col_right', {
 					y: 150,
 					opacity: 0
@@ -397,7 +371,7 @@ $(document).ready(function() {
 					});
 				}
 			},
-			"(max-width: 1169px)": function() {
+			"(max-width: 1170px)": function() {
 				gsap.set('.about_col_left, .about_col_right, .about_bg_image, .about_image-2_1, .about_image-2_2', {
 					clearProps: "all"
 				});

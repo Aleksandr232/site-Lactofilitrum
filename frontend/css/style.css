@@ -170,16 +170,6 @@ body {
     font-size: 20px;
     height: 54px;
 }
-.btn.btn_disabled,
-.btn.disabled,
-.btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-.btn.btn_disabled {
-    display: inline-flex;
-}
 
 .bg_linear {
     background: linear-gradient(0deg,rgba(255, 255, 255, 0) 0%, rgba(239, 250, 255, 1) 20%, rgba(239, 250, 255, 1) 80%, rgba(255, 255, 255, 0) 100%);
@@ -214,18 +204,16 @@ body {
     font-size: 0;
 }
 .header_tags {
-    gap: 4px;
+    gap: 14px;
     margin-top: 15px;
 }
 .header_tag {
-    background: #578ca7;
-    backdrop-filter: blur(4px);
     border-radius: 100px;
     color: rgba(255, 255, 255, 0.8);
     font-family: "Museo Sans Cyrl 500", sans-serif;
     font-weight: 400;
     font-size: 18px;
-    padding: 4px 19px;
+    padding: 4px 0;
 }
 .header_menu ul {
     background: rgba(255, 255, 255, 0.8);
@@ -271,7 +259,6 @@ body {
     background-image: url(../img/bg_ftbk.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover;
     padding-top: 243px;
     height: 815px;
 }
@@ -350,7 +337,7 @@ body {
 /*-- MISSION --*/
 
 .mission {
-    padding: 70px 0;
+    padding: 100px 0;
 }
 .mission_cols {
     position: relative;
@@ -429,11 +416,18 @@ body {
 .mission_btn .btn {
     width: 100%;
 }
+.mission--animation_disabled .mission_circle {
+    padding-top: 52px;
+}
+.mission--animation_disabled .mission_col_right {
+    top: auto;
+    bottom: 0;
+}
 
 /*-- PODCASTS --*/
 
 .podcasts {
-    padding: 70px 0;
+    padding: 100px 0;
 }
 .podcasts_slider {
     margin-top: 40px;
@@ -441,6 +435,7 @@ body {
 }
 .podcasts_slider .swiper-slide {
     max-width: 518px;
+    height: auto;
 }
 .podcasts_slider .podcasts-slide-large {
     max-width: 670px;
@@ -450,6 +445,7 @@ body {
     border: 1px solid #d3dfe7;
     border-radius: 20px;
     padding: 40px;
+    height: 100%;
 }
 .podcasts_slider .podcasts-slide-large .podcasts_slider_item {
     background: #ecf7fb;
@@ -479,7 +475,6 @@ body {
     height: 259px;
 }
 .podcasts_preview_image {
-    position: relative;
     height: 100%;
     width: 100%;
 }
@@ -488,34 +483,17 @@ body {
     height: 100%;
     width: 100%;
 }
-/* Затемнение картинки для подкаста «СКОРО» (по макету Figma) */
-.podcasts_preview_image--soon::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(28, 35, 38, 0.3);
-    border-radius: 10px;
-    pointer-events: none;
-}
 .podcasts_preview_overlay {
-    background: transparent;
+    background: linear-gradient(180deg,rgba(28, 35, 38, 0.3) 0%, rgba(27, 27, 27, 1) 100%);
     padding: 16px 20px 18px;
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 10px;
-    pointer-events: none;
 }
-.podcasts_preview_overlay__tag {
-    flex-shrink: 0;
+.podcasts_preview_overlay__wgr {
+    background: rgba(28, 35, 38, 0.3);
 }
 .podcasts_preview_overlay__tag span {
     background: rgba(255, 255, 255, 0.8);
@@ -576,7 +554,7 @@ body {
 .podcasts_note {
     font-family: "Museo Sans Cyrl 500", sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 120%;
     color: #74b200;
     margin-left: 20px;
@@ -629,6 +607,15 @@ body {
     color: rgba(0, 0, 0, 0.8);
     margin-top: 12px;
 }
+.podcasts_bottom_remark {
+    font-family: "Museo Sans Cyrl 500", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+    letter-spacing: -0.015em;
+    color: rgba(0, 0, 0, 0.6);
+    margin-top: 25px;
+}
 
 /*-- HEALING --*/
 
@@ -637,7 +624,7 @@ body {
     position: relative;
 }
 .healing:after {
-    background: linear-gradient(180deg, rgba(248, 251, 253, 0) 0%, #eef8fe 55%, #dff4ff 85%, #fff 100%);
+    background: linear-gradient(180deg, rgba(248, 251, 253, 0) 0%, #eef8fe 55%, #dff4ff 85%);
     content: '';
     left: 0;
     bottom: 0;
@@ -673,9 +660,6 @@ body {
 }
 .healing_bottom {
     margin-top: 35px;
-}
-.healing_box {
-    height: 100%;
 }
 .healing_box--left {
     width: 485px;
@@ -736,7 +720,7 @@ body {
     margin: 95px auto 0;
 }
 .healing_info_image_wrapper {
-    max-width: 428px;
+    max-width: 547px;
     margin: 0 auto;
     position: relative;
 }
@@ -750,30 +734,22 @@ body {
     z-index: 3;
 }
 
-.healing_info_item_sep {
-    background-image: url(../img/icon_healing_info_arr.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 23px;
-    width: 115px;
-}
-
 .healing_tooltips_item {
     position: absolute;
     z-index: 4;
 }
 .healing_tooltip {
-    background: rgba(170, 219, 255, 0.3);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+    background: rgba(228, 228, 228, 0.4);
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
     border-radius: 94px;
     backdrop-filter: blur(15px);
-    color: #2a0000;
+    color: #3e3e3e;
     cursor: help;
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 17px;
     line-height: 100%;
-    padding: 10px 32px 10px 16px;
+    padding: 13px 32px 12px 16px;
     transition: 0.25s;
 }
 .healing_tooltip:hover {
@@ -792,14 +768,14 @@ body {
     width: 14px;
 }
 .healing_tooltips_item--right .healing_tooltip {
-    padding: 10px 16px 10px 32px;
+    padding: 13px 16px 12px 32px;
 }
 .healing_tooltips_item--right .healing_tooltip:after {
     right: auto;
     left: 8px;
 }
 .healing_tooltip_overlay {
-    background: rgba(53, 149, 214, 0.6);
+    background: rgba(126, 172, 204, 0.6);
     backdrop-filter: blur(15px);
     border-radius: 8px;
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
@@ -808,38 +784,87 @@ body {
     position: absolute;
     left: 50%;
     bottom: calc(100% + 20px);
-    font-family: "Montserrat", sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 16px;
     transform: translateX(-50%) translateY(-25%);
     opacity: 0;
     visibility: hidden;
     transition: 0.25s;
-    width: 290px;
+    width: 342px;
 }
 .healing_tooltip:hover + .healing_tooltip_overlay {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
     visibility: visible;
 }
+.healing_tooltips_custom {
+    background: rgba(9, 113, 184, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 110px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+    padding: 13px 39px 13px 20px;
+    position: absolute;
+    left: -14px;
+    top: 385px;
+    width: 290px;
+    z-index: 4;
+}
+.healing_tooltips_custom:after {
+    background: #fff;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 17px;
+    width: 17px;
+}
+.healing_tooltips_custom_title {
+    color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 100%;
+}
+.healing_tooltips_custom_info {
+    gap: 12px;
+    margin-top: 7px;
+}
+.healing_tooltips_custom_left {
+    color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    line-height: 100%;
+    height: 25px;
+}
+.healing_tooltips_custom_right {
+    color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0.04em;
+    height: 25px;
+}
 
 .healing_info_items {
-    margin-top: -235px;
+    margin-top: -145px;
 }
 .healing_info_item {
-    height: 100%;
+    align-self: stretch;
 }
 .healing_info_item--left {
-    width: 563px;
+    width: 342px;
 }
 .healing_info_item--right {
-    width: 508px;
+    width: 362px;
 }
 .healing_info_item_inside {
-    background: rgba(46, 151, 223, 0.6);
-    backdrop-filter: blur(8px);
-    border-radius: 8px;
+    background: rgba(9, 113, 184, 0.6);
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
+    border-radius: 8px;
     padding: 24px;
     height: 100%;
 }
@@ -856,12 +881,19 @@ body {
     color: #004576;
     margin-top: 16px;
 }
+.healing_info_item_sep {
+    background-image: url(../img/icon_healing_info_arr_new.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 29px;
+    width: 116px;
+}
 .healing_info_box {
     background: rgba(253, 228, 210, 0.5);
     backdrop-filter: blur(4px);
     border: 1px solid #ffd4b9;
     border-radius: 20px;
-    margin-top: 30px;
+    margin-top: 40px;
     padding: 50px 160px 40px;
     font-weight: 500;
     font-size: 28px;
@@ -950,7 +982,7 @@ body {
     margin-top: 18px;
 }
 .about_col_title {
-    font-weight: 400;
+    font-weight: 700;
     font-size: 24px;
     line-height: 110%;
     color: #0ea34a;
@@ -994,7 +1026,7 @@ body {
     opacity: 0;
 }
 .about_col_left .about_col_title {
-    margin-bottom: 55px;
+    margin-bottom: 45px;
     position: relative;
     width: 310px;
 }
@@ -1018,7 +1050,7 @@ body {
 }
 .about_col_right .about_col_title {
     color: #0069db;
-    margin-bottom: 51px;
+    margin-bottom: 65px;
     margin-left: auto;
     position: relative;
     width: 310px;
@@ -1035,6 +1067,99 @@ body {
     width: 310px;
 }
 
+.about_col_box--new {
+    background: rgba(228, 228, 228, 0.85);
+    backdrop-filter: blur(0);
+    padding: 24px;
+    position: relative;
+    width: 504px;
+}
+.about_col_left .about_col_box--new {
+    transform: translateX(-12.5%);
+}
+.about_col_right .about_col_box--new {
+    transform: translateX(15%);
+}
+.about_col_info__image {
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0;
+    height: 220px;
+}
+.about_col_info__image img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+.about_col_info__content {
+    color: #3e3e3e;
+    margin-top: 24px;
+}
+.about_col_info__content strong {
+    font-weight: 700;
+}
+
+/*-- ABOUT RESULT --*/
+
+.about_result {
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(239, 250, 255, 1) 20%, rgba(239, 250, 255, 1) 80%, rgba(255, 255, 255, 0) 100%);
+    padding: 100px 0;
+}
+.about_result_title {
+    color: #1878bc;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 110%;
+    text-align: center;
+}
+.about_result_cols {
+    max-width: 1388px;
+    margin: 50px auto 0;
+}
+.about_result_col_left {
+    padding-right: 20px;
+    width: calc(100% - 503px);
+}
+.about_result_col_right {
+    width: 503px;
+}
+.about_result_image {
+    font-size: 0;
+}
+.about_result_box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+    padding: 24px;
+}
+.about_result_box_title {
+    font-weight: 600;
+    color: #3e3e3e;
+}
+.about_result_box_items {
+    margin-top: 20px;
+}
+.about_result_box_item {
+    margin-bottom: 20px;
+}
+.about_result_box_item:last-child {
+    margin-bottom: 0;
+}
+.about_result_box_item__title {
+    color: #3e3e3e;
+}
+.about_result_box_item__value {
+    color: #3e3e3e;
+    font-weight: 600;
+    font-size: 28px;
+    margin-top: 10px;
+}
+.about_result_box_desc {
+    color: #3e3e3e;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    margin-top: 20px;
+}
 
 /*-- SCHEME --*/
 
@@ -1158,6 +1283,14 @@ body {
     line-height: 110%;
     margin-top: 10px;
 }
+.scheme_items_btn {
+    margin: 60px auto 0;
+    max-width: 480px;
+}
+.scheme_items_btn .btn {
+    font-size: 20px;
+    width: 100%;
+}
 
 /*-- LIBRARY --*/
 
@@ -1265,6 +1398,10 @@ body {
     line-height: 110%;
     color: #fff;
 }
+.register_title span {
+    display: inline-block;
+    vertical-align: top;
+}
 .register_profile {
     margin-top: 32px;
 }
@@ -1289,78 +1426,96 @@ body {
     padding-left: 35px;
     width: calc(100% - 85px);
 }
-.register_form_widget .ak-form {
-    min-height: 400px;
-    display: block;
-}
 
-/* Попап «Спасибо за регистрацию» (макет Figma 1224-11) */
+/*-- REGISTER POPUP --*/
+
 .register_popup_overlay {
-    display: none;
     position: fixed;
     inset: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.5);
+    display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(7, 34, 58, 0.62);
     padding: 20px;
-    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 9999;
 }
 .register_popup_overlay.is_open {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 .register_popup {
     position: relative;
     width: 100%;
-    max-width: 684px;
-    background: linear-gradient(180deg, #3192d8 0%, #a0cae8 100%);
+    max-width: 620px;
     border-radius: 20px;
-    padding: 90px 28px 50px;
+    background: linear-gradient(180deg, #1878bc 0%, #46a1e2 100%);
+    box-shadow: 0 25px 80px rgba(10, 36, 63, 0.35);
+    padding: 46px 42px 38px;
+    color: #fff;
     text-align: center;
-    box-sizing: border-box;
 }
 .register_popup_close {
     position: absolute;
-    top: 9px;
-    right: 9px;
-    width: 27px;
-    height: 27px;
-    padding: 0;
-    border: none;
+    right: 16px;
+    top: 12px;
+    border: 0;
     background: transparent;
     color: #fff;
-    font-size: 28px;
+    font-size: 32px;
     line-height: 1;
     cursor: pointer;
     opacity: 0.9;
+    transition: opacity 0.2s ease;
 }
 .register_popup_close:hover {
     opacity: 1;
 }
 .register_popup_title {
     font-family: "Onest", sans-serif;
-    font-weight: 700;
-    font-size: 38px;
-    line-height: 1.1;
-    color: #fff;
-    margin: 0 0 26px;
+    font-size: 42px;
+    line-height: 110%;
+    margin: 0;
 }
 .register_popup_text {
     font-family: "Museo Sans Cyrl 500", sans-serif;
-    font-weight: 400;
-    font-size: 26px;
-    line-height: 1.2;
-    color: #fff;
-    margin: 0 0 40px;
-    letter-spacing: -0.02em;
+    font-size: 22px;
+    line-height: 140%;
+    margin: 16px 0 0;
 }
 .register_popup_text--sms {
-    margin-top: -20px;
-    margin-bottom: 40px;
-    font-size: 22px;
+    font-size: 18px;
+    margin-top: 12px;
 }
 .register_popup_btn {
-    min-width: 160px;
+    margin-top: 26px;
+    min-width: 220px;
+}
+
+@media (max-width: 767px) {
+    .register_popup {
+        max-width: 100%;
+        border-radius: 16px;
+        padding: 38px 20px 24px;
+    }
+    .register_popup_title {
+        font-size: 30px;
+    }
+    .register_popup_text {
+        font-size: 18px;
+    }
+    .register_popup_text--sms {
+        font-size: 16px;
+    }
+    .register_popup_btn {
+        width: 100%;
+        min-width: 0;
+        margin-top: 20px;
+    }
 }
 
 .row.row_form_fields {
@@ -1552,17 +1707,10 @@ body {
     border-top: 1px solid rgba(24, 120, 188, 0.5);
     margin-top: 35px;
     padding-top: 65px;
-    flex-wrap: nowrap;
 }
 .single_col_left {
     padding-right: 20px;
     width: calc(100% - 616px);
-    min-width: 0;
-    flex-shrink: 1;
-}
-.single_col_right {
-    width: 596px;
-    flex-shrink: 0;
 }
 .single_content {
     color: #000;
@@ -1615,12 +1763,11 @@ body {
 }
 .footer_library_title {
     font-weight: 300;
-    font-size: 45px;
-    line-height: 153%;
+    font-size: 32px;
     color: #fff;
 }
 .footer_library_list {
-    margin-top: 40px;
+    margin-top: 24px;
 }
 .footer_library_list ol {
     padding-left: 30px;
@@ -1628,8 +1775,8 @@ body {
 .footer_library_list ol li {
     font-family: "Montserrat", sans-serif;
     font-weight: 400;
-    font-size: 25px;
-    line-height: 160%;
+    font-size: 18px;
+    line-height: 222%;
     color: #fff;
     list-style: decimal;
 }
@@ -1927,6 +2074,16 @@ body {
 }
 
 @media screen and (max-width: 1560px) {
+    .container {
+        padding: 0 32px;
+        max-width: 1280px;
+    }
+    .header_menu ul {
+        gap: 24px;
+    }
+    .header_menu ul li:after {
+        right: -14px;
+    }
     .mission_circle {
         max-width: 320px;
     }
@@ -1938,6 +2095,13 @@ body {
     }
     .mission_circle_image {
         max-width: 120px;
+    }
+    .mission_col {
+        width: 375px;
+    }
+    .mission_content,
+    .mission_content span {
+        font-size: 20px;
     }
     .healing_box {
         width: calc(50% - 115px / 2);
@@ -1953,6 +2117,28 @@ body {
     .scheme_items:before {
         max-width: 100%;
         width: 80%;
+    }
+    .healing_top_title br,
+    .healing_top_desc br {
+        display: none;
+    }
+    .healing_box_title {
+        font-size: 20px;
+    }
+    .healing_box_desc {
+        font-size: 16px;
+    }
+    .about_content .container {
+        max-width: 100%;
+    }
+    .register_bk {
+        padding: 40px;
+    }
+    .register_title {
+        font-size: 34px;
+    }
+    .register_profile_title {
+        font-size: 22px;
     }
 }
 
@@ -1971,6 +2157,10 @@ body {
     }
     .about_col_right {
         right: 15px;
+    }
+    .about_col_left .about_col_box--new,
+    .about_col_right .about_col_box--new {
+        transform: translateX(0);
     }
 }
 
@@ -2001,50 +2191,6 @@ body {
         font-size: 18px;
     }
 }
-
-/* До 1200px анимация about отключена — колонки всегда видимы, раскладка в ряд */
-/* @media screen and (max-width: 1200px) {
-    .about_col_left,
-    .about_col_right {
-        opacity: 1 !important;
-        visibility: visible !important;
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-    }
-    .about_cols {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 20px;
-    }
-    .about_col {
-        width: calc(50% - 10px) !important;
-        max-width: calc(50% - 10px) !important;
-        flex: 0 0 calc(50% - 10px);
-        min-width: 0;
-    }
-    .about_col_title {
-        margin-bottom: 20px !important;
-        width: 100% !important;
-    }
-    .about_col_title:before {
-        display: none;
-    }
-    .about_col_box {
-        padding: 20px;
-        height: calc(100% - 46px);
-        width: 100%;
-        margin: 0 auto;
-        max-width: 420px;
-    }
-    .about_col_right .about_col_title {
-        text-align: right;
-    }
-} */
 
 @media screen and (max-width: 1170px) {
     .about {
@@ -2154,7 +2300,6 @@ body {
     .single_cols {
         margin-top: 35px;
         padding-top: 25px;
-        flex-wrap: wrap;
     }
     .single_col_left {
         padding: 0;
@@ -2164,7 +2309,6 @@ body {
     }
     .single_col_right {
         order: 0;
-        width: 100%;
     }
     .single_image {
         height: auto;
@@ -2426,9 +2570,10 @@ body {
         -webkit-flex-direction: column;
         -ms-flex-direction: column;
         flex-direction: column;
-        margin-top: -50px;;
+        margin-top: -50px;
     }
     .healing_info_item {
+        margin: 0 auto;
         height: auto !important;
         width: 100% !important;
         max-width: 540px;
@@ -2445,6 +2590,7 @@ body {
     .healing_info_item_title {
         font-size: 16px;
         line-height: 130%;
+        text-align: center;
     }
     .healing_info_item_desc {
         font-weight: 500;
@@ -2557,24 +2703,28 @@ body {
     .register_title {
         font-size: 20px;
     }
-    .register_popup {
-        padding: 60px 20px 40px;
-    }
-    .register_popup_title {
-        font-size: 24px;
-    }
-    .register_popup_text {
-        font-size: 18px;
-        margin-bottom: 30px;
-    }
-    .register_popup_text--sms {
-        font-size: 16px;
-        margin-top: -14px;
-        margin-bottom: 30px;
-    }
     .register_profile_title {
         padding-left: 20px;
         font-size: 16px;
+    }
+    .about_result_cols {
+        margin-top: 24px;
+    }
+    .about_result_col_left {
+        display: none;
+    }
+    .about_result_col_right {
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    .scheme_items_btn .btn {
+        font-size: 16px;
+    }
+    .about_col_info__image {
+        height: 175px;
+    }
+    .about_col_info__content {
+        font-size: 14px;
     }
 }
 
@@ -2585,17 +2735,23 @@ body {
     .healing_tooltip {
         font-size: 10px;
     }
+    .healing_tooltips_custom {
+        transform: scale(0.65);
+        top: 100px;
+        left: -150px
+    }
     .healing_tooltips_item:nth-child(1) {
-        right: -60px !important;
-        bottom: auto !important;
-        top: 90px !important;
+        right: 0 !important;
+        top: 0 !important;
     }
     .healing_tooltips_item:nth-child(2) {
-        top: 120px !important
+        right: -75px !important;
+        top: 75px !important;
     }
     .healing_tooltips_item:nth-child(3) {
-        bottom: 100px !important;
-        left: -60px !important;
+        right: -40px !important;
+        left: auto !important;
+        top: 150px !important;
     }
     .healing_tooltip_overlay {
         font-size: 10px;
@@ -2824,6 +2980,9 @@ body {
     .mission_circle_image_2 {
         right: -35px;
         bottom: 115px;
+    }
+    .healing_tooltips_custom {
+        left: -125px;
     }
 }
 

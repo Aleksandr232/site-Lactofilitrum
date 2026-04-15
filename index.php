@@ -38,7 +38,7 @@ try {
 			<div class="container">
 				<div class="mobile_header_top d_flex a_items_center j_content_between">
 					<div class="mobile_header_logo">
-						<a href="#">
+						<a href="https://synapseonline.ru" target="_blank">
 							<img src="frontend/img/logo_header.svg" alt=""/>
 						</a>
 					</div>
@@ -48,10 +48,10 @@ try {
 				</div>
 				<div class="mobile_header_menu">
 					<ul>
-						<li><a href="#podcasts">Подкасты</a></li>
-						<li><a href="#">О Лактофильтруме</a></li>
-						<li><a href="#library-remission">Библиотека ремиссии</a></li>
-						<li><a href="#register">Получить бонус</a></li>
+						<li><a href="#">Подкасты</a></li>
+						<li><a href="#healing">Ось «кишечник-кожа»</a></li>
+						<li><a href="#">Библиотека ремиссии</a></li>
+						<li><a href="#">Получить бонус</a></li>
 					</ul>
 				</div>
 			</div>
@@ -61,23 +61,23 @@ try {
 				<div class="header_top d_flex j_content_between">
 					<div class="header_top_left">
 						<div class="header_logo">
-							<a href="#">
+							<a href="https://synapseonline.ru" target="_blank">
 								<img src="frontend/img/logo_header.svg" alt=""/>
 							</a>
 						</div>
 						<div class="header_tags d_flex a_items_center">
-							<div class="header_tag">педиатрам</div>
-							<div class="header_tag">терапевтам</div>
-							<div class="header_tag">дерматологам</div>
+							<div class="header_tag">#педиатрам</div>
+							<div class="header_tag">#терапевтам</div>
+							<div class="header_tag">#дерматологам</div>
 						</div>
 					</div>
 					<div class="header_top_right">
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
-								<li><a href="#podcasts">Подкасты</a></li>
-								<li><a href="#">О Лактофильтруме</a></li>
-								<li><a href="#library-remission">Библиотека ремиссии</a></li>
-								<li><a href="#register">Получить бонус</a></li>
+								<li><a href="#">Подкасты</a></li>
+								<li><a href="#healing">Ось «кишечник-кожа»</a></li>
+								<li><a href="#">Библиотека ремиссии</a></li>
+								<li><a href="#">Получить бонус</a></li>
 							</ul>
 						</div>
 					</div>
@@ -97,14 +97,14 @@ try {
 							<p>Проект «очищает контент от шлаков и токсинов, оставляя только полезное, улучшая работу критического мышления».</p>
 						</div>
 						<div class="ftbk_btn" data-aos="fade-up">
-							<a href="#register" class="btn btn_green btn_small">Подписаться</a>
+							<a href="#" class="btn btn_green btn_small">Подписаться</a>
 						</div>
 					</div>
 					<div class="ftbk_box" data-aos="fade-up">
 						<div class="ftbk_box_inside">
 							<div class="ftbk_box_title">Подробнее <br>о Лактофильтруме</div>
 							<div class="ftbk_box_btn">
-								<span class="btn btn_green btn_small btn_disabled">Смотреть</span>
+								<a href="#about" class="btn btn_green btn_small">Смотреть</a>
 							</div>
 							<div class="ftbk_box_image">
 								<img src="frontend/img/temp/ftbk_box_image.png" alt=""/>
@@ -114,7 +114,7 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="mission">
+		<div class="mission mission--animation_disabled">
 			<div class="container">
 				<div class="mission_cols">
 					<div class="mission_col mission_col_left">
@@ -140,9 +140,6 @@ try {
 							<p><span>информация, которая необходима практикующему врачу в коротких форматах аудиоподкаста и инфографики.</span></p>
 						</div>
 					</div>
-				</div>
-				<div class="mission_btn">
-					<a href="#podcasts" class="btn btn_green btn_small">Смотреть</a>
 				</div>
 			</div>
 		</div>
@@ -180,11 +177,12 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="healing">
+		<div id="healing" class="healing">
 			<div class="healing_bg">
 				<img src="frontend/img/bg_healing.png" alt=""/>
 			</div>
 			<div class="container">
+				<div class="title_bk" data-aos="fade-up">лечение атопического дерматита</div>
 				<div class="healing_basic">
 					<div class="healing_top" data-aos="fade-up">
 						<div class="healing_top_title">Лактофильтрум — лекарственный препарат, содержащий <br>комбинацию сорбента и пребиотика, </div>
@@ -205,7 +203,7 @@ try {
 							<div class="healing_box healing_box--right" data-aos="fade-up">
 								<div class="healing_box_inside">
 									<div class="healing_box_title">Кишечник и кожа взаимосвязаны</div>
-									<div class="healing_box_desc"> в среднем y 77-100% больных АтД и крапивницей* — дисбактериоз кишечника<sup>7</sup>. Механизм связи между кишечником и кожей называется «ось кишечник-кожа». Нарушение состава микробиота и сенсибилизация — частые спутники и триггеры аллергодерматозов<sup>8</sup>.</div>
+									<div class="healing_box_desc">В среднем у 77–100% больных АтД <br>и крапивницей* — дисбактериоз кишечника<sup>7</sup>.</div>
 								</div>
 							</div>
 						</div>
@@ -214,35 +212,40 @@ try {
 				<div class="healing_info">
 					<div class="healing_info_image_wrapper" data-aos="fade-up">
 						<div class="healing_info_image">
-							<img src="frontend/img/bg_healing_human.png" alt=""/>
+							<img src="frontend/img/bg_healing_human_new.png" alt=""/>
 						</div>
 						<div class="healing_info_tooltips">
-							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: -34px; top: 226px;">
-								<div class="healing_tooltip">Воспаления</div>
-								<div class="healing_tooltip_overlay">Дисбактериоз, повышенная кишечная проницаемость</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 137px; top: 65px;">
+								<div class="healing_tooltip">Глаза</div>
+								<div class="healing_tooltip_overlay">Нарушение состава микробиоты <br>и сенсибилизация- чпстые спупники и триггеры аллкргодерматозов</div>
 							</div>
-							<div class="healing_tooltips_item" style="left: -70px; top: 299px;">
-								<div class="healing_tooltip">Нарушение регуляции <br>имунного ответа</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 10px; top: 255px;">
+								<div class="healing_tooltip">Дыхательные пути</div>
 								<div class="healing_tooltip_overlay">Развитие аллергических заболеваний, поддержание воспаления в коже</div>
 							</div>
-							<div class="healing_tooltips_item" style="left: -40px; bottom: 307px;">
-								<div class="healing_tooltip">Аллергия</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 28px; top: 450px;">
+								<div class="healing_tooltip">Кожа</div>
 								<div class="healing_tooltip_overlay">Развитие аллергических заболеваний, поддержание воспаления в коже</div>
+							</div>
+							<div class="healing_tooltips_custom">
+								<div class="healing_tooltips_custom_title">Кишечник —</div>
+								<div class="healing_tooltips_custom_info d_flex a_items_center">
+									<div class="healing_tooltips_custom_left d_flex a_items_center">80%</div>
+									<div class="healing_tooltips_custom_right d_flex a_items_center">иммунных клеток <br>всего организма</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="healing_info_items d_flex a_items_center" data-aos="fade-up">
+					<div class="healing_info_items d_flex a_items_center j_content_center" data-aos="fade-up">
 						<div class="healing_info_item healing_info_item--left">
-							<div class="healing_info_item_inside">
-								<div class="healing_info_item_title">Связь между кишечником и кожей при АтД хорошо изучена и заключается в том, что</div>
-								<div class="healing_info_item_desc">состояние микробиома кишечника может оказывать значительное влияние на течение и выраженность симптомов АтД</div>
+							<div class="healing_info_item_inside d_flex a_items_center j_content_center">
+								<div class="healing_info_item_title">Иммунные клетки во всех органах — единая система</div>
 							</div>
 						</div>
 						<div class="healing_info_item_sep"></div>
 						<div class="healing_info_item healing_info_item--right">
-							<div class="healing_info_item_inside">
-								<div class="healing_info_item_title">Дисбаланс микрофлоры кишечника, <br>или по-другому </div>
-								<div class="healing_info_item_desc">«дисбактериоз», может приводить к усилению воспалительных процессов <br>в организме</div>
+							<div class="healing_info_item_inside d_flex a_items_center j_content_center">
+								<div class="healing_info_item_title">Реакция иммунитета в одном органе — провокация <br>реакции в другом</div>
 							</div>
 						</div>
 					</div>
@@ -250,7 +253,7 @@ try {
 				</div>
 			</div>
 		</div>
-		<div class="about bg_linear">
+		<div id="about" class="about bg_linear">
 			<div class="about_bg_wrapper">
 				<div class="about_bg_images">
 					<img src="frontend/img/bg_about_1.png" alt="" class="about_bg_image about_bg_image-1">
@@ -263,7 +266,7 @@ try {
 			</div>
 			<div class="about_content">
 				<div class="container">
-					<div class="title_bk title_bk--center">Лактофильтрум — препарат 2 в 1</div>
+					<div class="title_bk title_bk--center">Как работает Лактофильтрум</div>
 					<div class="about_items">
 						<div class="row row_about_items d_flex f_wrap">
 							<div class="col col-3">
@@ -295,22 +298,57 @@ try {
 					<div class="about_cols">
 						<div class="about_col about_col_left">
 							<div class="about_col_title">Пребиотик Лактулоза</div>
-							<div class="about_col_box">
-								<div class="about_col_items">
-									<div class="about_col_item">Стимулирует развитие собственной защитной микрофлоры кишечника, подавляет рост патогенных микроорганизмов</div>
-									<div class="about_col_item">Разрешена к применению у беременных*</div>
+							<div class="about_col_box about_col_box--new">
+								<div class="about_col_info">
+									<div class="about_col_info__image">
+										<img src="frontend/img/temp/about_col_info_1.jpg" alt=""/>
+									</div>
+									<div class="about_col_info__content">
+										<p><strong>Лактулоза</strong> — синтетический дисахарид, который стимулирует рост бифидобактерий и лактобацилл. В результате происходит подавление роста патогенных микроорганизмов и как следствие уменьшение продукции азотсодержащих токсических веществ.</p>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="about_col about_col_right">
 							<div class="about_col_title">Сорбет Лигнин</div>
-							<div class="about_col_box">
-								<div class="about_col_items">
-									<div class="about_col_item">Обладает высокой сорбционной ёмкостью</div>
-									<div class="about_col_item">Благоприятный профиль безопасности: разрешен к применению у беременных кормящим</div>
-									<div class="about_col_item">Не травмирует слизистые оболочки желудка,кишечника</div>
+							<div class="about_col_box about_col_box--new">
+								<div class="about_col_info">
+									<div class="about_col_info__image">
+										<img src="frontend/img/temp/about_col_info_2.jpg" alt=""/>
+									</div>
+									<div class="about_col_info__content">
+										<p><strong>Лигнин гидролизный</strong> — природный энтеросорбент. Связывает в кишечнике и выводит из организма патогенные бактерии и бактериальные токсины, лекарственные препараты, соли тяжелых металлов, алкоголь, аллергены, а также избыток некоторых продуктов обмена веществ, в том числе билирубин, холестерин, гистамин, серотонин, мочевину, иные метаболиты. Не токсичен, не всасывается, полностью выводится из кишечника в течение 24 часов.</p>
+									</div>
 								</div>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="about_result">
+			<div class="container">
+				<div class="about_result_title" data-aos="fade-up">Результаты исследований в терапии атопического дерматита</div>
+				<div class="about_result_cols d_flex a_items_center" data-aos="fade-up">
+					<div class="about_result_col_left">
+						<div class="about_result_image">
+							<img src="frontend/img/bg_about_result.svg" alt=""/>
+						</div>
+					</div>
+					<div class="about_result_col_right">
+						<div class="about_result_box">
+							<div class="about_result_box_title">Стойкая ремиссия заболевания после лечения:</div>
+							<div class="about_result_box_items">
+								<div class="about_result_box_item">
+									<div class="about_result_box_item__title">Группа с Лактофильтрум®</div>
+									<div class="about_result_box_item__value">4,6 + 2,3 месяца</div>
+								</div>
+								<div class="about_result_box_item">
+									<div class="about_result_box_item__title">Контрольная группа</div>
+									<div class="about_result_box_item__value">2,9 + 1,8 месяца</div>
+								</div>
+							</div>
+							<div class="about_result_box_desc">Пациенты в возрасте до 5 лет со среднетяжелым течением АтД (n=36), 14 дней терапии.</div>
 						</div>
 					</div>
 				</div>
@@ -557,6 +595,9 @@ try {
 						</div>
 					</div>
 				</div>
+				<div class="scheme_items_btn" data-aos="fade-up">
+					<a href="https://otcpharm.ru/medicaments/laktofiltrum/" class="btn btn_green" target="_blank" rel="noopener noreferrer">Смотреть инструкцию по применению</a>
+				</div>
 			</div>
 		</div>
 		<div id="library-remission" class="library slider_wrapper bg_linear">
@@ -644,7 +685,7 @@ try {
 			<div class="container">
 				<div class="register_bk d_flex f_wrap" data-aos="fade-up">
 					<div class="register_left">
-						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите в подарок на почту памятку медицинского юриста И. О. Печерея</strong></div>
+						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите в подарок на почту памятку медицинского юриста <span>И. О. Печерея</span></strong></div>
 						<div class="register_profile d_flex">
 							<div class="register_profile_image">
 								<img src="frontend/img/temp/register_profile_image.jpg" alt=""/>
@@ -947,6 +988,7 @@ try {
 										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +
 									'</div>')) +
 								'</div>' +
+								(isSoon ? '' : '<div class="podcasts_bottom_remark">Информация для специалистов здравоохранения. Материал носит справочный характер и является личным мнением спикера. Информация актуальна на март 2025 г.</div>') +
 							'</div>';
 						wrapper.appendChild(slide);
 					});
