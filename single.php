@@ -166,9 +166,9 @@ $base = '/';
 							</a>
 						</div>
 						<div class="header_tags d_flex a_items_center">
-							<div class="header_tag">педиатрам</div>
-							<div class="header_tag">терапевтам</div>
-							<div class="header_tag">дерматологам</div>
+							<div class="header_tag">#педиатрам</div>
+							<div class="header_tag">#терапевтам</div>
+							<div class="header_tag">#дерматологам</div>
 						</div>
 					</div>
 					<div class="header_top_right">
@@ -201,6 +201,9 @@ $base = '/';
 					<div class="single_speaker_info">
 						<div class="single_speaker_title">Спикер</div>
 						<div class="single_speaker_name"><?php echo htmlspecialchars($p['author'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
+						<?php if (!empty($p['speaker_position'] ?? '')): ?>
+							<div class="single_speaker_position"><?php echo htmlspecialchars($p['speaker_position'], ENT_QUOTES, 'UTF-8'); ?></div>
+						<?php endif; ?>
 					</div>
 				</div>
 				<div class="single_cols d_flex f_wrap">
@@ -229,7 +232,7 @@ $base = '/';
 							<?php endif; ?>
 							<?php if ($audio_url): ?>
 								<div class="single_btn">
-									<a href="#single-audio-modal" class="btn btn_blue" data-fancybox data-src="#single-audio-modal" data-width="960" data-height="540">Слушать</a>
+									<a href="#single-audio-modal" class="btn btn_blue open_modal" data-fancybox data-src="#single-audio-modal" data-width="960" data-height="540">Слушать</a>
 								</div>
 								<div id="single-audio-modal" class="single_audio_modal_content" style="display:none;">
 									<div class="single_audio_modal_inner">

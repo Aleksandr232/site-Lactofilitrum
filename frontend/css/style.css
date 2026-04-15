@@ -1707,10 +1707,16 @@ body {
     border-top: 1px solid rgba(24, 120, 188, 0.5);
     margin-top: 35px;
     padding-top: 65px;
+    align-items: flex-start;
+    flex-wrap: nowrap;
 }
 .single_col_left {
     padding-right: 20px;
     width: calc(100% - 616px);
+}
+.single_col_right {
+    width: 616px;
+    flex: 0 0 616px;
 }
 .single_content {
     color: #000;
@@ -2309,6 +2315,8 @@ body {
     }
     .single_col_right {
         order: 0;
+        width: 100%;
+        flex: 0 0 100%;
     }
     .single_image {
         height: auto;
