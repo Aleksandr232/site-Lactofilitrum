@@ -739,7 +739,7 @@ try {
 			<div class="container">
 				<div class="register_bk d_flex f_wrap" data-aos="fade-up">
 					<div class="register_left">
-						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите в подарок на почту памятку медицинского юриста <span>И. О. Печерея</span></strong></div>
+						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите на почту памятку медицинского юриста <span>И. О. Печерея</span></strong></div>
 						<div class="register_profile d_flex">
 							<div class="register_profile_image">
 								<img src="frontend/img/temp/register_profile_image.jpg" alt=""/>
