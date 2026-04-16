@@ -294,8 +294,12 @@ $(document).ready(function() {
 			
 				tl.to(".about_items", {
 					y: -200,
-					opacity: 0,
+					opacity: 0.60,
 					duration: 1
+				})
+				.to(".about_items", {
+					opacity: 0,
+					duration: 0.35
 				})
 				.to(".about_bg_image", {
 					opacity: 1,
