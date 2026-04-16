@@ -3049,41 +3049,45 @@ body {
     }
 }
 
-@media screen and (min-width: 600px) and (max-width: 1024px) {
+@media screen and (min-width: 769px) and (max-width: 1024px) {
     .about_items {
         padding-left: 112px;
+        max-width: calc(100% - 112px);
+        margin-left: auto;
+        margin-right: auto;
     }
     .row.row_about_items {
-        justify-content: center;
+        justify-content: flex-start;
         margin: 0 0 20px;
         gap: 12px;
     }
     .row.row_about_items .col {
         display: flex;
         justify-content: center;
-        width: 280px !important;
-        flex: 0 0 280px;
+        width: calc((100% - 12px) / 2) !important;
+        flex: 0 0 calc((100% - 12px) / 2);
+        max-width: calc((100% - 12px) / 2);
         padding: 0;
         margin-bottom: 0;
     }
     .about_item {
         width: 100%;
-        max-width: 280px;
+        max-width: none;
         margin: 0 auto;
     }
     .about_cols {
         padding-left: 112px;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 12px;
-        max-width: 572px;
+        max-width: calc(100% - 112px);
         margin-left: auto;
         margin-right: auto;
     }
     .about_col {
-        width: 280px !important;
-        max-width: 280px;
-        flex: 0 0 280px;
+        width: calc((100% - 12px) / 2) !important;
+        max-width: calc((100% - 12px) / 2);
+        flex: 0 0 calc((100% - 12px) / 2);
         margin-left: 0;
     }
     .about_col_box--new {
