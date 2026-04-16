@@ -3049,24 +3049,41 @@ body {
     }
 }
 
-@media screen and (min-width: 769px) and (max-width: 1024px) {
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+    .about_items {
+        padding-left: 112px;
+    }
+    .row.row_about_items {
+        justify-content: center;
+        margin: 0 0 20px;
+        gap: 12px;
+    }
     .row.row_about_items .col {
         display: flex;
         justify-content: center;
+        width: 280px !important;
+        flex: 0 0 280px;
+        padding: 0;
+        margin-bottom: 0;
     }
     .about_item {
         width: 100%;
-        max-width: 300px;
+        max-width: 280px;
         margin: 0 auto;
     }
     .about_cols {
+        padding-left: 112px;
+        align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 12px;
+        max-width: 572px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .about_col {
-        width: 300px !important;
-        max-width: 300px;
-        flex: 0 0 300px;
+        width: 280px !important;
+        max-width: 280px;
+        flex: 0 0 280px;
         margin-left: 0;
     }
     .about_col_box--new {
