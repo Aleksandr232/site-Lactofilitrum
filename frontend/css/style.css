@@ -386,10 +386,9 @@ body {
 .mission_circle_inside {
     border-radius: 50%;
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 78px;
-    margin: 0 auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -45%);
     font-weight: 800;
     font-size: 45px;
     line-height: 100%;
@@ -2113,7 +2112,9 @@ body {
     }
     .mission_circle_inside {
         font-size: 36px;
-        top: 0;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -45%);
         height: 100%;
         width: 100%;
     }
