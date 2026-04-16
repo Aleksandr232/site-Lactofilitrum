@@ -43,8 +43,8 @@ function uploadImage($file, $folder = null) {
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
 
-    // Проверяем размер файла (максимум 5MB)
-    if ($fileSize > 5 * 1024 * 1024) {
+    // Проверяем размер файла (максимум 500MB)
+    if ($fileSize > 500 * 1024 * 1024) {
         return '';
     }
 
@@ -144,7 +144,7 @@ function uploadVideo($file, $folder = null) {
     $fileName = $file['name'];
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
-    $maxSize = 100 * 1024 * 1024; // 100 MB
+    $maxSize = 500 * 1024 * 1024; // 500 MB
     if ($fileSize > $maxSize) {
         return '';
     }
@@ -193,7 +193,7 @@ function uploadAudio($file, $folder = null) {
     $fileName = $file['name'];
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
-    $maxSize = 100 * 1024 * 1024; // 100 MB
+    $maxSize = 500 * 1024 * 1024; // 500 MB
     if ($fileSize > $maxSize) {
         return '';
     }

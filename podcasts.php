@@ -116,7 +116,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-cloud-upload file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите файл или перетащите сюда</div>
-                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-current" id="podcast-image-current" style="display:none;">
@@ -154,7 +154,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-cloud-upload file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите файл или перетащите сюда</div>
-                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-current" id="podcast-author-photo-current" style="display:none;">
@@ -207,7 +207,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-video file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите видео или перетащите сюда</div>
-                                    <div class="file-upload-subtext">MP4, WebM, OGV, MOV до 100MB</div>
+                                    <div class="file-upload-subtext">MP4, WebM, OGV, MOV до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-current" id="podcast-video-current" style="display:none;">
@@ -241,7 +241,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-music file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите аудио или перетащите сюда</div>
-                                    <div class="file-upload-subtext">MP3, WAV, OGG, M4A, AAC до 100MB</div>
+                                    <div class="file-upload-subtext">MP3, WAV, OGG, M4A, AAC до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-current" id="podcast-audio-current" style="display:none;">
@@ -356,8 +356,8 @@ $timestamp = time();
 
             const isVideo = inputId === 'podcast-video';
             const isAudio = inputId === 'podcast-audio';
-            const maxSize = (isVideo || isAudio) ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB / 10MB
-            const maxSizeLabel = (isVideo || isAudio) ? '100MB' : '10MB';
+            const maxSize = 500 * 1024 * 1024; // 500MB для всех файлов
+            const maxSizeLabel = '500MB';
             if (file.size > maxSize) {
                 alert('Файл слишком большой. Максимальный размер: ' + maxSizeLabel);
                 return;

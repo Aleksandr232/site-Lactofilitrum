@@ -42,8 +42,8 @@ function uploadImage($file, $folder = null) {
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
 
-    // Проверяем размер файла (максимум 5MB)
-    if ($fileSize > 5 * 1024 * 1024) {
+    // Проверяем размер файла (максимум 500MB)
+    if ($fileSize > 500 * 1024 * 1024) {
         return '';
     }
 
@@ -148,8 +148,8 @@ function uploadPdf($file, $folder = null) {
     $fileTmpName = $file['tmp_name'];
     $fileSize = $file['size'];
 
-    // Максимум 50MB для PDF
-    if ($fileSize > 50 * 1024 * 1024) {
+    // Максимум 500MB для PDF
+    if ($fileSize > 500 * 1024 * 1024) {
         return '';
     }
 

@@ -111,7 +111,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-cloud-upload file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите файл или перетащите сюда</div>
-                                    <div class="file-upload-subtext">PNG, JPG, GIF до 10MB</div>
+                                    <div class="file-upload-subtext">PNG, JPG, GIF до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-preview" id="remission-image-preview">
@@ -140,7 +140,7 @@ $timestamp = time();
                                 <div>
                                     <i class='bx bx-file-blank file-upload-icon'></i>
                                     <div class="file-upload-text">Выберите PDF или перетащите сюда</div>
-                                    <div class="file-upload-subtext">PDF до 50MB</div>
+                                    <div class="file-upload-subtext">PDF до 500MB</div>
                                 </div>
                             </div>
                             <div class="file-upload-preview" id="remission-pdf-preview">
@@ -455,9 +455,8 @@ $timestamp = time();
 
             console.log('Wrapper elements:', { wrapper: !!wrapper, label: !!label, preview: !!preview, progress: !!progress });
 
-            const isPdf = inputId === 'remission-pdf';
-            const maxSize = isPdf ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
-            const maxSizeText = isPdf ? '50MB' : '10MB';
+            const maxSize = 500 * 1024 * 1024;
+            const maxSizeText = '500MB';
             if (file.size > maxSize) {
                 alert('Файл слишком большой. Максимальный размер: ' + maxSizeText);
                 return;
