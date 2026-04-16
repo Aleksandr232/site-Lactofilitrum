@@ -3049,6 +3049,37 @@ body {
     }
 }
 
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .row.row_about_items .col {
+        display: flex;
+        justify-content: center;
+    }
+    .about_item {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    .about_cols {
+        justify-content: center;
+        gap: 16px;
+    }
+    .about_col {
+        width: 300px !important;
+        max-width: 300px;
+        flex: 0 0 300px;
+        margin-left: 0;
+    }
+    .about_col_box--new {
+        width: 100%;
+        max-width: 100%;
+        padding: 16px;
+    }
+    .about_col_left .about_col_box--new,
+    .about_col_right .about_col_box--new {
+        transform: none;
+    }
+}
+
 @media screen and (max-width: 375px) {
     .first_bk {
         background-image: url(../img/bg_ftbk_mobile.jpg);
