@@ -5,7 +5,7 @@ initializeDatabase();
 $remissionItems = [];
 try {
 	$conn = connectDB();
-	$stmt = $conn->prepare("SELECT id, title, description, image, pdf_path FROM remission_library ORDER BY created_at DESC");
+	$stmt = $conn->prepare("SELECT id, title, description, image, pdf_path FROM remission_library ORDER BY id ASC");
 	$stmt->execute();
 	$remissionItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

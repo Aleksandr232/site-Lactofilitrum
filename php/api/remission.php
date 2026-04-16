@@ -211,7 +211,7 @@ try {
     switch ($method) {
         case 'GET':
             // Получить все элементы библиотеки ремиссии
-            $stmt = $conn->prepare("SELECT * FROM remission_library ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT * FROM remission_library ORDER BY id ASC");
             $stmt->execute();
             $items = $stmt->fetchAll();
 
