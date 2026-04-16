@@ -79,6 +79,15 @@ try {
 				padding: 0.75rem 1rem;
 				background: rgba(0, 0, 0, .7);
 			}
+			.single_audio_modal_title {
+				flex-shrink: 0;
+				padding: 0.75rem 1rem 0.25rem;
+				color: #fff;
+				font-size: 1.125rem;
+				font-weight: 700;
+				line-height: 1.3;
+				background: rgba(0, 0, 0, .7);
+			}
 		</style>
 		<title>Нетоксичный контент</title>
 		<meta name="description" content="Только самое полезное для практикующего врача без «шлаков и токсинов»" />
@@ -1084,6 +1093,7 @@ try {
 											'<div class="single_audio_modal_image">' +
 												(imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="' + escAttr(p.title) + '"/>' : '') +
 											'</div>' +
+											'<div class="single_audio_modal_title">' + esc(p.title || '') + '</div>' +
 											'<audio class="single_audio_modal_player" controls src="' + escAttr(audioSrc) + '">Ваш браузер не поддерживает воспроизведение аудио.</audio>' +
 										'</div>' +
 									'</div>'
