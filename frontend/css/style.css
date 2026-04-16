@@ -3059,14 +3059,14 @@ body {
     .row.row_about_items {
         justify-content: flex-start;
         margin: 0 0 20px;
-        gap: 12px;
+        gap: 8px;
     }
     .row.row_about_items .col {
         display: flex;
         justify-content: center;
-        width: calc((100% - 12px) / 2) !important;
-        flex: 0 0 calc((100% - 12px) / 2);
-        max-width: calc((100% - 12px) / 2);
+        width: calc((100% - 8px) / 2) !important;
+        flex: 0 0 calc((100% - 8px) / 2);
+        max-width: calc((100% - 8px) / 2);
         padding: 0;
         margin-bottom: 0;
     }
@@ -3079,15 +3079,15 @@ body {
         padding-left: 112px;
         align-items: center;
         justify-content: flex-start;
-        gap: 12px;
+        gap: 8px;
         max-width: calc(100% - 112px);
         margin-left: auto;
         margin-right: auto;
     }
     .about_col {
-        width: calc((100% - 12px) / 2) !important;
-        max-width: calc((100% - 12px) / 2);
-        flex: 0 0 calc((100% - 12px) / 2);
+        width: calc((100% - 8px) / 2) !important;
+        max-width: calc((100% - 8px) / 2);
+        flex: 0 0 calc((100% - 8px) / 2);
         margin-left: 0;
     }
     .about_col_box--new {
