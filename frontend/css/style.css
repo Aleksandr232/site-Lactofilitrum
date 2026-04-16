@@ -1181,7 +1181,7 @@ body {
 /*-- SCHEME --*/
 
 .scheme {
-    padding: 40px 0 209px;
+    padding: 40px 0 100px;
 }
 .scheme_items {
     max-width: 1410px;
@@ -1312,7 +1312,7 @@ body {
 /*-- LIBRARY --*/
 
 .library {
-    padding: 100px 0;
+    padding: 40px 0;
 }
 .library .title_head {
     max-width: 1360px;
@@ -2234,7 +2234,7 @@ body {
         font-size: 14px;
     }
     .scheme {
-        padding: 40px 0 100px;
+        padding: 40px 0 40px;
     }
     .scheme_items {
         max-width: 860px;
