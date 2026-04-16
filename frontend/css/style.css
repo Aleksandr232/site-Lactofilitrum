@@ -3101,6 +3101,15 @@ body {
     }
 }
 
+@media screen and (min-width: 600px) and (max-width: 768px) {
+    .about_item {
+        max-width: 500px;
+    }
+    .about_col {
+        max-width: 500px;
+    }
+}
+
 @media screen and (max-width: 375px) {
     .first_bk {
         background-image: url(../img/bg_ftbk_mobile.jpg);
