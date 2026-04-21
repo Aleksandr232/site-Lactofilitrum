@@ -160,7 +160,7 @@ try {
 							<p>Проект «очищает контент от шлаков и токсинов, оставляя только полезное, улучшая работу критического мышления».</p>
 						</div>
 						<div class="ftbk_btn" data-aos="fade-up">
-							<a href="#" class="btn btn_green btn_small">Подписаться</a>
+							<a href="#register" class="btn btn_green btn_small">Подписаться</a>
 						</div>
 					</div>
 					<div class="ftbk_box" data-aos="fade-up">
@@ -748,11 +748,11 @@ try {
 			<div class="container">
 				<div class="register_bk d_flex f_wrap" data-aos="fade-up">
 					<div class="register_left">
-						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите на почту памятку медицинского юриста <span>И. О. Печерея</span></strong></div>
+						<div class="register_title"><strong>Зарегистрируйтесь</strong>, станьте частью проекта Синапс Онлайн для врачей <strong>и получите на почту памятку медицинского юриста <span></span></strong></div>
 						<div class="register_profile d_flex">
-							<div class="register_profile_image">
+							<!-- <div class="register_profile_image">
 								<img src="frontend/img/temp/register_profile_image.jpg" alt=""/>
-							</div>
+							</div> -->
 							<div class="register_profile_title">Медицинский юрист И. О. Печерей подготовил для вас краткую и практичную шпаргалку, которая поможет сориентироваться в сложной ситуации.</div>
 						</div>
 					</div>
