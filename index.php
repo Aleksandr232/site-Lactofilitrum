@@ -138,7 +138,7 @@ try {
 						<div class="header_menu">
 							<ul class="d_flex a_items_center">
 								<li><a href="#podcasts">Подкасты</a></li>
-								<li><a href="#healing">Оси «кишечник-кожа»</a></li>
+								<li><a href="#healing">Ось «кишечник-кожа»</a></li>
 								<li><a href="#library-remission">Библиотека ремиссии</a></li>
 								<li><a href="#register">Получить бонус</a></li>
 							</ul>
@@ -258,7 +258,7 @@ try {
 						<div class="healing_boxes d_flex a_items_center">
 							<div class="healing_box healing_box--left" data-aos="fade-up">
 								<div class="healing_box_inside">
-									<div class="healing_box_title">Воздействует на звенья оси «кишечник-кожа» благодаря комплексному составу, </div>
+									<div class="healing_box_title">Воздействует на звенья ось «кишечник-кожа» благодаря комплексному составу, </div>
 									<div class="healing_box_desc">что способствует формированию защитного фактора — нормальной микрофлоры кишечника<sup>3-6</sup></div>
 								</div>
 							</div>
@@ -1020,6 +1020,68 @@ try {
 			descEls.forEach(function(el) { el.style.minHeight = maxDesc + 'px'; });
 		}
 
+		function stopPodcastAudioPlayback() {
+			document.querySelectorAll('.single_audio_modal_player').forEach(function(player) {
+				player.pause();
+				player.currentTime = 0;
+			});
+		}
+
+		function clearPodcastFocusState() {
+			var activeEl = document.activeElement;
+			if (!activeEl || typeof activeEl.blur !== 'function') return;
+			if (activeEl.closest('.fancybox__container') || activeEl.matches('a.open_modal[data-fancybox]')) {
+				activeEl.blur();
+			}
+		}
+
+		function onPodcastModalDestroy() {
+			stopPodcastAudioPlayback();
+			clearPodcastFocusState();
+		}
+
+		function startPodcastAudioPlayback(fancybox, slide) {
+			var root = slide && slide.el ? slide.el : document;
+			var player = root.querySelector('.single_audio_modal_player');
+			if (!player) return;
+			var playPromise = player.play();
+			if (playPromise && typeof playPromise.catch === 'function') {
+				playPromise.catch(function() {});
+			}
+		}
+
+		function tryStartPodcastAudioByTrigger(triggerEl) {
+			if (!triggerEl) return;
+			var modalSelector = triggerEl.getAttribute('data-src') || triggerEl.getAttribute('href');
+			if (!modalSelector || modalSelector.charAt(0) !== '#') return;
+			var modal = document.querySelector(modalSelector);
+			if (!modal) return;
+			var player = modal.querySelector('.single_audio_modal_player');
+			if (!player) return;
+			var playPromise = player.play();
+			if (playPromise && typeof playPromise.catch === 'function') {
+				playPromise.catch(function() {});
+			}
+		}
+
+		if (window.Fancybox && typeof window.Fancybox.bind === 'function') {
+			window.Fancybox.bind('a.open_modal[data-fancybox]', {
+				placeFocusBack: false,
+				on: {
+					done: startPodcastAudioPlayback,
+					destroy: onPodcastModalDestroy
+				}
+			});
+		}
+
+		document.addEventListener('click', function(e) {
+			var trigger = e.target.closest('a.open_modal[data-fancybox]');
+			if (!trigger) return;
+			setTimeout(function() {
+				tryStartPodcastAudioByTrigger(trigger);
+			}, 120);
+		});
+
 		fetch('php/api/podcasts.php')
 			.then(function(r) { return r.json(); })
 			.then(function(data) {
@@ -1086,7 +1148,7 @@ try {
 										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +
 									'</div>')) +
 								'</div>' +
-								(isSoon ? '' : '<div class="podcasts_bottom_remark">Информация для специалистов здравоохранения. Материал носит справочный характер и является личным мнением спикера. Информация актуальна на март 2025 г.</div>') +
+								(isSoon ? '' : '<div class="podcasts_bottom_remark">Озвученная в материале информация является исключительно мнением приглашенного эксперта, носит информационный характер и не является руководством к действию. При выборе терапии, режима дозирования, схемы применения обращайтесь к официальным инструкциям по применению лекарственных препаратов.</div>') +
 								((!isSoon && audioSrc) ? (
 									'<div id="' + escAttr(audioModalId) + '" class="single_audio_modal_content" style="display:none;">' +
 										'<div class="single_audio_modal_inner">' +
