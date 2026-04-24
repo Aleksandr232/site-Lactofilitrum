@@ -445,7 +445,7 @@ try {
 														<div class="col col-2">
 															<div class="scheme_overlay_item">
 																<div class="scheme_overlay_item__icon">
-																	<img src="frontend/img/temp/scheme_icon_1.png" alt=""/>
+																	<img src="frontend/img/temp/12.png" alt=""/>
 																</div>
 																<div class="scheme_overlay_item__title">таблетки</div>
 															</div>
@@ -503,7 +503,7 @@ try {
 														<div class="col col-2">
 															<div class="scheme_overlay_item">
 																<div class="scheme_overlay_item__icon">
-																	<img src="frontend/img/temp/scheme_icon_1.png" alt=""/>
+																	<img src="frontend/img/temp/1.png" alt=""/>
 																</div>
 																<div class="scheme_overlay_item__title">таблетки</div>
 															</div>
@@ -561,7 +561,7 @@ try {
 														<div class="col col-2">
 															<div class="scheme_overlay_item">
 																<div class="scheme_overlay_item__icon">
-																	<img src="frontend/img/temp/scheme_icon_1.png" alt=""/>
+																	<img src="frontend/img/temp/122.png" alt=""/>
 																</div>
 																<div class="scheme_overlay_item__title">таблетки</div>
 															</div>
@@ -619,7 +619,7 @@ try {
 														<div class="col col-2">
 															<div class="scheme_overlay_item">
 																<div class="scheme_overlay_item__icon">
-																	<img src="frontend/img/temp/scheme_icon_1.png" alt=""/>
+																	<img src="frontend/img/temp/23.png" alt=""/>
 																</div>
 																<div class="scheme_overlay_item__title">таблетки</div>
 															</div>
