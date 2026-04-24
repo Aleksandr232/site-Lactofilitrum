@@ -455,7 +455,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/scheme_icon_2.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">за час до еды <br>и приема лекарств</div>
+																<div class="scheme_overlay_item__title">за час до еды</div>
 															</div>
 														</div>
 														<div class="col col-2">
@@ -513,7 +513,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/scheme_icon_2.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">за час до еды <br>и приема лекарств</div>
+																<div class="scheme_overlay_item__title">за час до еды</div>
 															</div>
 														</div>
 														<div class="col col-2">
@@ -621,7 +621,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/scheme_icon_1.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">тест таблетки</div>
+																<div class="scheme_overlay_item__title">таблетки</div>
 															</div>
 														</div>
 														<div class="col col-2">
@@ -629,7 +629,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/scheme_icon_2.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">тест за час до еды <br>и приема лекарств</div>
+																<div class="scheme_overlay_item__title">за час до еды</div>
 															</div>
 														</div>
 														<div class="col col-2">
@@ -637,7 +637,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/scheme_icon_3.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">тест раза в сутки</div>
+																<div class="scheme_overlay_item__title">раза в сутки</div>
 															</div>
 														</div>
 														<div class="col col-2">
