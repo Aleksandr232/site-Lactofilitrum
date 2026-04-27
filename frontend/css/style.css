@@ -751,118 +751,103 @@ body {
     z-index: 3;
 }
 
-.healing_tooltips_item {
+.healing_callout {
+    --healing-callout-bg: rgba(70, 152, 218, 0.96);
     position: absolute;
     z-index: 4;
-}
-.healing_tooltip {
-    background: rgba(228, 228, 228, 0.4);
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
-    border-radius: 94px;
-    backdrop-filter: blur(15px);
-    color: #3e3e3e;
-    cursor: help;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 600;
-    font-size: 17px;
-    line-height: 100%;
-    padding: 13px 32px 12px 16px;
-    transition: 0.25s;
-}
-.healing_tooltip:hover {
-    background: rgba(49, 132, 192, 0.6);
+    width: 288px;
+    padding: 14px 18px 16px 20px;
+    background: var(--healing-callout-bg);
+    border-radius: 22px;
+    box-shadow: 0 6px 18px rgba(24, 120, 188, 0.22);
     color: #fff;
+    font-family: "Montserrat", sans-serif;
 }
-.healing_tooltip:after {
-    background: #fff;
-    border-radius: 50%;
+.healing_callout--tail-left::after {
     content: '';
     position: absolute;
-    right: 8px;
+    left: -9px;
     top: 50%;
-    transform: translateY(-50%);
-    height: 14px;
-    width: 14px;
+    margin-top: -8px;
+    border: 8px solid transparent;
+    border-right: 10px solid var(--healing-callout-bg);
 }
-.healing_tooltips_item--right .healing_tooltip {
-    padding: 13px 16px 12px 32px;
-}
-.healing_tooltips_item--right .healing_tooltip:after {
-    right: auto;
-    left: 8px;
-}
-.healing_tooltip_overlay {
-    background: rgba(126, 172, 204, 0.6);
-    backdrop-filter: blur(15px);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
-    color: #fff;
-    padding: 24px;
+.healing_callout--tail-right::after {
+    content: '';
     position: absolute;
-    left: 50%;
-    bottom: calc(100% + 20px);
-    font-weight: 500;
-    font-size: 16px;
-    transform: translateX(-50%) translateY(-25%);
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.25s;
-    width: 342px;
+    right: -9px;
+    top: 50%;
+    margin-top: -8px;
+    border: 8px solid transparent;
+    border-left: 10px solid var(--healing-callout-bg);
 }
-.healing_tooltip:hover + .healing_tooltip_overlay {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-    visibility: visible;
+.healing_callout--eyes {
+    top: 150px;
+    left: auto;
 }
-.healing_tooltips_custom {
-    background: rgba(9, 113, 184, 0.6);
-    backdrop-filter: blur(10px);
-    border-radius: 110px;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
-    padding: 13px 39px 13px 20px;
-    position: absolute;
-    left: -14px;
-    top: 385px;
+.healing_callout--eyes.healing_callout--tail-left::after {
+    top: 24%;
+    margin-top: -8px;
+}
+.healing_callout--airways {
+    right: -156px;
+    top: 180px;
+    left: auto;
+}
+.healing_callout--airways.healing_callout--tail-left::after {
+    top: 44%;
+    margin-top: -8px;
+}
+.healing_callout--skin {
+    right: 0;
+    top: 360px;
+    left: 390px;
+}
+.healing_callout--skin.healing_callout--tail-left::after {
+    top: 52%;
+    margin-top: -8px;
+}
+.healing_callout--gut {
+    left: 6px;
+    top: 362px;
     width: 290px;
-    z-index: 4;
+    padding: 14px 22px 16px 20px;
 }
-.healing_tooltips_custom:after {
-    background: #fff;
-    border-radius: 50%;
-    content: '';
-    position: absolute;
-    right: 9px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 17px;
-    width: 17px;
+.healing_callout--gut.healing_callout--tail-right::after {
+    top: 46%;
+    margin-top: -8px;
 }
-.healing_tooltips_custom_title {
-    color: #fff;
-    font-family: "Montserrat", sans-serif;
+.healing_callout_title {
     font-weight: 600;
     font-size: 17px;
-    line-height: 100%;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
 }
-.healing_tooltips_custom_info {
+.healing_callout_text {
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+}
+.healing_callout_stat {
     gap: 12px;
-    margin-top: 7px;
+    margin-top: 10px;
 }
-.healing_tooltips_custom_left {
-    color: #fff;
-    font-family: "Montserrat", sans-serif;
+.healing_callout_stat_num {
     font-weight: 600;
     font-size: 35px;
-    line-height: 100%;
-    height: 25px;
+    line-height: 1;
+    flex-shrink: 0;
 }
-.healing_tooltips_custom_right {
-    color: #fff;
-    font-family: "Montserrat", sans-serif;
+.healing_callout_stat_note {
+    font-weight: 500;
     font-size: 14px;
-    line-height: 100%;
+    line-height: 1.15;
     letter-spacing: 0.04em;
-    height: 25px;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
 }
 
 .healing_info_items {
@@ -2791,33 +2776,98 @@ body {
 
 @media screen and (max-width: 768px) {
     .healing_info_image_wrapper {
-        max-width: 180px;
+        max-width: min(400px, calc(100vw - 8px));
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
     }
-    .healing_tooltip {
+    .healing_info_image img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    .healing_callout--pin {
+        width: auto;
+        min-width: 0;
+        max-width: min(232px, calc(62vw - 10px));
+        padding: 10px 15px 11px 17px;
+        border-radius: 16px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .healing_callout--pin .healing_callout_title {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+    .healing_callout--pin .healing_callout_text {
+        margin-top: 6px;
         font-size: 10px;
+        line-height: 1.35;
     }
-    .healing_tooltips_custom {
-        transform: scale(0.65);
-        top: 100px;
-        left: -150px
+    .healing_callout--pin.healing_callout--tail-left::after {
+        left: -5px;
+        margin-top: -4px;
+        border-width: 6px;
+        border-right-width: 8px;
     }
-    .healing_tooltips_item:nth-child(1) {
+    .healing_callout--gut {
+        -webkit-transform: none;
+        -ms-transform: none;
+        transform: none;
+        width: auto;
+        max-width: min(242px, 62vw);
+        min-width: 0;
+        left: 0 !important;
+        right: auto;
+        top: auto !important;
+        bottom: 25%;
+        padding: 10px 14px 12px 12px;
+        border-radius: 16px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .healing_callout--gut .healing_callout_title {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+    .healing_callout--gut .healing_callout_stat {
+        margin-top: 6px;
+        gap: 8px;
+    }
+    .healing_callout--gut .healing_callout_stat_num {
+        font-size: 26px;
+    }
+    .healing_callout--gut .healing_callout_stat_note {
+        font-size: 10px;
+        line-height: 1.2;
+    }
+    .healing_callout--gut.healing_callout--tail-right::after {
+        right: -5px;
+        margin-top: -4px;
+        border-width: 6px;
+        border-left-width: 8px;
+    }
+    .healing_callout--pin:nth-child(1) {
+        left: 0 !important;
+        right: auto !important;
+        top: 14% !important;
+    }
+    .healing_callout--pin:nth-child(2) {
         right: 0 !important;
-        top: 0 !important;
-    }
-    .healing_tooltips_item:nth-child(2) {
-        right: -75px !important;
-        top: 75px !important;
-    }
-    .healing_tooltips_item:nth-child(3) {
-        right: -40px !important;
         left: auto !important;
-        top: 150px !important;
+        top: 30% !important;
     }
-    .healing_tooltip_overlay {
-        font-size: 10px;
-        width: 120px;
-        padding: 10px;
+    .healing_callout--pin:nth-child(3) {
+        right: 0 !important;
+        left: auto !important;
+        top: auto !important;
+        bottom: 38% !important;
     }
     .healing_info_box {
         font-size: 22px;
@@ -3153,8 +3203,21 @@ body {
         right: -35px;
         bottom: 115px;
     }
-    .healing_tooltips_custom {
-        left: -125px;
+    .healing_callout--gut {
+        left: 0 !important;
+        max-width: min(222px, 64vw);
+        bottom: 20%;
+        padding: 9px 13px 10px 11px;
+    }
+    .healing_callout--pin {
+        max-width: min(216px, calc(62vw - 8px));
+        padding: 9px 12px 10px 14px;
+    }
+    .healing_callout--pin .healing_callout_title {
+        font-size: 10px;
+    }
+    .healing_callout--pin .healing_callout_text {
+        font-size: 9px;
     }
 }
 
