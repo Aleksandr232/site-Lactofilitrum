@@ -278,23 +278,20 @@ try {
 							<img src="frontend/img/bg_healing_human_new.png" alt=""/>
 						</div>
 						<div class="healing_info_tooltips">
-							<div class="healing_callout healing_callout--pin healing_callout--tail-left healing_callout--eyes">
-								<div class="healing_callout_title">Глаза —</div>
-								<div class="healing_callout_text">Нарушение состава микробиоты <br>и сенсибилизация- чпстые спупники и триггеры аллкргодерматозов</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 137px; top: 65px;">
+								<div class="healing_tooltip">Глаза</div>
 							</div>
-							<div class="healing_callout healing_callout--pin healing_callout--tail-left healing_callout--airways">
-								<div class="healing_callout_title">Дыхательные пути —</div>
-								<div class="healing_callout_text">Развитие аллергических заболеваний, поддержание воспаления в коже</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 10px; top: 255px;">
+								<div class="healing_tooltip">Дыхательные пути</div>
 							</div>
-							<div class="healing_callout healing_callout--pin healing_callout--tail-left healing_callout--skin">
-								<div class="healing_callout_title">Кожа —</div>
-								<div class="healing_callout_text">Развитие аллергических заболеваний, поддержание воспаления в коже</div>
+							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 28px; top: 450px;">
+								<div class="healing_tooltip">Кожа</div>
 							</div>
-							<div class="healing_callout healing_callout--gut healing_callout--tail-right">
-								<div class="healing_callout_title">Кишечник —</div>
-								<div class="healing_callout_stat d_flex a_items_center">
-									<div class="healing_callout_stat_num d_flex a_items_center">80%</div>
-									<div class="healing_callout_stat_note d_flex a_items_center">иммунных клеток <br>всего организма</div>
+							<div class="healing_tooltips_custom">
+								<div class="healing_tooltips_custom_title">Кишечник —</div>
+								<div class="healing_tooltips_custom_info d_flex a_items_center">
+									<div class="healing_tooltips_custom_left d_flex a_items_center">80%</div>
+									<div class="healing_tooltips_custom_right d_flex a_items_center">иммунных клеток <br>всего организма</div>
 								</div>
 							</div>
 						</div>
