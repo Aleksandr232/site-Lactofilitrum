@@ -287,12 +287,18 @@ try {
 							<div class="healing_tooltips_item healing_tooltips_item--right" style="right: 28px; top: 450px;">
 								<div class="healing_tooltip">Кожа</div>
 							</div>
+							<div class="healing_tooltips_note healing_tooltips_note--issue">
+								Нарушение состава микробиоты <br>и сенсибилизация- чпстые спупники <br>и триггеры аллкргодерматозов
+							</div>
 							<div class="healing_tooltips_custom">
 								<div class="healing_tooltips_custom_title">Кишечник —</div>
 								<div class="healing_tooltips_custom_info d_flex a_items_center">
 									<div class="healing_tooltips_custom_left d_flex a_items_center">80%</div>
 									<div class="healing_tooltips_custom_right d_flex a_items_center">иммунных клеток <br>всего организма</div>
 								</div>
+							</div>
+							<div class="healing_tooltips_note healing_tooltips_note--mechanism">
+								Механизм связи между кишечником <br>и кожей называется ось «кишечник-<br>кожа»
 							</div>
 						</div>
 					</div>
