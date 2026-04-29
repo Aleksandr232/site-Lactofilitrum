@@ -3229,18 +3229,29 @@ body {
         bottom: 115px;
     }
     .healing_tooltips_custom {
-        left: -74px;
+        /* left: -74px; */
         top: 112px;
     }
     .healing_tooltips_note--issue {
-        left: -64px;
+        /* left: -64px;
         top: 34px;
+        width: 132px; */
+        left: -37px;
+        top: 30px;
         width: 132px;
     }
     .healing_tooltips_note--mechanism {
-        left: -68px;
-        top: 194px;
+        /* left: -68px;
+        top: 180px;
+        width: 142px; */
+        left: -40px;
+        top: 180px;
         width: 142px;
+    }
+
+    .healing_tooltips_item:nth-child(2) {
+        right: -55px !important;
+        
     }
 }
 
