@@ -1341,15 +1341,38 @@ body {
     max-width: 1360px;
     margin: 36px 0 0;
 }
+.library_slider .swiper-wrapper {
+    align-items: stretch;
+}
 .library_slider .swiper-slide {
     height: auto;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
 }
 .library_slider_item {
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 0 22px 0 #cae1e9;
     padding: 19px 19px 38px;
-    height: 100%;
+    height: auto;
+    min-height: 100%;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
 }
 .library_slider_item_image {
     border-radius: 15px;
@@ -1369,12 +1392,34 @@ body {
 .library_slider_item_content {
     margin-top: 24px;
     min-height: 147px;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
 }
 .library_slider_item_title {
     font-family: "Museo Sans Cyrl 700", sans-serif;
     font-weight: 600;
     font-size: 20px;
     line-height: 140%;
+    overflow-wrap: anywhere;
+}
+.library_slider_item_btn {
+    margin-top: auto;
+    padding-top: 16px;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
 }
 .library_slider_item_title a {
     color: inherit;
@@ -2752,12 +2797,10 @@ body {
     }
     .library_slider_item_content {
         margin-top: 20px;
+        min-height: 140px;
     }
     .library_slider_item_title {
         font-size: 16px;
-    }
-    .library_slider_item_content {
-        min-height: 140px;
     }
     .library_slider .swiper-pagination {
         margin-top: 30px !important;

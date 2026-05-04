@@ -720,7 +720,7 @@ try {
 								<div class="library_slider_item_image">
 									<img src="<?php echo htmlspecialchars($imgSrc); ?>" alt="<?php echo $titleEsc; ?>">
 								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
+								<div class="library_slider_item_content d_flex f_direction_column">
 									<div class="library_slider_item_title">
 										<?php if ($pdfUrl): ?>
 										<a href="<?php echo htmlspecialchars($pdfUrl); ?>" target="_blank" rel="noopener"><?php echo $titleEsc; ?></a>
@@ -745,7 +745,7 @@ try {
 								<div class="library_slider_item_image">
 									<img src="frontend/img/temp/library_slider_item_1.jpg" alt="">
 								</div>
-								<div class="library_slider_item_content d_flex f_direction_column j_content_between">
+								<div class="library_slider_item_content d_flex f_direction_column">
 									<div class="library_slider_item_title">
 										<span>Материалы скоро появятся</span>
 									</div>
