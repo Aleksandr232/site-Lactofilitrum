@@ -4,6 +4,22 @@ require_once '../auth_check.php';
 
 header('Content-Type: application/json');
 
+// pdf_path в БД хранит URL «читать» или старый относительный путь к загруженному файлу
+
+function sanitizeReadUrl($url) {
+    $url = trim(strip_tags((string)$url));
+    if ($url === '') {
+        return '';
+    }
+    if (strlen($url) > 2048) {
+        return '';
+    }
+    if (preg_match('#^\s*javascript:#i', $url)) {
+        return '';
+    }
+    return $url;
+}
+
 // Функция для обработки загруженного изображения
 function uploadImage($file, $folder = null) {
     // Используем путь относительно DOCUMENT_ROOT для сохранения файла
@@ -109,79 +125,21 @@ function uploadImage($file, $folder = null) {
     return '';
 }
 
-// Функция для удаления файла изображения
 function deleteImageFile($filepath) {
     deleteFile($filepath);
 }
 
-// Функция для удаления любого файла
 function deleteFile($filepath) {
     if (!empty($filepath)) {
         // Если путь относительный, преобразуем в полный
         if (strpos($filepath, 'uploads/') === 0) {
             $filepath = $_SERVER['DOCUMENT_ROOT'] . '/' . $filepath;
+
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
         }
-
-        if (file_exists($filepath)) {
-            unlink($filepath);
-        }
     }
-}
-
-// Функция для обработки загруженного PDF
-function uploadPdf($file, $folder = null) {
-    if ($folder === null) {
-        $folder = $_SERVER['DOCUMENT_ROOT'] . '/uploads/remission/';
-    }
-
-    $relativeFolder = 'uploads/remission/';
-
-    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
-        return '';
-    }
-
-    if (!file_exists($folder)) {
-        mkdir($folder, 0777, true);
-    }
-
-    $fileName = $file['name'];
-    $fileTmpName = $file['tmp_name'];
-    $fileSize = $file['size'];
-
-    // Максимум 500MB для PDF
-    if ($fileSize > 500 * 1024 * 1024) {
-        return '';
-    }
-
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    if ($extension !== 'pdf') {
-        return '';
-    }
-
-    // Проверяем MIME-тип
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $fileTmpName);
-    finfo_close($finfo);
-    if ($mimeType !== 'application/pdf') {
-        return '';
-    }
-
-    $filename = uniqid('remission_pdf_', true) . '.pdf';
-    $filepath = $folder . $filename;
-
-    if (move_uploaded_file($fileTmpName, $filepath)) {
-        return $relativeFolder . $filename;
-    }
-    if (copy($fileTmpName, $filepath)) {
-        unlink($fileTmpName);
-        return $relativeFolder . $filename;
-    }
-    $fileContent = file_get_contents($fileTmpName);
-    if ($fileContent !== false && file_put_contents($filepath, $fileContent) !== false) {
-        unlink($fileTmpName);
-        return $relativeFolder . $filename;
-    }
-    return '';
 }
 
 // Создаем необходимые папки заранее
@@ -210,7 +168,18 @@ try {
 
     switch ($method) {
         case 'GET':
-            // Получить все элементы библиотеки ремиссии
+            $id = (int)($_GET['id'] ?? 0);
+            if ($id > 0) {
+                $stmt = $conn->prepare("SELECT * FROM remission_library WHERE id = ?");
+                $stmt->execute([$id]);
+                $item = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($item) {
+                    echo json_encode(['success' => true, 'item' => $item]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Элемент не найден']);
+                }
+                break;
+            }
             $stmt = $conn->prepare("SELECT * FROM remission_library ORDER BY id ASC");
             $stmt->execute();
             $items = $stmt->fetchAll();
@@ -219,36 +188,69 @@ try {
             break;
 
         case 'POST':
-            // Создать новый элемент
+            $updateId = (int)($_POST['id'] ?? 0);
             $title = sanitize($_POST['title'] ?? '');
             $description = sanitize($_POST['description'] ?? '');
+            $readUrl = sanitizeReadUrl($_POST['read_url'] ?? $_POST['read_link'] ?? '');
 
             if (empty($title)) {
                 echo json_encode(['success' => false, 'message' => 'Название обязательно']);
                 exit;
             }
 
-            // Логируем полученные файлы для отладки
-            error_log('FILES received: ' . print_r($_FILES, true));
             error_log('POST data: ' . print_r($_POST, true));
 
-            // Обрабатываем загруженное изображение
+            if ($updateId > 0) {
+                // Обновление
+                $stmt = $conn->prepare("SELECT id, image, pdf_path FROM remission_library WHERE id = ?");
+                $stmt->execute([$updateId]);
+                $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$existing) {
+                    echo json_encode(['success' => false, 'message' => 'Элемент не найден']);
+                    exit;
+                }
+
+                $image_path = $existing['image'];
+                $newImg = uploadImage($_FILES['image'] ?? null);
+                if ($newImg !== '') {
+                    deleteImageFile($existing['image']);
+                    $image_path = $newImg;
+                }
+
+                $stmt = $conn->prepare("
+                    UPDATE remission_library
+                    SET title = ?, description = ?, image = ?, pdf_path = ?
+                    WHERE id = ?
+                ");
+                $result = $stmt->execute([$title, $description, $image_path, $readUrl ?: null, $updateId]);
+
+                if ($result) {
+                    echo json_encode(['success' => true, 'message' => 'Элемент сохранён']);
+                } else {
+                    if ($newImg !== '') {
+                        deleteImageFile($newImg);
+                    }
+                    echo json_encode(['success' => false, 'message' => 'Ошибка при сохранении']);
+                }
+                break;
+            }
+
+            // Создание
             $image_path = uploadImage($_FILES['image'] ?? null);
-            // Обрабатываем загруженный PDF
-            $pdf_path = uploadPdf($_FILES['pdf'] ?? null);
 
             $stmt = $conn->prepare("
                 INSERT INTO remission_library (title, description, image, pdf_path)
                 VALUES (?, ?, ?, ?)
             ");
 
-            $result = $stmt->execute([$title, $description, $image_path, $pdf_path]);
+            $pdfStore = $readUrl !== '' ? $readUrl : null;
+            $result = $stmt->execute([$title, $description, $image_path, $pdfStore]);
 
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Элемент успешно добавлен']);
             } else {
                 deleteImageFile($image_path);
-                deleteFile($pdf_path);
                 echo json_encode(['success' => false, 'message' => 'Ошибка при добавлении элемента']);
             }
             break;

@@ -29,8 +29,19 @@ $img_url = asset_url($p['image']);
 $author_photo_url = asset_url($p['author_photo']);
 $video_url = asset_url($p['video_path'] ?? '');
 $audio_url = asset_url($p['audio_path'] ?? '');
-$extra_href = !empty($p['extra_link']) ? (strpos($p['extra_link'], 'http') === 0 ? $p['extra_link'] : '/' . ltrim($p['extra_link'], '/')) : '#';
-$link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подписаться';
+$memo_syn = trim((string)($p['synapse_memo_link'] ?? ''));
+$memo_legacy_url = trim((string)($p['extra_link'] ?? ''));
+$extra_href = '#';
+$link_text = '';
+if ($memo_syn !== '') {
+	$extra_href = (preg_match('#^https?://#i', $memo_syn) || strncmp($memo_syn, '//', 2) === 0)
+		? $memo_syn
+		: ('/' . ltrim($memo_syn, '/'));
+	$link_text = 'Памятка';
+} elseif ($memo_legacy_url !== '') {
+	$extra_href = (strpos($memo_legacy_url, 'http') === 0) ? $memo_legacy_url : '/' . ltrim($memo_legacy_url, '/');
+	$link_text = !empty($p['additional_link']) ? $p['additional_link'] : 'Подписаться';
+}
 
 // Абсолютные пути от корня — иначе на /single/slug стили и скрипты ломаются (404)
 $base = '/';
@@ -249,7 +260,7 @@ $base = '/';
 							<?php endif; ?>
 							<?php if ($extra_href !== '#'): ?>
 								<div class="single_btn">
-									<a href="<?php echo htmlspecialchars($extra_href, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue_transparent"<?php echo $extra_href[0] === 'h' ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo htmlspecialchars($link_text, ENT_QUOTES, 'UTF-8'); ?></a>
+									<a href="<?php echo htmlspecialchars($extra_href, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn_blue_transparent"<?php echo (preg_match('#^https?://#i', $extra_href) || strncmp($extra_href, '//', 2) === 0) ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>><?php echo htmlspecialchars($link_text, ENT_QUOTES, 'UTF-8'); ?></a>
 								</div>
 							<?php endif; ?>
 						</div>

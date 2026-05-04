@@ -702,7 +702,17 @@ try {
 						if (!empty($remissionItems)):
 							foreach ($remissionItems as $i => $item):
 								$imgSrc = !empty($item['image']) ? '/' . ltrim($item['image'], '/') : $placeholderImages[$i % 4];
-								$pdfUrl = !empty($item['pdf_path']) ? '/' . ltrim($item['pdf_path'], '/') : '';
+								$pdfRaw = isset($item['pdf_path']) ? trim((string)$item['pdf_path']) : '';
+								$pdfUrl = '';
+								if ($pdfRaw !== '') {
+									if (preg_match('#^https?://#i', $pdfRaw)) {
+										$pdfUrl = $pdfRaw;
+									} elseif (preg_match('#^//#', $pdfRaw)) {
+										$pdfUrl = $pdfRaw;
+									} else {
+										$pdfUrl = '/' . ltrim($pdfRaw, '/');
+									}
+								}
 								$titleEsc = htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8');
 						?>
 						<div class="swiper-slide">
@@ -1099,8 +1109,21 @@ try {
 						var videoSrc = (p.video_path && p.video_path.trim()) ? url(p.video_path) : '';
 						var isSoon = (p.time_podcast === 'СКОРО');
 						var btnText = isSoon ? 'Зарегистрироваться' : ((p.button_link && p.button_link.trim()) ? p.button_link : 'Слушать');
-						var linkText = isSoon ? '' : ((p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Памятка');
-						var linkHref = (p.extra_link && p.extra_link.trim()) ? url(p.extra_link) : '#library-remission';
+						var synMemo = (p.synapse_memo_link && String(p.synapse_memo_link).trim()) ? String(p.synapse_memo_link).trim() : '';
+						var legExtra = (p.extra_link && String(p.extra_link).trim()) ? String(p.extra_link).trim() : '';
+						var memoNoteHtml = '';
+						if (!isSoon) {
+							if (synMemo) {
+								memoNoteHtml = '<div class="podcasts_note">' +
+									'<a href="' + escAttr(url(synMemo)) + '" target="_blank" rel="noopener noreferrer">' + esc('Памятка') + '</a>' +
+									'</div>';
+							} else if (legExtra) {
+								var legLabel = (p.additional_link && p.additional_link.trim()) ? p.additional_link : 'Памятка';
+								memoNoteHtml = '<div class="podcasts_note">' +
+									'<a href="' + escAttr(url(legExtra)) + '">' + esc(legLabel) + '</a>' +
+									'</div>';
+							}
+						}
 						var slug = (p.slug && p.slug.trim()) ? p.slug : '';
 						var audioModalId = 'podcast-audio-modal-' + (p.id ? String(p.id) : String(i));
 						var btnHref = '#';
@@ -1147,9 +1170,7 @@ try {
 									'<div class="podcasts_btn">' +
 										'<a href="' + btnHref + '" class="' + btnClass + '"' + btnExtraAttrs + '>' + esc(btnText) + '</a>' +
 									'</div>' +
-									(isSoon ? '' : ('<div class="podcasts_note">' +
-										'<a href="' + escAttr(linkHref) + '">' + esc(linkText) + '</a>' +
-									'</div>')) +
+									memoNoteHtml +
 								'</div>' +
 								(isSoon ? '' : '<div class="podcasts_bottom_remark">Озвученная в материале информация является исключительно мнением приглашенного эксперта, носит информационный характер и не является руководством к действию. При выборе терапии, режима дозирования, схемы применения обращайтесь к официальным инструкциям по применению лекарственных препаратов.</div>') +
 								((!isSoon && audioSrc) ? (

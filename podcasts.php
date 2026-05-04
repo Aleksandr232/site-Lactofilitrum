@@ -185,12 +185,23 @@ $timestamp = time();
                         <input type="text" id="podcast-button-link" name="button_link" placeholder="Подробнее">
                     </div>
                     <div class="form-group">
-                        <label for="podcast-additional-link">Доп. ссылка (название):</label>
-                        <input type="text" id="podcast-additional-link" name="additional_link" placeholder="Получить памятку с кратким содержанием выпуска">
+                        <label>Ссылка на памятку в Синапсе (опционально)</label>
+                        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px;">
+                            <button type="button" id="open-podcast-synapse-memo-btn" class="btn-secondary" style="white-space:nowrap;">
+                                Памятка
+                            </button>
+                            <span id="podcast-synapse-memo-status" style="color:#7f8c8d;font-size:13px;flex:1;min-width:12rem;">Не задано</span>
+                        </div>
+                        <input type="hidden" id="podcast-synapse-memo-link" name="synapse_memo_link" value="">
+                        <small style="color:#7f8c8d;display:block;margin-top:8px;line-height:1.4;">То же можно сделать кнопкой «Памятка» в списке подкастов. Если ссылку не задавать — кнопка на сайте не показывается.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-additional-link">Доп. ссылка (название), альтернатива без Синапса:</label>
+                        <input type="text" id="podcast-additional-link" name="additional_link" placeholder="Текст ссылки рядом с основной кнопкой">
                     </div>
                     <div class="form-group">
                         <label for="podcast-extra-link">Доп. ссылка (URL):</label>
-                        <input type="url" id="podcast-extra-link" name="extra_link" placeholder="https://...">
+                        <input type="text" id="podcast-extra-link" name="extra_link" placeholder="https://...">
                     </div>
                     <div class="form-group">
                         <label for="podcast-time-podcast">Время подкаста:</label>
@@ -276,6 +287,27 @@ $timestamp = time();
         </div>
     </div>
 
+    <!-- Мини-форма: вставить ссылку на памятку (Синапс) -->
+    <div id="podcast-synapse-memo-modal" class="modal" style="z-index:11000;">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h2>Ссылка на памятку</h2>
+                <span class="modal-close" id="podcast-synapse-memo-modal-close" role="button" tabindex="0">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="podcast-synapse-memo-quick-podcast-id" value="">
+                <p style="margin:0 0 12px;color:#7f8c8d;font-size:14px;">Вставьте адрес памятки в Синапсе (полный URL). Оставьте пустым, чтобы убрать кнопку на сайте.</p>
+                <label for="podcast-synapse-memo-draft" class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">URL памятки</label>
+                <textarea id="podcast-synapse-memo-draft" rows="4" placeholder="https://matrix.to/#/… или другой адрес Синапса" style="width:100%;padding:10px;font-size:14px;font-family:inherit;box-sizing:border-box;border:1px solid #dfe6e9;border-radius:4px;"></textarea>
+            </div>
+            <div class="modal-footer" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;">
+                <button type="button" class="btn-secondary" id="podcast-synapse-memo-clear-btn">Убрать ссылку</button>
+                <button type="button" class="btn-secondary" id="podcast-synapse-memo-cancel-btn">Отмена</button>
+                <button type="button" class="btn-primary" id="podcast-synapse-memo-apply-btn">Готово</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Глобальные функции для совместимости (определяем до загрузки admin.js)
         window.showUploadProgress = function(inputId, show) {
@@ -311,7 +343,7 @@ $timestamp = time();
             label.style.display = 'flex';
         };
     </script>
-    <script src="js/admin.js?v=20241210"></script>
+    <script src="js/admin.js?v=20260504memo2"></script>
     <script>
         // Функции для работы с загрузкой файлов
         function setupFileUpload(inputId) {

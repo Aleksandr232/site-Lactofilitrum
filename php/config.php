@@ -126,6 +126,7 @@ function createTables($pdo) {
                 button_link VARCHAR(500),
                 additional_link VARCHAR(500),
                 extra_link VARCHAR(500),
+                synapse_memo_link VARCHAR(2048),
                 video_path VARCHAR(500),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -158,6 +159,16 @@ function createTables($pdo) {
             $pdo->exec("ALTER TABLE podcasts ADD COLUMN podcasts_text TEXT DEFAULT NULL AFTER description");
             error_log("Колонка podcasts_text добавлена в podcasts");
         }
+        $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'synapse_memo_link'");
+        if ($stmt->rowCount() === 0) {
+            try {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL AFTER extra_link");
+                error_log("Колонка synapse_memo_link добавлена в podcasts");
+            } catch (PDOException $e) {
+                $pdo->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL");
+                error_log("Колонка synapse_memo_link добавлена в podcasts (fallback позиции)");
+            }
+        }
 
         // Создаем индексы для podcasts
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_podcasts_title ON podcasts(title)");
@@ -174,7 +185,7 @@ function createTables($pdo) {
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 image VARCHAR(500),
-                pdf_path VARCHAR(500),
+                pdf_path VARCHAR(2048),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
@@ -184,8 +195,14 @@ function createTables($pdo) {
         // Миграция: добавить pdf_path, если колонки ещё нет
         $stmt = $pdo->query("SHOW COLUMNS FROM remission_library LIKE 'pdf_path'");
         if ($stmt->rowCount() === 0) {
-            $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(500) DEFAULT NULL AFTER image");
+            $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(2048) DEFAULT NULL AFTER image");
             error_log("Колонка pdf_path добавлена в remission_library");
+        } else {
+            $col = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($col && isset($col['Type']) && stripos((string)$col['Type'], 'varchar(2048)') === false && stripos((string)$col['Type'], 'text') === false) {
+                $pdo->exec("ALTER TABLE remission_library MODIFY COLUMN pdf_path VARCHAR(2048) DEFAULT NULL");
+                error_log("Колонка pdf_path расширена до VARCHAR(2048) в remission_library");
+            }
         }
 
         // Создаем индексы для remission_library
@@ -331,6 +348,7 @@ function ensureTablesExist($pdo) {
                         button_link VARCHAR(500),
                         additional_link VARCHAR(500),
                         extra_link VARCHAR(500),
+                        synapse_memo_link VARCHAR(2048),
                         video_path VARCHAR(500),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -352,7 +370,7 @@ function ensureTablesExist($pdo) {
                         title VARCHAR(255) NOT NULL,
                         description TEXT,
                         image VARCHAR(500),
-                        pdf_path VARCHAR(500),
+                        pdf_path VARCHAR(2048),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     )
@@ -408,6 +426,16 @@ function ensureTablesExist($pdo) {
                 $pdo->exec("ALTER TABLE podcasts ADD COLUMN extra_link VARCHAR(500) DEFAULT NULL AFTER additional_link");
                 error_log("Колонка extra_link добавлена в podcasts (миграция ensureTablesExist)");
             }
+            $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'synapse_memo_link'");
+            if ($stmt && $stmt->rowCount() === 0) {
+                try {
+                    $pdo->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL AFTER extra_link");
+                    error_log("Колонка synapse_memo_link добавлена в podcasts (миграция ensureTablesExist)");
+                } catch (PDOException $e) {
+                    $pdo->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL");
+                    error_log("Колонка synapse_memo_link добавлена в podcasts (fallback)");
+                }
+            }
             
             // Миграция slug
             $stmt = $pdo->query("SHOW COLUMNS FROM podcasts LIKE 'slug'");
@@ -458,8 +486,14 @@ function ensureTablesExist($pdo) {
         if ($tableCheck && $tableCheck->rowCount() > 0) {
             $stmt = $pdo->query("SHOW COLUMNS FROM remission_library LIKE 'pdf_path'");
             if ($stmt && $stmt->rowCount() === 0) {
-                $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(500) DEFAULT NULL AFTER image");
+                $pdo->exec("ALTER TABLE remission_library ADD COLUMN pdf_path VARCHAR(2048) DEFAULT NULL AFTER image");
                 error_log("Колонка pdf_path добавлена в remission_library (миграция ensureTablesExist)");
+            } else if ($stmt && $stmt->rowCount() > 0) {
+                $col = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($col && isset($col['Type']) && stripos((string)$col['Type'], 'varchar(2048)') === false && stripos((string)$col['Type'], 'text') === false) {
+                    $pdo->exec("ALTER TABLE remission_library MODIFY COLUMN pdf_path VARCHAR(2048) DEFAULT NULL");
+                    error_log("Колонка pdf_path расширена до VARCHAR(2048) (миграция ensureTablesExist)");
+                }
             }
         }
     } catch (PDOException $e) {

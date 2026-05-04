@@ -5,6 +5,20 @@ require_once __DIR__ . '/../config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+function sanitizeSynapseMemoUrl($url) {
+    $url = trim(strip_tags((string)$url));
+    if ($url === '') {
+        return '';
+    }
+    if (strlen($url) > 2048) {
+        return '';
+    }
+    if (preg_match('#^\s*javascript:#i', $url)) {
+        return '';
+    }
+    return $url;
+}
+
 // Функция для обработки загруженного изображения
 function uploadImage($file, $folder = null) {
     // Используем путь относительно DOCUMENT_ROOT для сохранения файла
@@ -298,6 +312,37 @@ try {
             break;
 
         case 'POST':
+            // Быстрое обновление только ссылки на памятку (из таблицы админки)
+            if (($_POST['quick_update'] ?? '') === 'synapse_memo') {
+                $qid = (int)($_POST['id'] ?? 0);
+                if ($qid <= 0) {
+                    echo json_encode(['success' => false, 'message' => 'ID подкаста не указан'], JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+                $syn_quick = sanitizeSynapseMemoUrl($_POST['synapse_memo_link'] ?? '');
+                try {
+                    $checkMemo = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'synapse_memo_link'");
+                    if ($checkMemo->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL AFTER extra_link");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking synapse_memo_link (quick): ' . $e->getMessage());
+                }
+                $stmt = $conn->prepare('SELECT id FROM podcasts WHERE id = ?');
+                $stmt->execute([$qid]);
+                if (!$stmt->fetch()) {
+                    echo json_encode(['success' => false, 'message' => 'Подкаст не найден'], JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+                $stmt = $conn->prepare('UPDATE podcasts SET synapse_memo_link = ? WHERE id = ?');
+                $ok = $stmt->execute([$syn_quick !== '' ? $syn_quick : null, $qid]);
+                echo json_encode(
+                    $ok ? ['success' => true, 'message' => 'Ссылка на памятку сохранена'] : ['success' => false, 'message' => 'Ошибка сохранения'],
+                    JSON_UNESCAPED_UNICODE
+                );
+                break;
+            }
+
             $editId = isset($_POST['id']) ? (int)$_POST['id'] : 0;
             $isUpdate = $editId > 0;
 
@@ -320,6 +365,7 @@ try {
             $button_link = sanitize($_POST['button_link'] ?? '');
             $additional_link = sanitize($_POST['additional_link'] ?? '');
             $extra_link = sanitize($_POST['extra_link'] ?? '');
+            $synapse_memo_link = sanitizeSynapseMemoUrl($_POST['synapse_memo_link'] ?? '');
             // time_podcast: пусто = null, иначе допустимое значение (например "СКОРО")
             $time_podcast_raw = trim($_POST['time_podcast'] ?? '');
             $time_podcast = ($time_podcast_raw === 'СКОРО') ? 'СКОРО' : null;
@@ -396,11 +442,19 @@ try {
                 } catch (PDOException $e) {
                     error_log('Error checking time_podcast: ' . $e->getMessage());
                 }
+                try {
+                    $checkMemo = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'synapse_memo_link'");
+                    if ($checkMemo->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL AFTER extra_link");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking synapse_memo_link: ' . $e->getMessage());
+                }
                 $stmt = $conn->prepare("
                     UPDATE podcasts SET title=?, description=?, podcasts_text=?, image=?, author=?, author_photo=?,
-                    button_link=?, additional_link=?, extra_link=?, video_path=?, audio_path=?, time_podcast=? WHERE id=?
+                    button_link=?, additional_link=?, extra_link=?, synapse_memo_link=?, video_path=?, audio_path=?, time_podcast=? WHERE id=?
                 ");
-                $result = $stmt->execute([$title, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast, $editId]);
+                $result = $stmt->execute([$title, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $synapse_memo_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast, $editId]);
                 if ($result) {
                     echo json_encode(['success' => true, 'message' => 'Подкаст успешно обновлён']);
                 } else {
@@ -423,11 +477,19 @@ try {
                 } catch (PDOException $e) {
                     error_log('Error checking time_podcast: ' . $e->getMessage());
                 }
+                try {
+                    $checkMemo = $conn->query("SHOW COLUMNS FROM podcasts LIKE 'synapse_memo_link'");
+                    if ($checkMemo->rowCount() === 0) {
+                        $conn->exec("ALTER TABLE podcasts ADD COLUMN synapse_memo_link VARCHAR(2048) DEFAULT NULL AFTER extra_link");
+                    }
+                } catch (PDOException $e) {
+                    error_log('Error checking synapse_memo_link: ' . $e->getMessage());
+                }
                 $stmt = $conn->prepare("
-                    INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, video_path, audio_path, time_podcast)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO podcasts (title, slug, description, podcasts_text, image, author, author_photo, button_link, additional_link, extra_link, synapse_memo_link, video_path, audio_path, time_podcast)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
-                $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast]);
+                $result = $stmt->execute([$title, $slug, $description, $podcasts_text_value, $image_path, $author, $author_photo_path, $button_link, $additional_link, $extra_link ?: null, $synapse_memo_link ?: null, $video_path ?: null, $audio_path ?: null, $time_podcast]);
                 if ($result) {
                     echo json_encode(['success' => true, 'message' => 'Подкаст успешно добавлен']);
                 } else {

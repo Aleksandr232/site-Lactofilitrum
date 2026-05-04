@@ -70,7 +70,7 @@ $timestamp = time();
                                 <th>Картинка</th>
                                 <th>Название</th>
                                 <th>Описание</th>
-                                <th>PDF</th>
+                                <th>Ссылка «Читать»</th>
                                 <th>Дата создания</th>
                                 <th>Действия</th>
                             </tr>
@@ -90,11 +90,12 @@ $timestamp = time();
     <div id="remission-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить элемент библиотеки</h2>
+                <h2 id="remission-modal-title">Добавить элемент библиотеки</h2>
                 <span class="modal-close">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="remission-form" enctype="multipart/form-data">
+                    <input type="hidden" id="remission-edit-id" name="id" value="">
                     <div class="form-group">
                         <label for="remission-title">Название:</label>
                         <input type="text" id="remission-title" name="title" required>
@@ -133,33 +134,9 @@ $timestamp = time();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="remission-pdf">PDF файл:</label>
-                        <div class="file-upload-wrapper">
-                            <input type="file" id="remission-pdf" name="pdf" accept="application/pdf" class="file-upload-input">
-                            <div class="file-upload-label" for="remission-pdf">
-                                <div>
-                                    <i class='bx bx-file-blank file-upload-icon'></i>
-                                    <div class="file-upload-text">Выберите PDF или перетащите сюда</div>
-                                    <div class="file-upload-subtext">PDF до 500MB</div>
-                                </div>
-                            </div>
-                            <div class="file-upload-preview" id="remission-pdf-preview">
-                                <div class="file-preview-info">
-                                    <i class='bx bx-file file-preview-icon'></i>
-                                    <div class="file-preview-details">
-                                        <div class="file-preview-name"></div>
-                                        <div class="file-preview-size"></div>
-                                    </div>
-                                </div>
-                                <button type="button" class="file-preview-remove" onclick="removeFile('remission-pdf')">
-                                    <i class='bx bx-x'></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="upload-progress" id="remission-pdf-progress">
-                            <div class="loading-spinner"></div>
-                            <span class="loading-text">Загрузка файла...</span>
-                        </div>
+                        <label for="remission-read-url">Ссылка для кнопки «Читать» (на сайте):</label>
+                        <input type="text" id="remission-read-url" name="read_url" placeholder="https://…" autocomplete="off">
+                        <small style="color:#7f8c8d;display:block;margin-top:6px;">Укажите полный адрес (https://…). Можно изменить при редактировании записи.</small>
                     </div>
                 </form>
             </div>
@@ -238,13 +215,17 @@ $timestamp = time();
                     console.log('Add remission button clicked');
                     modal.style.display = 'block';
                     const form = document.getElementById('remission-form');
+                    const titleEl = document.getElementById('remission-modal-title');
+                    if (titleEl) titleEl.textContent = 'Добавить элемент библиотеки';
+                    const editId = document.getElementById('remission-edit-id');
+                    if (editId) editId.value = '';
                     if (form) {
                         form.reset();
                         document.getElementById('remission-image').value = '';
-                        document.getElementById('remission-pdf').value = '';
                         removeFile('remission-image');
-                        removeFile('remission-pdf');
                     }
+                    const readUrl = document.getElementById('remission-read-url');
+                    if (readUrl) readUrl.value = '';
                 });
             }
 
@@ -305,10 +286,12 @@ $timestamp = time();
                                 `<img src="${imageUrl}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">` :
                                 '<span style="color: #7f8c8d;">Нет картинки</span>';
 
-                            const pdfUrl = item.pdf_path ? (item.pdf_path.startsWith('http') ? item.pdf_path : window.location.origin + '/' + item.pdf_path) : null;
-                            const pdfHtml = pdfUrl ?
-                                `<a href="${pdfUrl}" target="_blank" rel="noopener" class="btn-secondary" style="padding: 4px 8px; font-size: 12px;"><i class='bx bx-download'></i> PDF</a>` :
-                                '<span style="color: #7f8c8d;">Нет PDF</span>';
+                            let linkCell = '<span style="color: #7f8c8d;">—</span>';
+                            if (item.pdf_path) {
+                                const u = item.pdf_path.startsWith('http') ? item.pdf_path : (window.location.origin + '/' + item.pdf_path.replace(/^\/+/, ''));
+                                const short = u.length > 48 ? u.slice(0, 45) + '…' : u;
+                                linkCell = `<a href="${u}" target="_blank" rel="noopener" title="${u.replace(/"/g, '&quot;')}">${short}</a>`;
+                            }
 
                             const row = document.createElement('tr');
                             row.innerHTML = `
@@ -316,10 +299,13 @@ $timestamp = time();
                                 <td>${imageHtml}</td>
                                 <td>${item.title}</td>
                                 <td>${item.description || '-'}</td>
-                                <td>${pdfHtml}</td>
+                                <td>${linkCell}</td>
                                 <td>${new Date(item.created_at).toLocaleDateString('ru-RU')}</td>
                                 <td>
-                                    <button class="btn-danger" onclick="deleteRemission(${item.id})">Удалить</button>
+                                    <div class="table-actions">
+                                        <button type="button" class="btn-edit" onclick="editRemission(${item.id})">Изменить</button>
+                                        <button type="button" class="btn-danger btn-danger--sm" onclick="deleteRemission(${item.id})">Удалить</button>
+                                    </div>
                                 </td>
                             `;
                             tableBody.appendChild(row);
@@ -338,17 +324,9 @@ $timestamp = time();
             console.log('saveRemission called');
 
             showUploadProgress('remission-image', true);
-            showUploadProgress('remission-pdf', true);
 
             const form = document.getElementById('remission-form');
             const formData = new FormData(form);
-
-            console.log('Form element found:', !!form);
-
-            // Проверяем, что файлы добавлены
-            const imageInput = document.getElementById('remission-image');
-
-            console.log('Image input files:', imageInput.files.length);
 
             fetch('php/api/remission.php', {
                 method: 'POST',
@@ -359,19 +337,17 @@ $timestamp = time();
                 console.log('Save response:', data);
 
                 showUploadProgress('remission-image', false);
-                showUploadProgress('remission-pdf', false);
 
                 if (data.success) {
-                    alert('Элемент успешно добавлен');
+                    alert(data.message || 'Сохранено');
                     const modal = document.getElementById('remission-modal');
                     if (modal) modal.style.display = 'none';
-                    // Очищаем всю форму
                     const form = document.getElementById('remission-form');
                     if (form) {
                         form.reset();
                     }
+                    document.getElementById('remission-edit-id').value = '';
                     removeFile('remission-image');
-                    removeFile('remission-pdf');
                     loadRemission();
                 } else {
                     alert('Ошибка: ' + data.message);
@@ -380,9 +356,34 @@ $timestamp = time();
             .catch(error => {
                 console.error('Ошибка сохранения элемента remission:', error);
                 showUploadProgress('remission-image', false);
-                showUploadProgress('remission-pdf', false);
                 alert('Ошибка сохранения элемента');
             });
+        }
+
+        function editRemission(itemId) {
+            fetch('php/api/remission.php?id=' + encodeURIComponent(itemId))
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success || !data.item) {
+                        alert(data.message || 'Не удалось загрузить запись');
+                        return;
+                    }
+                    const item = data.item;
+                    const modal = document.getElementById('remission-modal');
+                    const titleEl = document.getElementById('remission-modal-title');
+                    if (titleEl) titleEl.textContent = 'Изменить элемент библиотеки';
+                    document.getElementById('remission-edit-id').value = item.id;
+                    document.getElementById('remission-title').value = item.title || '';
+                    document.getElementById('remission-description').value = item.description || '';
+                    document.getElementById('remission-read-url').value = item.pdf_path || '';
+                    document.getElementById('remission-image').value = '';
+                    removeFile('remission-image');
+                    if (modal) modal.style.display = 'block';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Ошибка загрузки записи');
+                });
         }
 
         function deleteRemission(itemId) {
@@ -447,6 +448,8 @@ $timestamp = time();
         function handleFileSelect(file, inputId) {
             console.log('handleFileSelect called for:', inputId, 'file:', file);
             if (!file) return;
+
+            const isPdf = inputId === 'remission-pdf';
 
             const wrapper = document.getElementById(inputId).closest('.file-upload-wrapper');
             const label = wrapper.querySelector('.file-upload-label');
@@ -555,7 +558,6 @@ $timestamp = time();
 
             setupRemissionModal();
             setupFileUpload('remission-image');
-            setupFileUpload('remission-pdf');
             loadRemission();
 
             // Установка имени пользователя

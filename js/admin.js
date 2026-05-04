@@ -1,5 +1,167 @@
 // JavaScript для админской панели
 
+function updatePodcastSynapseMemoStatus() {
+    const hid = document.getElementById('podcast-synapse-memo-link');
+    const span = document.getElementById('podcast-synapse-memo-status');
+    if (!hid || !span) return;
+    const v = (hid.value || '').trim();
+    if (!v) {
+        span.textContent = 'Не задано';
+        span.removeAttribute('title');
+    } else {
+        span.textContent = v.length > 72 ? v.slice(0, 69) + '…' : v;
+        span.setAttribute('title', v);
+    }
+}
+
+function openPodcastSynapseMemoDraftModal() {
+    const quickIdEl = document.getElementById('podcast-synapse-memo-quick-podcast-id');
+    if (quickIdEl) quickIdEl.value = '';
+    const memoModal = document.getElementById('podcast-synapse-memo-modal');
+    const draft = document.getElementById('podcast-synapse-memo-draft');
+    const hid = document.getElementById('podcast-synapse-memo-link');
+    if (!memoModal || !draft || !hid) return;
+    draft.value = hid.value || '';
+    memoModal.style.display = 'block';
+}
+
+function closePodcastSynapseMemoDraftModal() {
+    const memoModal = document.getElementById('podcast-synapse-memo-modal');
+    if (memoModal) memoModal.style.display = 'none';
+    const quickIdEl = document.getElementById('podcast-synapse-memo-quick-podcast-id');
+    if (quickIdEl) quickIdEl.value = '';
+}
+
+function openPodcastSynapseMemoForTable(podcastId) {
+    const quickIdEl = document.getElementById('podcast-synapse-memo-quick-podcast-id');
+    const draft = document.getElementById('podcast-synapse-memo-draft');
+    const memoModal = document.getElementById('podcast-synapse-memo-modal');
+    if (!quickIdEl || !draft || !memoModal) return;
+
+    quickIdEl.value = String(podcastId);
+    fetch('php/api/podcasts.php?id=' + encodeURIComponent(podcastId))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.success || !data.podcast) {
+                alert(data.message || 'Не удалось загрузить подкаст');
+                quickIdEl.value = '';
+                return;
+            }
+            draft.value = data.podcast.synapse_memo_link ? String(data.podcast.synapse_memo_link) : '';
+            memoModal.style.display = 'block';
+        })
+        .catch(function(err) {
+            console.error(err);
+            alert('Ошибка загрузки подкаста');
+            quickIdEl.value = '';
+        });
+}
+
+function setupPodcastSynapseMemoMiniModal() {
+    const memoModal = document.getElementById('podcast-synapse-memo-modal');
+    if (!memoModal) return;
+
+    const openBtn = document.getElementById('open-podcast-synapse-memo-btn');
+    if (openBtn && !openBtn.dataset.bound) {
+        openBtn.dataset.bound = '1';
+        openBtn.addEventListener('click', function() {
+            openPodcastSynapseMemoDraftModal();
+        });
+    }
+
+    memoModal.querySelectorAll('#podcast-synapse-memo-modal-close, #podcast-synapse-memo-cancel-btn').forEach(function(el) {
+        if (el.dataset.bound) return;
+        el.dataset.bound = '1';
+        el.addEventListener('click', function() {
+            closePodcastSynapseMemoDraftModal();
+        });
+    });
+
+    const clearBtn = document.getElementById('podcast-synapse-memo-clear-btn');
+    if (clearBtn && !clearBtn.dataset.bound) {
+        clearBtn.dataset.bound = '1';
+        clearBtn.addEventListener('click', function() {
+            const quickIdEl = document.getElementById('podcast-synapse-memo-quick-podcast-id');
+            const quickId = quickIdEl && quickIdEl.value.trim();
+            const hid = document.getElementById('podcast-synapse-memo-link');
+            const draft = document.getElementById('podcast-synapse-memo-draft');
+            if (quickId) {
+                const fd = new FormData();
+                fd.append('quick_update', 'synapse_memo');
+                fd.append('id', quickId);
+                fd.append('synapse_memo_link', '');
+                fetch('php/api/podcasts.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!data.success) {
+                            alert(data.message || 'Ошибка');
+                            return;
+                        }
+                        if (draft) draft.value = '';
+                        closePodcastSynapseMemoDraftModal();
+                        if (typeof loadPodcasts === 'function') loadPodcasts();
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        alert('Ошибка сохранения');
+                    });
+                return;
+            }
+            if (hid) hid.value = '';
+            if (draft) draft.value = '';
+            updatePodcastSynapseMemoStatus();
+            closePodcastSynapseMemoDraftModal();
+        });
+    }
+
+    const applyBtn = document.getElementById('podcast-synapse-memo-apply-btn');
+    if (applyBtn && !applyBtn.dataset.bound) {
+        applyBtn.dataset.bound = '1';
+        applyBtn.addEventListener('click', function() {
+            const draft = document.getElementById('podcast-synapse-memo-draft');
+            const hid = document.getElementById('podcast-synapse-memo-link');
+            const quickIdEl = document.getElementById('podcast-synapse-memo-quick-podcast-id');
+            const quickId = quickIdEl && quickIdEl.value.trim();
+            const urlVal = draft ? (draft.value || '').trim() : '';
+
+            if (quickId) {
+                const fd = new FormData();
+                fd.append('quick_update', 'synapse_memo');
+                fd.append('id', quickId);
+                fd.append('synapse_memo_link', urlVal);
+                fetch('php/api/podcasts.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (!data.success) {
+                            alert(data.message || 'Ошибка');
+                            return;
+                        }
+                        closePodcastSynapseMemoDraftModal();
+                        if (typeof loadPodcasts === 'function') loadPodcasts();
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        alert('Ошибка сохранения');
+                    });
+                return;
+            }
+            if (hid && draft) hid.value = urlVal;
+            updatePodcastSynapseMemoStatus();
+            closePodcastSynapseMemoDraftModal();
+        });
+    }
+
+    if (!window._podcastSynapseMemoBackdropBound) {
+        window._podcastSynapseMemoBackdropBound = true;
+        window.addEventListener('click', function(e) {
+            const m = document.getElementById('podcast-synapse-memo-modal');
+            if (m && e.target === m) {
+                closePodcastSynapseMemoDraftModal();
+            }
+        });
+    }
+}
+
 // Функции для работы с подкастами (определены глобально)
 function setupPodcastModal() {
     console.log('setupPodcastModal called');
@@ -12,6 +174,8 @@ function setupPodcastModal() {
     const closeBtn = document.querySelector('#podcast-modal .modal-close');
     const cancelBtn = document.getElementById('cancel-podcast-btn');
     const saveBtn = document.getElementById('save-podcast-btn');
+
+    setupPodcastSynapseMemoMiniModal();
 
     // Открытие модального окна
     if (addBtn) {
@@ -41,6 +205,7 @@ function setupPodcastModal() {
                     const editor = tinymce.get('podcast-text');
                     if (editor) editor.setContent('');
                 }
+                updatePodcastSynapseMemoStatus();
             }
         });
     }
@@ -83,6 +248,9 @@ function openEditPodcastModal(podcast) {
     document.getElementById('podcast-button-link').value = podcast.button_link || '';
     document.getElementById('podcast-additional-link').value = podcast.additional_link || '';
     document.getElementById('podcast-extra-link').value = podcast.extra_link || '';
+    const synapseMemoInput = document.getElementById('podcast-synapse-memo-link');
+    if (synapseMemoInput) synapseMemoInput.value = podcast.synapse_memo_link || '';
+    updatePodcastSynapseMemoStatus();
     const timeSelect = document.getElementById('podcast-time-podcast');
     if (timeSelect) timeSelect.value = podcast.time_podcast || '';
 
@@ -185,6 +353,7 @@ function loadPodcasts() {
                         <td>${new Date(podcast.created_at).toLocaleDateString('ru-RU')}</td>
                         <td>
                             <div class="table-actions">
+                                <button type="button" class="btn-memo" onclick="openPodcastSynapseMemoForTable(${podcast.id})">Памятка</button>
                                 <button type="button" class="btn-edit" onclick="editPodcast(${podcast.id})">Изменить</button>
                                 <button type="button" class="btn-danger btn-danger--sm" onclick="deletePodcast(${podcast.id})">Удалить</button>
                             </div>
