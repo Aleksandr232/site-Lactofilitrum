@@ -249,7 +249,7 @@ try {
 				<div class="healing_basic">
 					<div class="healing_top" data-aos="fade-up">
 						<div class="healing_top_title">Лактофильтрум — лекарственный препарат, содержащий <br>комбинацию сорбента и пребиотика, </div>
-						<div class="healing_top_desc">с показанный в дерматологии: в комплексной терапии аллергических заболеваний кожи <br>(атопический дерматит, крапивница)1,2</div>
+						<div class="healing_top_desc">с прямым показанием в дерматалогии: в комплексной терапии аллергических <br>заболеваний кожи (атопический дерматит, крапивница)<sup>1,2</sup></div>
 					</div>
 					<div class="healing_bottom d_flex">
 						<div class="healing_image" data-aos="fade-up">
@@ -288,7 +288,7 @@ try {
 								<div class="healing_tooltip">Кожа</div>
 							</div>
 							<div class="healing_tooltips_note healing_tooltips_note--issue">
-								Нарушение состава микробиоты <br>и сенсибилизация- чпстые спупники <br>и триггеры аллкргодерматозов
+								Нарушение состава микробиоты <br>и сенсибилизация- частые спутники <br>и триггеры аллергодерматозов
 							</div>
 							<div class="healing_tooltips_custom">
 								<div class="healing_tooltips_custom_title">Кишечник —</div>
@@ -508,7 +508,7 @@ try {
 																<div class="scheme_overlay_item__icon">
 																	<img src="frontend/img/temp/1.png" alt=""/>
 																</div>
-																<div class="scheme_overlay_item__title">таблетки</div>
+																<div class="scheme_overlay_item__title">таблетка</div>
 															</div>
 														</div>
 														<div class="col col-2">
@@ -843,7 +843,7 @@ try {
 							</form>
 						</div> -->
 						<!-- форма виджет: через прокси, чтобы ответ открывался в iframe и показывался наш попап -->
-						<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
+						<iframe src="https://pxl.synapseonline.ru/form?form=aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa&iframe=1" frameborder="0" name="ak-form-aSPyRtbdHcVmai9i4JtChQKbwUYSid3q7mZyb2CCp8e6RRHMHZcpSEcNjr7K8iDP8yENYVrCMrAFfQWezF5hWPsa" class="ak-form" width="100%" sandbox="allow-same-origin allow-forms allow-scripts allow-popups"></iframe>
 					</div>
 				</div>
 			</div>
@@ -927,60 +927,63 @@ try {
 	(function() {
 		var popup = document.getElementById('register-thankyou-popup');
 		if (!popup) return;
+		var popupOpened = false;
 		var openPopup = function() {
+			if (popupOpened) return;
+			popupOpened = true;
 			popup.classList.add('is_open');
 			popup.setAttribute('aria-hidden', 'false');
 		};
 		var closePopup = function() {
 			popup.classList.remove('is_open');
 			popup.setAttribute('aria-hidden', 'true');
+			popupOpened = false;
 		};
 		popup.querySelector('.register_popup_close').addEventListener('click', closePopup);
 		popup.querySelector('.register_popup_btn').addEventListener('click', closePopup);
 		popup.addEventListener('click', function(e) {
 			if (e.target === popup) closePopup();
 		});
+
+		function parseMessageData(raw) {
+			if (!raw) return null;
+			if (typeof raw === 'object') return raw;
+			if (typeof raw !== 'string') return null;
+			try {
+				return JSON.parse(raw);
+			} catch (err) {
+				return { raw: raw };
+			}
+		}
+		function hasAnyToken(text, tokens) {
+			if (!text) return false;
+			var s = String(text).toLowerCase();
+			for (var i = 0; i < tokens.length; i++) {
+				if (s.indexOf(tokens[i]) !== -1) return true;
+			}
+			return false;
+		}
 		window.addEventListener('message', function(e) {
-			if (e.data && (e.data.type === 'ak-form-success' || e.data.formSuccess === true || (e.data.event && e.data.event === 'form_success'))) {
+			if (!/(^https:\/\/)([^\/]+\.)?synapseonline\.ru$/i.test(e.origin || '')) return;
+			var data = parseMessageData(e.data);
+			if (!data) return;
+			var payload = [data.type, data.event, data.status, data.action, data.message, data.raw].join(' ');
+			var successTokens = ['ak-form-success', 'form_success', 'submit_success', 'submitted', 'thankyou', 'thank-you'];
+			if (data.formSuccess === true || data.success === true || hasAnyToken(payload, successTokens)) {
 				openPopup();
 			}
 		});
-		// Если форма в iframe открывает страницу «спасибо» внутри iframe — показываем попап при второй загрузке iframe
-		var formIframe = document.querySelector('.ak-form');
-		if (formIframe) {
-			var iframeLoadCount = 0;
-			var firstLoadTime = 0;
-			formIframe.addEventListener('load', function() {
-				iframeLoadCount++;
-				if (iframeLoadCount === 1) {
-					firstLoadTime = Date.now();
-					return;
-				}
-				// Вторая загрузка не раньше чем через 1.5 сек (реальная отправка формы), чтобы не сработать на двойной загрузке
-				if (Date.now() - firstLoadTime > 1500) {
-					openPopup();
-				}
-			});
+
+		function checkPopupHash() {
+			var hash = (window.location.hash || '').toLowerCase();
+			var isPopupHash = hash === '#form=popup' || hash.indexOf('form=popup') !== -1 || hash.indexOf('form%3dpopup') !== -1;
+			if (!isPopupHash) return;
+			openPopup();
+			history.replaceState('', document.title, window.location.pathname + (window.location.search || ''));
 		}
-		function checkSuccessUrl() {
-			var params = new URLSearchParams(window.location.search);
-			var hash = window.location.hash || '';
-			var isSuccess = params.get('register') === 'success' || hash === '#register-success' || hash.indexOf('register-success') !== -1;
-			if (isSuccess) {
-				openPopup();
-				var cleanUrl = window.location.pathname;
-				if (params.get('register') === 'success') {
-					params.delete('register');
-					cleanUrl += (params.toString() ? '?' + params.toString() : '');
-				} else {
-					cleanUrl += window.location.search || '';
-				}
-				cleanUrl += (hash && hash !== '#register-success' ? hash : '');
-				history.replaceState('', document.title, cleanUrl);
-			}
-		}
-		checkSuccessUrl();
-		document.addEventListener('DOMContentLoaded', checkSuccessUrl);
+		checkPopupHash();
+		window.addEventListener('hashchange', checkPopupHash);
+		setTimeout(checkPopupHash, 50);
 		window.openRegisterThankYouPopup = openPopup;
 	})();
 	</script>

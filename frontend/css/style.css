@@ -719,6 +719,13 @@ body {
     position: relative;
     top: -2px;
 }
+.healing_top_desc sup {
+    font-size: 0.5em;
+    font-weight: bold;
+    vertical-align: top;
+    position: relative;
+    top: -2px;
+}
 .healing_box_sep {
     background-image: url(../img/icon_healing_box_arr.svg);
     background-repeat: no-repeat;
